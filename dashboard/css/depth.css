@@ -1,0 +1,106 @@
+/* ==========================================================================
+   Spatial layer — background scene, cursor light, depth parallax.
+   Isolated from the dashboard's component styles (styles.css).
+
+   Stack (back → front)
+     z0   #scene-layer        light 3D scene: ribbons · particles · grain (own camera sway)
+     z2   .light-field        violet pointer shading (behind content)
+     z3   .app                dashboard (sections → panels → controls)
+     z12  .light-overlay      faint violet core above content (pointer-events: none)
+     z20+ nav, drawer, tooltip (foreground controls — no parallax)
+   ========================================================================== */
+
+:root {
+  --glass: rgba(255, 255, 255, 0.6);   /* panels over the light scene */
+  --grain-opacity: 0.06;
+
+  /* pointer shading — a soft dark violet, kept quiet */
+  --shade-tint: 58, 36, 96;     /* deep violet (rgb) */
+  --shade-pool: 0.16;           /* behind content, at the pointer */
+  --shade-core: 0.07;           /* above content, at the pointer */
+  --shade-size: 1300px;
+  --sheen-size: 680px;
+  --rim-size: 480px;
+}
+
+/* ---------- scene (light 3D canvas + grain) -------------------------------- */
+.scene-layer {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+  background:
+    radial-gradient(1400px 900px at 80% -10%, #ffffff 0%, rgba(255, 255, 255, 0) 60%),
+    radial-gradient(1200px 800px at 6% 108%, #ebe8f0 0%, rgba(235, 232, 240, 0) 60%),
+    linear-gradient(180deg, #f6f4ef 0%, var(--ground) 50%, #efece6 100%);
+}
+.scene-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%; display: block;
+  opacity: 0; transition: opacity 1200ms ease;
+}
+.scene-layer.is-ready .scene-canvas { opacity: 1; }
+.scene-grain {
+  position: absolute; inset: 0; opacity: var(--grain-opacity); mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- pointer shading, behind content --------------------------------- */
+.light-field { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+.light-field .lf-glow, .light-overlay .lo-core {
+  position: absolute; left: 0; top: 0; border-radius: 50%; will-change: transform, opacity;
+}
+.light-field .lf-glow {
+  width: var(--shade-size); height: var(--shade-size);
+  margin: calc(var(--shade-size) / -2) 0 0 calc(var(--shade-size) / -2);
+  background: radial-gradient(circle,
+    rgba(var(--shade-tint), var(--shade-pool)) 0%,
+    rgba(var(--shade-tint), calc(var(--shade-pool) * 0.55)) 22%,
+    rgba(var(--shade-tint), calc(var(--shade-pool) * 0.18)) 44%,
+    rgba(var(--shade-tint), 0) 66%);
+  opacity: var(--li, 0.4);
+}
+
+/* ---------- pointer shading, above content (pointer-events: none) ------------- */
+.light-overlay { position: fixed; inset: 0; z-index: 12; pointer-events: none; overflow: hidden; }
+.light-overlay .lo-core {
+  width: 900px; height: 900px; margin: -450px 0 0 -450px;
+  background: radial-gradient(circle,
+    rgba(var(--shade-tint), var(--shade-core)) 0%,
+    rgba(var(--shade-tint), calc(var(--shade-core) * 0.45)) 30%,
+    rgba(var(--shade-tint), 0) 64%);
+  opacity: var(--li, 0.4);
+}
+
+/* ---------- glass response (injected child of each [data-lift] surface) ------- */
+.glass > .glass-light,
+.glass-light {
+  position: absolute; inset: 0; z-index: 0; border-radius: inherit; pointer-events: none;
+  background: rgba(var(--shade-tint), calc(0.025 * var(--near, 0)));
+}
+.glass-light::before, .glass-light::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+/* soft violet sheen — layered falloff, never a hard disc */
+.glass-light::before {
+  background: radial-gradient(var(--sheen-size) circle at var(--mx, -3000px) var(--my, -3000px),
+    rgba(var(--shade-tint), calc(0.07 * var(--li, 0))) 0%,
+    rgba(var(--shade-tint), calc(0.035 * var(--li, 0))) 26%,
+    rgba(var(--shade-tint), 0) 64%);
+}
+/* violet rim on the border ring nearest the pointer */
+.glass-light::after {
+  padding: 1.25px;
+  background: radial-gradient(var(--rim-size) circle at var(--mx, -3000px) var(--my, -3000px),
+    rgba(var(--shade-tint), calc(0.42 * var(--li, 0))) 0%,
+    rgba(var(--shade-tint), calc(0.12 * var(--li, 0))) 40%,
+    rgba(var(--shade-tint), 0) 72%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+
+/* ---------- depth layers in the page ------------------------------------------ */
+[data-depth] { translate: 0 0; }
+[data-depth="section"], [data-depth="panel"] { backface-visibility: hidden; }
+
+@media (hover: none), (pointer: coarse) {
+  .light-overlay { display: none; }
+}
+@media (forced-colors: active) {
+  .scene-canvas, .scene-grain, .light-field, .light-overlay, .glass-light { display: none; }
+}
