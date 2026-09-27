@@ -25,6 +25,8 @@ concurrency:
 
 jobs:
   build:
+    # A manual dispatch can select any branch; only main may produce a Pages artifact.
+    if: github.ref == 'refs/heads/main'
     name: Stage and validate
     runs-on: ubuntu-latest
     steps:
@@ -59,6 +61,7 @@ jobs:
           path: _site
 
   deploy:
+    if: github.ref == 'refs/heads/main'
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
