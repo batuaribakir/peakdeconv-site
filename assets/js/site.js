@@ -39,6 +39,9 @@
     var openTimer = null, closeTimer = null;
     var skipFocusOpen = false; /* set by Escape, so returning focus to the
                                   handle does not immediately reopen it */
+    var skipHoverOpen = false; /* likewise for the pointer: closing slides the
+                                  handle back under a pointer that never moved,
+                                  and that must not count as a fresh hover */
 
     function clearTimers() {
       if (openTimer) { clearTimeout(openTimer); openTimer = null; }
@@ -72,11 +75,22 @@
       closeTimer = setTimeout(function () { setOpen(false); }, reduceMotion.matches ? 0 : CLOSE_DELAY);
     }
 
-    /* --- click: opens, or pins a panel that hover already opened --------- */
+    /* The panel sits before the page bar in the document, so Tab out of the
+       bar's Menu button walks away from it. Opening from that button therefore
+       has to place focus inside the panel by hand. The handle needs none of
+       this: it is the element immediately before the panel, so Tab flows in. */
+    function focusIntoPanel() {
+      var first = panel.querySelector(".navpanel-close") || panel.querySelector("nav a");
+      if (first) first.focus();
+    }
+
+    /* --- click (and Enter / Space on the button): open, or pin ------------ */
     toggles.forEach(function (t) {
       t.addEventListener("click", function () {
-        if (!open) setOpen(true, "click");
-        else if (openedBy === "click") setOpen(false);
+        if (!open) {
+          setOpen(true, "click");
+          if (t !== handle) focusIntoPanel();
+        } else if (openedBy === "click") setOpen(false);
         else openedBy = "click";
       });
     });
@@ -88,11 +102,12 @@
         /* Cancel first, unconditionally: coming back onto the handle from the
            open panel has to call off the close that leaving the panel queued. */
         clearTimers();
-        if (narrow.matches || open) return;
+        if (narrow.matches || open || skipHoverOpen) return;
         openTimer = setTimeout(function () { setOpen(true, "hover"); }, OPEN_DELAY);
       });
       handle.addEventListener("pointerleave", function (e) {
         if (e.pointerType !== "mouse") return;
+        skipHoverOpen = false;          /* the pointer moved away: hover counts again */
         if (openTimer) { clearTimeout(openTimer); openTimer = null; }
         scheduleClose();
       });
@@ -104,18 +119,18 @@
       if (e.pointerType === "mouse") scheduleClose();
     });
 
-    /* --- keyboard: focusing the control opens it, Escape closes it ------- */
-    toggles.forEach(function (t) {
-      t.addEventListener("focus", function () {
+    /* --- keyboard: the handle opens on focus, Escape closes -------------- */
+    if (handle) {
+      handle.addEventListener("focus", function () {
         if (!skipFocusOpen && !open) setOpen(true, "focus");
       });
-      t.addEventListener("blur", function () { skipFocusOpen = false; });
-    });
+      handle.addEventListener("blur", function () { skipFocusOpen = false; });
+    }
 
     document.addEventListener("keydown", function (e) {
       if (e.key !== "Escape" || !open) return;
       setOpen(false);
-      skipFocusOpen = true;
+      skipFocusOpen = skipHoverOpen = true;
       visibleToggle().focus();
     });
 
@@ -125,9 +140,10 @@
       return false;
     }
 
-    /* Focus leaving the panel closes it, unless a click pinned it open. */
+    /* Focus landing anywhere outside the panel and its controls closes it,
+       so tabbing past the last link never leaves an open panel behind. */
     document.addEventListener("focusin", function (e) {
-      if (open && openedBy !== "click" && !inChrome(e.target)) setOpen(false);
+      if (open && !inChrome(e.target)) setOpen(false);
     });
 
     /* A tap or click anywhere outside closes it. */
@@ -143,9 +159,32 @@
     var closeBtn = panel.querySelector(".navpanel-close");
     if (closeBtn) closeBtn.addEventListener("click", function () {
       setOpen(false);
-      skipFocusOpen = true;
+      skipFocusOpen = skipHoverOpen = true;
       visibleToggle().focus();
     });
+
+    /* The dashboard's task drawer is modal. While it is open the global menu
+       must be out of reach: site.css stacks the drawer and its scrim above the
+       panel and the handle, and this takes the controls out of the pointer and
+       tab order too, so nothing can be activated through the scrim. */
+    (function watchDrawer() {
+      var drawer = document.getElementById("drawer");
+      if (!drawer || !window.MutationObserver) return;
+      var blocked = null;
+      function sync() {
+        var modal = drawer.classList.contains("open");
+        if (modal === blocked) return;
+        blocked = modal;
+        if (modal) setOpen(false);
+        document.body.classList.toggle("drawer-blocks-menu", modal);
+        toggles.forEach(function (t) {
+          if (modal) t.setAttribute("tabindex", "-1");
+          else t.removeAttribute("tabindex");
+        });
+      }
+      new MutationObserver(sync).observe(drawer, { attributes: true, attributeFilter: ["class"] });
+      sync();
+    })();
 
     function onBreakpoint() { setOpen(false); }
     if (narrow.addEventListener) narrow.addEventListener("change", onBreakpoint);

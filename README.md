@@ -60,17 +60,34 @@ the left, and it is the same panel and the same state on every page, dashboard i
   across.
 - **Clicking** the handle opens the panel and pins it: once clicked it no longer closes on
   pointer-out, only on a second click, a click outside, the close button, or Escape.
-- **Tabbing** to the handle opens the panel, so the links are reachable by keyboard.
-  **Escape** closes it and returns focus to the handle; focus then has to leave and come
-  back before it opens again, so Escape is never undone by the focus it restores. Focus
-  leaving the panel closes it too, unless a click pinned it open.
+- **Tabbing** to the handle opens the panel: the handle is the element immediately
+  before it in the document, so the next Tab walks straight into the links. **Escape**
+  closes it and returns focus to the handle; focus then has to leave and come back before
+  it opens again, so Escape is never undone by the focus it restores. Focus landing
+  outside the panel and its controls closes it, so tabbing past the last link never
+  leaves an open panel behind.
 - Below 1024 px the handle gives way to a **Menu button in the bar at the top**, which
   opens the same panel with a dimming scrim behind it. The swap happens there, not at a
   phone width, because the left margin only clears a 34 px handle once the page gutter has
   grown past about 40 px. Exactly one of the two controls is on screen at any width.
+- The button sits *after* the panel in the document, so Tab out of it would walk away from
+  the panel rather than into it. **Enter or Space on the Menu button therefore moves focus
+  into the panel**, onto its Close button; Tab from there reaches the six links in order.
+  **Escape and the Close button** both close the panel and return focus to Menu. The
+  button opens on activation only — focus-opening belongs to the handle, where Tab order
+  makes it work.
 - `aria-expanded` is mirrored on both controls, `aria-controls` points at the panel, and
   the closed panel is `visibility: hidden`, so its links are out of the tab order and out
   of the accessibility tree rather than merely off-screen.
+
+**The dashboard's task drawer outranks the menu.** The drawer is a modal dialog with its
+own scrim. `assets/css/site.css` raises the two above the panel and the handle (scrim 48,
+drawer 49, against panel 46 and handle 47; the dashboard's tooltip stays on top at 60), so
+the scrim catches any click aimed at the handle behind it. `assets/js/site.js` watches the
+drawer and, while it is open, closes the panel and takes both menu controls out of the
+pointer and tab order, so nothing can be reached through the scrim by mouse or keyboard.
+The drawer's own behaviour — focus trap, Escape, focus returning to the task row — is
+untouched; `dashboard/css/styles.css` is not modified at all.
 
 **Sections — headings of the page you are on.** These live in the bar at the top of each
 page and only ever link to ids that exist on that page. The dashboard keeps its own bar

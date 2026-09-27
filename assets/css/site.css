@@ -443,6 +443,22 @@ a.go:hover { text-decoration: underline; }
 .no-js .page-dashboard .topnav { position: static; left: auto; transform: none; margin: 12px auto; }
 .no-js .page-dashboard section.block.hero { padding-top: var(--s7, 48px); }
 
+/* ==========================================================================
+   Dashboard: the task drawer is modal and outranks the global menu
+   The drawer (role="dialog" aria-modal="true") and its scrim are declared in
+   dashboard/css/styles.css at z-index 41 and 40, below this file's panel (46)
+   and handle (47). Raise them here rather than there, so the dashboard's own
+   stylesheet stays exactly as it was; the tooltip at 60 still sits on top of
+   both, as it did before.
+   ========================================================================== */
+.page-dashboard .scrim { z-index: 48; }
+.page-dashboard .drawer { z-index: 49; }
+/* belt and braces for the scrim: the controls stop responding at all while
+   the drawer is open (assets/js/site.js sets the class and tabindex) */
+.drawer-blocks-menu .navhandle,
+.drawer-blocks-menu .navbtn,
+.drawer-blocks-menu .navpanel { pointer-events: none; }
+
 /* ---------- motion / contrast preferences --------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   html:has(.site-page) { scroll-behavior: auto; }
