@@ -1,0 +1,474 @@
+/* ==========================================================================
+   Peak Deconvolution — site shell
+   Shared chrome for every page.
+
+   Two navigations, with one job each:
+
+     · GLOBAL — the six destinations of the site. It lives in a left panel
+       (.navpanel), opened from a handle on the left edge (.navhandle) on
+       pointer devices and from a Menu button in the page bar (.navbtn) on
+       narrow screens. It is the same panel and the same state either way.
+
+     · SECTIONS — headings of the page you are on, in the bar at the top.
+       The static pages use .pagebar here; the dashboard keeps its own
+       (.topnav in dashboard/css/styles.css) untouched, including its
+       progress ring and its scroll offsets.
+
+   Loaded by:
+     /index.html, /presentations/, /project/, /team/, /resources/
+       -> chrome + the whole page design
+     /dashboard/index.html
+       -> chrome only. Everything page-level here is scoped to .site-page,
+          which the dashboard body does not carry, so the two stylesheets
+          never meet.
+
+   Without JavaScript the whole chrome falls back to normal flow: see
+   "no-JavaScript fallback" at the end. All six global links stay visible.
+   ========================================================================== */
+
+:root {
+  /* ground + ink (same family as the dashboard, prefixed so the two
+     stylesheets can never collide when both are loaded) */
+  --s-ground: #f3f1eb;
+  --s-ink: #1a2028;
+  --s-ink-2: #4b5560;
+  --s-ink-3: #626c76;
+  --s-line: rgba(26, 32, 40, 0.11);
+  --s-line-soft: rgba(26, 32, 40, 0.065);
+
+  --s-teal: #009289;
+  --s-blue: #00578c;
+  --s-amber: #c98a1b;
+  --s-amber-ink: #8a5a00;
+  --s-amber-tint: #f7ead0;
+  --s-midterm: #1f2b38;
+
+  --s-glass: rgba(255, 255, 255, 0.58);
+  --s-glass-border: rgba(26, 32, 40, 0.08);
+  --s-glass-edge: rgba(255, 255, 255, 0.75);
+  --s-shadow: 0 1px 2px rgba(31, 43, 56, 0.05), 0 14px 40px -18px rgba(31, 43, 56, 0.14);
+
+  --s-f-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --s-f-ui: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --s-f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  --s-r-s: 8px;
+  --s-r-m: 12px;
+  --s-r-l: 18px;
+
+  --s-gutter: clamp(16px, 4vw, 48px);
+  --s-page-max: 1180px;
+  --s-bar-h: 56px;                 /* page bar height, mirrors the dashboard */
+  --s-bar-top: calc(env(safe-area-inset-top, 0px) + 12px);
+  --s-panel-w: min(320px, 86vw);
+  --s-ease: cubic-bezier(0.22, 0.8, 0.24, 1);
+}
+
+/* ---------- skip link (every page) ---------------------------------------- */
+.skip-link {
+  position: fixed; z-index: 100; top: 8px; left: 8px;
+  padding: 10px 16px; border-radius: 999px;
+  background: #fff; color: var(--s-ink); font-family: var(--s-f-ui); font-size: 0.8125rem; font-weight: 600;
+  text-decoration: none; box-shadow: 0 8px 24px -10px rgba(31, 43, 56, 0.5), 0 0 0 1px rgba(26, 32, 40, 0.1);
+  transform: translateY(calc(-100% - 16px));
+}
+.skip-link:focus, .skip-link:focus-visible { transform: none; }
+
+/* ==========================================================================
+   GLOBAL NAVIGATION — left-edge handle + left panel
+   ========================================================================== */
+
+/* The handle. Always on screen on pointer devices, so the global menu is
+   never hidden behind a gesture. When the panel opens the handle rides out to
+   its right edge: the two stay edge to edge, so the pointer crosses between
+   them without ever passing over the page, and the handle stays clickable as
+   the control that pins or closes the panel. */
+.navhandle {
+  position: fixed; z-index: 47; left: 0; top: 50%; translate: 0 -50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  width: 34px; height: 148px; padding: 0;
+  border: 1px solid var(--s-glass-border); border-left: 0;
+  border-radius: 0 var(--s-r-m) var(--s-r-m) 0;
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(16px) saturate(1.25); backdrop-filter: blur(16px) saturate(1.25);
+  box-shadow: var(--s-shadow);
+  color: var(--s-ink-2); font-family: var(--s-f-ui); cursor: pointer;
+  transition: background-color 180ms var(--s-ease), color 180ms var(--s-ease),
+              width 180ms var(--s-ease), translate 260ms var(--s-ease);
+}
+.navhandle:hover, .navhandle:focus-visible { background: #fff; color: var(--s-ink); width: 37px; }
+.navhandle.is-open { translate: var(--s-panel-w) -50%; background: #fff; color: var(--s-ink); }
+/* the three grip bars fold into a cross while the panel is open */
+.navhandle.is-open .navhandle-grip i { transition: transform 200ms var(--s-ease), opacity 160ms; }
+.navhandle.is-open .navhandle-grip i:nth-child(1) { transform: translateY(4.6px) rotate(45deg); }
+.navhandle.is-open .navhandle-grip i:nth-child(2) { opacity: 0; }
+.navhandle.is-open .navhandle-grip i:nth-child(3) { transform: translateY(-4.6px) rotate(-45deg); }
+.navhandle-label {
+  writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
+  font-family: var(--s-f-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.navhandle-grip { display: grid; gap: 3px; }
+.navhandle-grip i { display: block; width: 11px; height: 1.6px; border-radius: 2px; background: currentColor; }
+
+/* The Menu button inside the page bar. It is the same control as the handle
+   for narrow screens, where a left-edge tab would sit on top of the text. */
+.navbtn {
+  display: none; align-items: center; gap: 8px; flex: none;
+  height: 34px; padding: 0 12px 0 10px; border-radius: 999px;
+  border: 1px solid var(--s-line); background: rgba(255, 255, 255, 0.7);
+  color: var(--s-ink); font-family: var(--s-f-ui); font-size: 0.8125rem; font-weight: 500; cursor: pointer;
+}
+.navbtn:hover { background: #fff; }
+.navbtn-bars { display: grid; gap: 3px; width: 14px; }
+.navbtn-bars i { display: block; height: 1.6px; border-radius: 2px; background: currentColor; }
+
+.navscrim {
+  position: fixed; z-index: 45; inset: 0; background: rgba(26, 32, 40, 0.18);
+  opacity: 0; pointer-events: none; transition: opacity 240ms var(--s-ease);
+}
+
+.navpanel {
+  position: fixed; z-index: 46; left: 0; top: 0; bottom: 0; width: var(--s-panel-w);
+  display: flex; flex-direction: column;
+  padding: calc(env(safe-area-inset-top, 0px) + 20px) 20px 20px;
+  background: rgba(252, 251, 248, 0.94);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2); backdrop-filter: blur(20px) saturate(1.2);
+  border-right: 1px solid var(--s-line);
+  box-shadow: 24px 0 60px -40px rgba(31, 43, 56, 0.6);
+  font-family: var(--s-f-ui);
+  /* Closed: off-screen AND visibility:hidden, so the links leave the tab
+     order and the accessibility tree. The visibility delay is what keeps the
+     slide-out visible instead of snapping away. */
+  translate: -102% 0;
+  visibility: hidden;
+  transition: translate 260ms var(--s-ease), visibility 0s linear 260ms;
+}
+.navpanel.is-open { translate: 0 0; visibility: visible; transition: translate 260ms var(--s-ease); }
+.navpanel.is-open ~ .navscrim, .navscrim.is-open { opacity: 1; pointer-events: auto; }
+
+.navpanel-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 22px; }
+.navpanel-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--s-ink); margin-right: auto; }
+.navpanel-brand svg { width: 26px; height: 26px; flex: none; }
+.navpanel-brand strong { display: block; font-family: var(--s-f-display); font-size: 1.02rem; font-weight: 500; letter-spacing: -0.01em; }
+.navpanel-brand > span { display: block; min-width: 0; }
+.navpanel-brand span span { display: block; font-family: var(--s-f-mono); font-size: 0.62rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--s-ink-3); }
+.navpanel-close {
+  flex: none; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid var(--s-line); background: rgba(255, 255, 255, 0.7); color: var(--s-ink-2); cursor: pointer;
+}
+.navpanel-close:hover { background: #fff; color: var(--s-ink); }
+.navpanel-close svg { width: 14px; height: 14px; }
+
+.navpanel-eyebrow {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+  font-family: var(--s-f-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--s-ink-3);
+}
+.navpanel-eyebrow::before { content: ""; width: 16px; height: 1px; background: currentColor; opacity: 0.6; }
+.navpanel ul { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.navpanel li a {
+  display: flex; align-items: baseline; gap: 10px;
+  padding: 10px 12px; border-radius: var(--s-r-m);
+  font-size: 0.9375rem; font-weight: 500; color: var(--s-ink-2); text-decoration: none;
+  transition: color 160ms var(--s-ease), background-color 160ms var(--s-ease);
+}
+.navpanel li a:hover { color: var(--s-ink); background: rgba(26, 32, 40, 0.05); }
+.navpanel li a[aria-current="page"] { color: var(--s-ink); background: rgba(26, 32, 40, 0.075); font-weight: 600; }
+.navpanel li a small { font-family: var(--s-f-mono); font-size: 0.66rem; color: var(--s-ink-3); }
+.navpanel-foot { margin-top: auto; padding-top: 20px; font-size: 0.72rem; color: var(--s-ink-3); }
+
+/* Below the breakpoint the handle gives way to the in-bar Menu button. The
+   breakpoint is 1024px, not a phone width: the handle lives in the page's left
+   margin, and the margin only clears it once the gutter has grown past ~40px.
+   Below that the button in the bar is the control. */
+@media (max-width: 1023px) {
+  .navhandle { display: none; }
+  .navbtn { display: inline-flex; }
+}
+@media (min-width: 1024px) {
+  /* A hover-opened panel on a wide screen should not dim the page behind it. */
+  .navscrim { display: none; }
+}
+
+/* ==========================================================================
+   PAGE BAR — the static pages' section navigation, mirroring .topnav
+   ========================================================================== */
+.pagebar {
+  position: fixed; z-index: 20; left: 50%; translate: -50% 0;
+  top: var(--s-bar-top);
+  width: min(calc(100% - 2 * var(--s-gutter)), 1100px);
+  height: var(--s-bar-h);
+  display: flex; align-items: center; gap: 16px;
+  padding: 0 18px 0 16px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25); backdrop-filter: blur(18px) saturate(1.25);
+  border: 1px solid var(--s-glass-border);
+  box-shadow: inset 0 1px 0 var(--s-glass-edge), var(--s-shadow);
+  font-family: var(--s-f-ui);
+}
+.pagebrand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--s-ink); white-space: nowrap; }
+.pagebrand svg { width: 26px; height: 26px; flex: none; }
+.pagebrand span { font-family: var(--s-f-display); font-size: 1.02rem; font-weight: 500; letter-spacing: -0.01em; }
+
+.pagesections { min-width: 0; margin-left: auto; }
+.pagesections ul { display: flex; align-items: center; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.pagesections a {
+  display: block; padding: 7px 12px; border-radius: 999px; white-space: nowrap;
+  font-size: 0.8125rem; font-weight: 500; color: var(--s-ink-2); text-decoration: none;
+  transition: color 160ms var(--s-ease), background-color 160ms var(--s-ease);
+}
+.pagesections a:hover { color: var(--s-ink); }
+.pagesections a[aria-current="true"] { color: var(--s-ink); background: rgba(26, 32, 40, 0.065); }
+
+@media (max-width: 960px) {
+  .pagebar { gap: 10px; padding-inline: 12px; }
+  .pagesections {
+    flex: 1; overflow-x: auto; scrollbar-width: none;
+    -webkit-mask: linear-gradient(90deg, transparent, #000 10px, #000 calc(100% - 14px), transparent);
+    mask: linear-gradient(90deg, transparent, #000 10px, #000 calc(100% - 14px), transparent);
+  }
+  .pagesections::-webkit-scrollbar { display: none; }
+  .pagesections ul { width: max-content; padding: 0 8px; }
+}
+@media (max-width: 720px) { :root { --s-bar-h: 50px; } .pagebrand span { display: none; } }
+
+/* ==========================================================================
+   PAGE SHELL — scoped to .site-page so none of it reaches the dashboard
+   ========================================================================== */
+.site-page {
+  margin: 0;
+  color: var(--s-ink);
+  font-family: var(--s-f-ui);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  background: var(--s-ground);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+.site-page *, .site-page *::before, .site-page *::after { box-sizing: border-box; }
+.site-page h1, .site-page h2, .site-page h3, .site-page h4 { margin: 0; font-weight: 500; text-wrap: balance; }
+.site-page p, .site-page ul, .site-page ol, .site-page dl { margin: 0; }
+.site-main a { color: var(--s-blue); }
+.site-page :focus-visible { outline: 2px solid var(--s-blue); outline-offset: 2px; border-radius: 4px; }
+.site-page button { font: inherit; color: inherit; cursor: pointer; }
+.site-page [hidden] { display: none !important; }
+.site-page ::selection { background: rgba(0, 146, 137, 0.18); }
+.site-page code { font-family: var(--s-f-mono); font-size: 0.86em; padding: 1px 5px; border-radius: 4px; background: rgba(26, 32, 40, 0.05); }
+
+html:has(.site-page) { scroll-behavior: smooth; }
+.site-page .block { scroll-margin-top: calc(var(--s-bar-top) + var(--s-bar-h) + 18px); }
+
+/* static light ground — the same family of gradients as the dashboard's
+   3D scene ground, without loading Three.js on these pages */
+.site-ground {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(1400px 900px at 80% -10%, #ffffff 0%, rgba(255, 255, 255, 0) 60%),
+    radial-gradient(1200px 800px at 6% 108%, #ebe8f0 0%, rgba(235, 232, 240, 0) 60%),
+    linear-gradient(180deg, #f6f4ef 0%, var(--s-ground) 50%, #efece6 100%);
+}
+.site-main { position: relative; z-index: 1; }
+.site-main:focus { outline: none; }
+
+.wrap { width: min(100%, var(--s-page-max)); margin: 0 auto; padding-inline: var(--s-gutter); }
+.site-page .block { padding-block: clamp(48px, 7vw, 76px) 0; }
+.site-page .block.first { padding-top: calc(var(--s-bar-top) + var(--s-bar-h) + clamp(36px, 6vw, 68px)); }
+
+.sec-head { margin-bottom: 24px; }
+.eyebrow {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+  font-family: var(--s-f-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--s-ink-3);
+}
+.eyebrow::before { content: ""; width: 18px; height: 1px; background: currentColor; opacity: 0.6; }
+.sec-title { font-family: var(--s-f-display); font-size: clamp(1.7rem, 3.2vw, 2.25rem); line-height: 1.1; letter-spacing: -0.02em; font-weight: 420; }
+.sec-lede { margin-top: 10px; max-width: 64ch; color: var(--s-ink-2); }
+
+/* ---------- glass card ---------------------------------------------------- */
+.card {
+  position: relative;
+  background: var(--s-glass);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25); backdrop-filter: blur(18px) saturate(1.25);
+  border: 1px solid var(--s-glass-border);
+  border-radius: var(--s-r-l);
+  box-shadow: inset 0 1px 0 var(--s-glass-edge), var(--s-shadow);
+  padding: clamp(20px, 3vw, 28px);
+}
+.card h3 { font-family: var(--s-f-display); font-size: 1.125rem; font-weight: 480; letter-spacing: -0.01em; }
+.card > * + * { margin-top: 10px; }
+
+.grid { display: grid; gap: 16px; }
+.grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 1000px) { .grid.three { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 740px) { .grid.two, .grid.three { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- hero ---------------------------------------------------------- */
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: clamp(28px, 4vw, 56px); align-items: end; }
+.hero-facts { align-self: end; }
+.glance-title { font-family: var(--s-f-display); font-size: 1.125rem; font-weight: 480; letter-spacing: -0.01em; margin-bottom: 4px; }
+@media (max-width: 900px) { .hero-grid { grid-template-columns: minmax(0, 1fr); align-items: start; } }
+
+.site-hero-title {
+  font-family: var(--s-f-display); font-weight: 380; letter-spacing: -0.035em; line-height: 0.98;
+  font-size: clamp(2.6rem, 6vw, 4.4rem); font-variation-settings: "opsz" 144;
+}
+.site-hero-title em { font-style: italic; font-weight: 300; color: var(--s-ink-2); }
+.site-hero-desc { margin-top: 18px; max-width: 58ch; font-size: 1.0625rem; color: var(--s-ink-2); }
+
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px;
+  font-size: 0.72rem; font-weight: 500; letter-spacing: 0.02em; color: var(--s-ink-2);
+  background: rgba(255, 255, 255, 0.4); border: 1px solid var(--s-line);
+}
+.tag .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--s-teal); }
+.tag.mono { font-family: var(--s-f-mono); color: var(--s-ink); border-color: rgba(26, 32, 40, 0.28); background: rgba(255, 255, 255, 0.6); }
+
+/* ---------- badges and notes ---------------------------------------------- */
+.prov, .badge {
+  display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: 999px;
+  font-family: var(--s-f-mono); font-size: 0.64rem; letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--s-amber-ink); background: var(--s-amber-tint); border: 1px solid rgba(201, 138, 27, 0.35);
+  white-space: nowrap;
+}
+.badge.lock { color: var(--s-ink-2); background: rgba(26, 32, 40, 0.055); border-color: var(--s-line); }
+.badge.lock svg { width: 10px; height: 10px; }
+.note {
+  padding: 14px 18px; border-radius: var(--s-r-m);
+  background: rgba(255, 255, 255, 0.52); border: 1px solid var(--s-line-soft);
+  border-left: 3px solid var(--s-amber);
+  font-size: 0.8438rem; color: var(--s-ink-2); max-width: 74ch;
+}
+.note strong { color: var(--s-ink); font-weight: 600; }
+.note code { font-size: 0.82em; }
+.note + .note { margin-top: 10px; }
+
+/* small spacing utilities */
+.mt-1 { margin-top: 12px; } .mt-2 { margin-top: 20px; } .mt-3 { margin-top: 30px; }
+
+/* ---------- link cards ---------------------------------------------------- */
+.linkcard { display: block; text-decoration: none; color: inherit; transition: translate 200ms var(--s-ease), box-shadow 200ms var(--s-ease); }
+.linkcard:hover { translate: 0 -2px; box-shadow: inset 0 1px 0 var(--s-glass-edge), 0 20px 46px -20px rgba(31, 43, 56, 0.26); }
+.go { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8125rem; font-weight: 600; color: var(--s-blue); }
+.go svg { width: 14px; height: 14px; flex: none; }
+a.go { text-decoration: none; }
+a.go:hover { text-decoration: underline; }
+
+/* ---------- lists --------------------------------------------------------- */
+.deflist { display: grid; gap: 0; }
+.deflist > div { display: grid; grid-template-columns: 116px minmax(0, 1fr); gap: 8px 18px; padding: 12px 0; border-top: 1px solid var(--s-line-soft); }
+.deflist > div:first-child { border-top: 0; }
+.deflist dt { font-family: var(--s-f-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--s-ink-3); padding-top: 2px; }
+.deflist dd { margin: 0; }
+@media (max-width: 560px) { .deflist > div { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
+.deflist dd small { display: block; margin-top: 6px; font-size: 0.78rem; color: var(--s-ink-3); }
+
+/* a value copied from the workbook by hand, with the date it was last checked */
+.snap {
+  display: block; margin-top: 12px;
+  font-family: var(--s-f-mono); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--s-ink-3);
+}
+
+.bullets { padding-left: 1.1em; color: var(--s-ink-2); }
+.bullets li + li { margin-top: 6px; }
+
+/* ---------- work-package rows --------------------------------------------- */
+.wp-list { display: grid; }
+.wp-row { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; gap: 6px 16px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--s-line-soft); }
+.wp-row:first-child { border-top: 0; }
+.wp-code { font-family: var(--s-f-mono); font-size: 0.8125rem; font-weight: 600; color: var(--wpc, var(--s-ink-2)); }
+.wp-name { font-weight: 500; }
+.wp-span { font-family: var(--s-f-mono); font-size: 0.72rem; color: var(--s-ink-3); }
+.wp-row .wp-span { white-space: nowrap; }
+.wp-sub { grid-column: 2 / -1; font-size: 0.8125rem; color: var(--s-ink-3); }
+[data-wp="WP1"] { --wpc: #00756e; } [data-wp="WP2"] { --wpc: #00578c; } [data-wp="WP3"] { --wpc: #5d58ad; }
+[data-wp="WP4"] { --wpc: #772f6f; } [data-wp="WP5"] { --wpc: #805300; } [data-wp="WP6"] { --wpc: #a3375c; }
+@media (max-width: 560px) { .wp-row { grid-template-columns: 52px minmax(0, 1fr); } .wp-span { grid-column: 2; } }
+
+/* ---------- week strip (presentations) ------------------------------------ */
+.weeks { display: grid; grid-template-columns: repeat(auto-fill, minmax(136px, 1fr)); gap: 12px; }
+.week { padding: 14px 16px; border-radius: var(--s-r-m); background: rgba(255, 255, 255, 0.5); border: 1px solid var(--s-line-soft); }
+.week .wk { font-family: var(--s-f-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--s-ink-3); }
+.week .what { margin-top: 4px; font-weight: 500; }
+.week .tbc { margin-top: 6px; font-size: 0.78rem; color: var(--s-ink-3); }
+.week.is-pres { border-left: 3px solid var(--s-amber); }
+.week.is-mid { border-left: 3px solid var(--s-midterm); background: rgba(255, 255, 255, 0.72); }
+
+/* ---------- people -------------------------------------------------------- */
+.people { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+.person { display: flex; gap: 14px; align-items: flex-start; }
+.monogram {
+  flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72); border: 1px solid var(--s-line);
+  font-family: var(--s-f-mono); font-size: 0.8125rem; font-weight: 600; color: var(--s-ink-2);
+}
+.person .dept { font-family: var(--s-f-mono); font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--s-ink-3); }
+.person .name { font-family: var(--s-f-display); font-size: 1.05rem; font-weight: 480; }
+.person .role { font-size: 0.8125rem; color: var(--s-ink-2); margin-top: 3px; }
+
+/* ---------- footer -------------------------------------------------------- */
+.site-foot { margin-top: clamp(56px, 8vw, 96px); border-top: 1px solid var(--s-line-soft); padding-block: 28px 40px; }
+.site-foot-in { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; font-size: 0.78rem; color: var(--s-ink-3); }
+.site-foot-in a { color: var(--s-ink-2); }
+
+/* ==========================================================================
+   no-JavaScript fallback
+   The panel is a scripted control, so without JavaScript the whole chrome
+   drops out of fixed positioning and into normal flow: the six global links
+   render as a plain wrapped list at the top of the page, the page bar
+   follows it, and nothing is clipped or covered at any width.
+   ========================================================================== */
+.no-js .navhandle, .no-js .navbtn, .no-js .navpanel-close, .no-js .navscrim { display: none; }
+.no-js .navpanel {
+  position: static; width: auto; translate: none; visibility: visible;
+  display: block; padding: 12px var(--s-gutter) 14px;
+  border-right: 0; border-bottom: 1px solid var(--s-line); box-shadow: none;
+  transition: none;
+}
+.no-js .navpanel-head { margin-bottom: 10px; }
+.no-js .navpanel ul { display: flex; flex-wrap: wrap; gap: 2px 4px; }
+.no-js .navpanel li a { padding: 7px 10px; font-size: 0.875rem; }
+.no-js .navpanel-foot { margin-top: 10px; padding-top: 0; }
+
+.no-js .pagebar {
+  position: static; translate: none; width: min(calc(100% - 2 * var(--s-gutter)), 1100px);
+  height: auto; min-height: var(--s-bar-h); margin: 12px auto; flex-wrap: wrap; padding-block: 8px;
+}
+.no-js .pagesections { overflow: visible; -webkit-mask: none; mask: none; }
+.no-js .pagesections ul { flex-wrap: wrap; width: auto; }
+.no-js .site-page .block.first { padding-top: clamp(28px, 5vw, 48px); }
+
+/* the dashboard's own bar, which is fixed and centred by transform */
+.no-js .page-dashboard .topnav { position: static; left: auto; transform: none; margin: 12px auto; }
+.no-js .page-dashboard section.block.hero { padding-top: var(--s7, 48px); }
+
+/* ==========================================================================
+   Dashboard: the task drawer is modal and outranks the global menu
+   The drawer (role="dialog" aria-modal="true") and its scrim are declared in
+   dashboard/css/styles.css at z-index 41 and 40, below this file's panel (46)
+   and handle (47). Raise them here rather than there, so the dashboard's own
+   stylesheet stays exactly as it was; the tooltip at 60 still sits on top of
+   both, as it did before.
+   ========================================================================== */
+.page-dashboard .scrim { z-index: 48; }
+.page-dashboard .drawer { z-index: 49; }
+/* belt and braces for the scrim: the controls stop responding at all while
+   the drawer is open (assets/js/site.js sets the class and tabindex) */
+.drawer-blocks-menu .navhandle,
+.drawer-blocks-menu .navbtn,
+.drawer-blocks-menu .navpanel { pointer-events: none; }
+
+/* ---------- motion / contrast preferences --------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html:has(.site-page) { scroll-behavior: auto; }
+  .site-page *, .site-page *::before, .site-page *::after,
+  .navhandle, .navpanel, .navscrim, .pagesections a, .navpanel li a {
+    transition-duration: 1ms !important; animation-duration: 1ms !important; transition-delay: 0s !important;
+  }
+  .linkcard:hover { translate: none; }
+}
+@media (forced-colors: active) {
+  .site-ground { display: none; }
+  .pagebar, .card, .navpanel, .navhandle { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}

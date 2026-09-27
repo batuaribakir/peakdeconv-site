@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Project — Peak Deconvolution</title>
+<meta name="description" content="Outline of the Peak Deconvolution project: the problem, the six work packages, the fifteen-week schedule and the scope.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..400&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap">
+<link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/site.css">
+<script>document.documentElement.classList.replace("no-js", "js");</script>
+</head>
+<body class="site-page">
+
+<div class="site-ground" aria-hidden="true"></div>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<button class="navhandle" type="button" data-nav-toggle aria-expanded="false" aria-controls="navpanel">
+  <span class="navhandle-grip" aria-hidden="true"><i></i><i></i><i></i></span>
+  <span class="navhandle-label">Menu</span>
+</button>
+
+<div class="navpanel" id="navpanel">
+  <div class="navpanel-head">
+    <a class="navpanel-brand" href="../">
+      <svg viewBox="0 0 26 26" aria-hidden="true"><path d="M2 20 C6 20 7 8 10 8 S13 18 15 17 S18 5 21 5 S23 16 24 20" fill="none" stroke="#1a2028" stroke-width="1.6" stroke-linecap="round"/><path d="M2 20 C6 20 7 11 10 11 S13 20 14 20" fill="none" stroke="#009289" stroke-width="1.2" stroke-linecap="round" opacity=".8"/><path d="M12 20 C16 20 18 8 21 8 S23.5 19 24 20" fill="none" stroke="#726dc4" stroke-width="1.2" stroke-linecap="round" opacity=".8"/></svg>
+      <span><strong>Peak Deconvolution</strong><span>Team 1 &middot; Deep Learning</span></span>
+    </a>
+    <button class="navpanel-close" type="button" aria-label="Close menu"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+  </div>
+  <nav aria-label="Site">
+    <div class="navpanel-eyebrow">Go to</div>
+    <ul>
+        <li><a href="../">Home <small>the project in short</small></a></li>
+        <li><a href="../dashboard/">Dashboard <small>live plan and tracker</small></a></li>
+        <li><a href="../presentations/">Presentations <small>weeks and materials</small></a></li>
+        <li><a href="../project/" aria-current="page">Project <small>outline and scope</small></a></li>
+        <li><a href="../team/">Team <small>members and roles</small></a></li>
+        <li><a href="../resources/">Resources <small>repository and data</small></a></li>
+    </ul>
+  </nav>
+  <p class="navpanel-foot">ENG401/402 &middot; site shell in progress</p>
+</div>
+
+<div class="navscrim" aria-hidden="true"></div>
+
+<header class="pagebar">
+  <button class="navbtn" type="button" data-nav-toggle aria-expanded="false" aria-controls="navpanel">
+    <span class="navbtn-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span>Menu</span>
+  </button>
+  <a class="pagebrand" href="../"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M2 20 C6 20 7 8 10 8 S13 18 15 17 S18 5 21 5 S23 16 24 20" fill="none" stroke="#1a2028" stroke-width="1.6" stroke-linecap="round"/><path d="M2 20 C6 20 7 11 10 11 S13 20 14 20" fill="none" stroke="#009289" stroke-width="1.2" stroke-linecap="round" opacity=".8"/><path d="M12 20 C16 20 18 8 21 8 S23.5 19 24 20" fill="none" stroke="#726dc4" stroke-width="1.2" stroke-linecap="round" opacity=".8"/></svg><span>Peak Deconvolution</span></a>
+  <nav class="pagesections" aria-label="On this page" data-section-nav>
+    <ul>
+        <li><a href="#summary">Summary</a></li>
+        <li><a href="#packages">Packages</a></li>
+        <li><a href="#schedule">Schedule</a></li>
+        <li><a href="#scope">Scope</a></li>
+        <li><a href="#status">Status</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="site-main" id="main" tabindex="-1">
+  <section class="block first" id="summary" aria-labelledby="summary-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Project</div>
+        <h1 class="sec-title" id="summary-title">Peak deconvolution of voltammetry signals</h1>
+        <p class="sec-lede">An outline of what Team&nbsp;1 is building and how the work is divided. The week-by-week plan, with progress, is on the <a href="../dashboard/">dashboard</a>.</p>
+      </div>
+      <div class="grid two">
+        <div class="card">
+          <h3>The problem</h3>
+          <p>In square-wave voltammetry, a sample containing several analytes produces a current response in which the individual peaks overlap. Separating that combined response back into per-analyte peaks is what the project calls deconvolution.</p>
+        </div>
+        <div class="card">
+          <h3>The approach</h3>
+          <p>Team&nbsp;1 is the deep-learning track. The plan runs from acquiring local measurements and preparing existing data, through model development and adaptation, to explainability work and a web interface that serves the pipeline.</p>
+        </div>
+      </div>
+      <p class="note mt-2"><strong>No results yet.</strong> This page describes the plan. Accuracy figures, comparisons and conclusions will only appear once the corresponding work packages have actually been run.</p>
+    </div>
+  </section>
+
+  <section class="block" id="packages" aria-labelledby="packages-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Structure</div>
+        <h2 class="sec-title" id="packages-title">The six work packages</h2>
+        <p class="sec-lede">Package titles, spans, planned final weeks and subtask names as they stand in the project workbook. Statuses are tracked in the dashboard's task tracker, not here.</p>
+      </div>
+      <div class="grid three">
+        <div class="card" data-wp="WP1">
+          <h3><span class="wp-code">WP1</span> Local Dataset Acquisition</h3>
+          <p class="wp-span">Weeks 2&ndash;6 &middot; planned final week 6 &middot; 4 subtasks</p>
+          <ul class="bullets mt-1">
+            <li>Experimental design and dataset specification</li>
+            <li>Solution and experimental condition preparation</li>
+            <li>Voltammetric measurements</li>
+            <li>Measurement quality control, labelling and dataset organisation</li>
+          </ul>
+        </div>
+        <div class="card" data-wp="WP2">
+          <h3><span class="wp-code">WP2</span> Existing Dataset Preparation and Preprocessing</h3>
+          <p class="wp-span">Weeks 2&ndash;3 &middot; planned final week 3 &middot; 3 subtasks</p>
+          <ul class="bullets mt-1">
+            <li>Data, analyte information and target label review</li>
+            <li>Training, validation and test split definition</li>
+            <li>Preprocessing pipeline preparation and validation</li>
+          </ul>
+        </div>
+        <div class="card" data-wp="WP3">
+          <h3><span class="wp-code">WP3</span> Model Development and Evaluation</h3>
+          <p class="wp-span">Weeks 2&ndash;7 &middot; planned final week 7 &middot; 4 subtasks</p>
+          <ul class="bullets mt-1">
+            <li>Analyte presence detection</li>
+            <li>Quantification &mdash; concentration classification</li>
+            <li>Quantification &mdash; concentration regression</li>
+            <li>Model comparison and pipeline finalisation</li>
+          </ul>
+        </div>
+        <div class="card" data-wp="WP4">
+          <h3><span class="wp-code">WP4</span> Model Adaptation and Evaluation on Local Data</h3>
+          <p class="wp-span">Weeks 6&ndash;14 &middot; planned final week 14 &middot; 5 subtasks</p>
+          <ul class="bullets mt-1">
+            <li>New-data preparation, splitting and preprocessing</li>
+            <li>Detection pipeline adaptation and retraining</li>
+            <li>Quantification &mdash; classification pipeline adaptation and retraining</li>
+            <li>Quantification &mdash; regression pipeline adaptation and retraining</li>
+            <li>Result evaluation and comparison</li>
+          </ul>
+        </div>
+        <div class="card" data-wp="WP5">
+          <h3><span class="wp-code">WP5</span> Explainable AI (XAI)</h3>
+          <p class="wp-span">Weeks 3&ndash;15 &middot; planned final week 15 &middot; 3 subtasks</p>
+          <ul class="bullets mt-1">
+            <li>XAI method selection and setup</li>
+            <li>Explanation runs on project models</li>
+            <li>Explanation faithfulness and stability testing</li>
+          </ul>
+        </div>
+        <div class="card" data-wp="WP6">
+          <h3><span class="wp-code">WP6</span> Web Interface Development and Integration</h3>
+          <p class="wp-span">Weeks 2&ndash;15 &middot; planned final week 15 &middot; 4 subtasks</p>
+          <ul class="bullets mt-1">
+            <li>Web interface design and data upload</li>
+            <li>Pipeline integration and result visualisation</li>
+            <li>Chatbot integration (result queries)</li>
+            <li>End-to-end testing and documentation</li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-2"><p class="note"><strong>Copied by hand.</strong> The package spans, final weeks and subtask names above are a snapshot of <code>dashboard/data/project-data.js</code>, last checked on 27 September 2026. Unlike the <a href="../dashboard/">dashboard</a>, this page does not read the workbook, so it can fall behind after the workbook is re-extracted. Run <code>python3 tools/check-schedule-snapshot.py</code> from the repository root to compare these pages against the current data, then update whatever it reports.</p></div>
+    </div>
+  </section>
+
+  <section class="block" id="schedule" aria-labelledby="schedule-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Schedule</div>
+        <h2 class="sec-title" id="schedule-title">Fifteen weeks</h2>
+      </div>
+      <div class="card">
+        <dl class="deflist">
+          <div><dt>Duration</dt><dd>15 project weeks.</dd></div>
+          <div><dt>Midterm</dt><dd>Week&nbsp;8.</dd></div>
+          <div><dt>Presentations</dt><dd>Weeks 3, 5, 7, 10, 12 and 14 &mdash; see <a href="../presentations/">Presentations</a>.</dd></div>
+          <div><dt>Subtasks</dt><dd>23 across the six packages.</dd></div>
+          <div><dt>Full plan</dt><dd>The <a href="../dashboard/#schedule">Gantt chart</a> shows every subtask on the week grid, including fixed delivery weeks. It is generated at load time, so it is always current.</dd></div>
+        </dl>
+        <span class="snap">Snapshot &middot; checked 27 September 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="scope" aria-labelledby="scope-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Scope</div>
+        <h2 class="sec-title" id="scope-title">What is and is not in the plan</h2>
+      </div>
+      <div class="grid two">
+        <div class="card">
+          <h3>Planned</h3>
+          <ul class="bullets">
+            <li>Local dataset acquisition alongside preparation of an existing dataset.</li>
+            <li>Detection and quantification models, with quantification approached both as classification and as regression.</li>
+            <li>Adaptation and retraining of those pipelines on the locally acquired data.</li>
+            <li>Explainability work, including faithfulness and stability testing of the explanations.</li>
+            <li>A web interface with data upload, result visualisation and end-to-end documentation.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Bounded on purpose</h3>
+          <ul class="bullets">
+            <li>The chatbot is a single subtask, WP6.3, limited to queries about results.</li>
+            <li>Fixed delivery weeks in the schedule cannot be moved; the earlier weeks of a task can be rearranged around them.</li>
+            <li>This site covers Team&nbsp;1's deep-learning track only.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="status" aria-labelledby="status-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Status</div>
+        <h2 class="sec-title" id="status-title">Where this page stands <span class="prov">Provisional</span></h2>
+      </div>
+      <div class="card">
+        <p>The structure, spans and subtask names above were transcribed from the project workbook on 27 September 2026. The prose framing them is a first pass and will be rewritten as the packages are worked through.</p>
+        <p>Live progress against this plan is the dashboard's job: open the <a href="../dashboard/#tasks">task tracker</a> for per-subtask status, or the <a href="../dashboard/#analytics">analytics</a> for workload by week and package.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <footer class="site-foot">
+    <div class="wrap"><div class="site-foot-in">
+      <span>Peak Deconvolution &middot; Team 1 &middot; Deep Learning track &middot; ENG401/402</span>
+      <span>Site shell in progress &middot; <a href="../dashboard/">Project dashboard</a></span>
+    </div></div>
+  </footer>
+</main>
+
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>
