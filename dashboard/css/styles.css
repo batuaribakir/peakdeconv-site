@@ -77,10 +77,6 @@
   --page-max: 1280px;
   --gutter: clamp(16px, 4vw, 48px);
   --nav-h: 56px;
-  /* The global site bar (assets/css/site.css) sets --site-h. It is 0 if this
-     stylesheet is ever used on its own, so the dashboard still lays out. */
-  --nav-top: calc(env(safe-area-inset-top, 0px) + var(--site-h, 0px) + 10px);
-  --nav-bottom: calc(var(--nav-top) + var(--nav-h));
   --g-label: 372px;
   --g-week: minmax(46px, 1fr);
 
@@ -92,7 +88,7 @@
 
 /* ---------- base ---------------------------------------------------------- */
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-bottom) + 18px); }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 28px); }
 body {
   margin: 0;
   background: var(--ground);
@@ -150,7 +146,7 @@ button { cursor: pointer; }
 /* ---------- top navigation -------------------------------------------------- */
 .topnav {
   position: fixed; z-index: 20; left: 50%; transform: translateX(-50%);
-  top: var(--nav-top);
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
   width: min(calc(100% - 2 * var(--gutter)), 1100px);
   height: var(--nav-h);
   display: flex; align-items: center; gap: var(--s4);
@@ -158,6 +154,9 @@ button { cursor: pointer; }
   border-radius: 999px;
   --glass: rgba(255, 255, 255, 0.62);
 }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); white-space: nowrap; }
+.brand-mark { width: 26px; height: 26px; flex: none; }
+.brand-name { font-family: var(--f-display); font-size: 1.02rem; font-weight: 500; letter-spacing: -0.01em; }
 .nav-links {
   position: relative; display: flex; align-items: center; gap: 2px; margin: 0 auto;
   list-style: none; padding: 0;
@@ -204,7 +203,7 @@ section.block { padding-block: var(--s8) 0; }
 .reveal.pre { opacity: 0; transform: translateY(18px); }
 
 /* ---------- hero -------------------------------------------------------------- */
-section.block.hero { padding-top: calc(var(--nav-bottom) + var(--s7) + var(--s2)); }
+section.block.hero { padding-top: calc(var(--nav-h) + 12px + var(--s7) + var(--s2)); }
 .hero-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: var(--s7); align-items: end; }
 .hero-tags { display: flex; flex-wrap: wrap; gap: var(--s2); margin-bottom: var(--s5); }
 .tag {
@@ -315,7 +314,7 @@ section.block.hero { padding-top: calc(var(--nav-bottom) + var(--s7) + var(--s2)
 .gantt-scroll { position: relative; }
 .gantt { --g-cols: var(--g-label) repeat(15, var(--g-week)); position: relative; min-width: 1040px; padding-bottom: var(--s4); }
 .g-head {
-  position: sticky; top: calc(var(--nav-bottom) + 10px); z-index: 6;
+  position: sticky; top: calc(var(--nav-h) + 12px + env(safe-area-inset-top, 0px)); z-index: 6;
   display: grid; grid-template-columns: var(--g-cols);
   background: rgba(246, 245, 241, 0.86);
   -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
@@ -532,7 +531,7 @@ section.block.hero { padding-top: calc(var(--nav-bottom) + var(--s7) + var(--s2)
 
 .ttable { width: 100%; border-collapse: collapse; font-size: var(--t-s); }
 .ttable th {
-  position: sticky; top: calc(var(--nav-bottom) + 10px); z-index: 2; text-align: left; font-weight: 500; font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3);
+  position: sticky; top: calc(var(--nav-h) + 12px); z-index: 2; text-align: left; font-weight: 500; font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3);
   padding: 10px var(--s3); background: rgba(246, 245, 241, 0.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
 }
 .ttable th:first-child, .ttable td:first-child { padding-left: var(--s5); }
@@ -783,6 +782,7 @@ footer.foot .foot-in { display: flex; flex-wrap: wrap; justify-content: space-be
   .wpm:last-of-type { border-bottom: 0; }
   .member { border-right: 0 !important; border-bottom: 1px solid var(--line-soft); }
   .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-inline: var(--s4); }
+  .brand-name { display: none; }
   .section-gap { padding-block: var(--s7) 0; }
 }
 

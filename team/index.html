@@ -18,37 +18,50 @@
 
 <a class="skip-link" href="#main">Skip to main content</a>
 
-<header class="sitebar">
-  <div class="sitebar-in">
-    <a class="sitebrand" href="../">
-      <svg class="sitebrand-mark" viewBox="0 0 26 26" aria-hidden="true"><path d="M2 20 C6 20 7 8 10 8 S13 18 15 17 S18 5 21 5 S23 16 24 20" fill="none" stroke="#1a2028" stroke-width="1.6" stroke-linecap="round"/><path d="M2 20 C6 20 7 11 10 11 S13 20 14 20" fill="none" stroke="#009289" stroke-width="1.2" stroke-linecap="round" opacity=".8"/><path d="M12 20 C16 20 18 8 21 8 S23.5 19 24 20" fill="none" stroke="#726dc4" stroke-width="1.2" stroke-linecap="round" opacity=".8"/></svg>
-      <span class="sitebrand-text"><strong>Peak Deconvolution</strong><span>Team 1 &middot; Deep Learning</span></span>
-    </a>
-    <button class="sitenav-toggle" id="sitenav-toggle" type="button" aria-expanded="false" aria-controls="sitenav-menu">
-      <span class="sitenav-bars" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span>Menu</span>
-    </button>
-    <nav class="sitenav" id="sitenav-menu" aria-label="Site">
-      <ul>
-        <li><a href="../">Home</a></li>
-        <li><a href="../dashboard/">Dashboard</a></li>
-        <li><a href="../presentations/">Presentations</a></li>
-        <li><a href="../project/">Project</a></li>
-        <li><a href="../team/" aria-current="page">Team</a></li>
-        <li><a href="../resources/">Resources</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
+<button class="navhandle" type="button" data-nav-toggle aria-expanded="false" aria-controls="navpanel">
+  <span class="navhandle-grip" aria-hidden="true"><i></i><i></i><i></i></span>
+  <span class="navhandle-label">Menu</span>
+</button>
 
-<nav class="sectionbar" id="sectionbar" aria-label="On this page" data-section-nav>
-  <ul>
-    <li><a href="#members">Members</a></li>
-    <li><a href="#roles">Roles</a></li>
-    <li><a href="#working">Ways of working</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-</nav>
+<div class="navpanel" id="navpanel">
+  <div class="navpanel-head">
+    <a class="navpanel-brand" href="../">
+      <svg viewBox="0 0 26 26" aria-hidden="true"><path d="M2 20 C6 20 7 8 10 8 S13 18 15 17 S18 5 21 5 S23 16 24 20" fill="none" stroke="#1a2028" stroke-width="1.6" stroke-linecap="round"/><path d="M2 20 C6 20 7 11 10 11 S13 20 14 20" fill="none" stroke="#009289" stroke-width="1.2" stroke-linecap="round" opacity=".8"/><path d="M12 20 C16 20 18 8 21 8 S23.5 19 24 20" fill="none" stroke="#726dc4" stroke-width="1.2" stroke-linecap="round" opacity=".8"/></svg>
+      <span><strong>Peak Deconvolution</strong><span>Team 1 &middot; Deep Learning</span></span>
+    </a>
+    <button class="navpanel-close" type="button" aria-label="Close menu"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+  </div>
+  <nav aria-label="Site">
+    <div class="navpanel-eyebrow">Go to</div>
+    <ul>
+        <li><a href="../">Home <small>the project in short</small></a></li>
+        <li><a href="../dashboard/">Dashboard <small>live plan and tracker</small></a></li>
+        <li><a href="../presentations/">Presentations <small>weeks and materials</small></a></li>
+        <li><a href="../project/">Project <small>outline and scope</small></a></li>
+        <li><a href="../team/" aria-current="page">Team <small>members and roles</small></a></li>
+        <li><a href="../resources/">Resources <small>repository and data</small></a></li>
+    </ul>
+  </nav>
+  <p class="navpanel-foot">ENG401/402 &middot; site shell in progress</p>
+</div>
+
+<div class="navscrim" aria-hidden="true"></div>
+
+<header class="pagebar">
+  <button class="navbtn" type="button" data-nav-toggle aria-expanded="false" aria-controls="navpanel">
+    <span class="navbtn-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span>Menu</span>
+  </button>
+  <a class="pagebrand" href="../"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M2 20 C6 20 7 8 10 8 S13 18 15 17 S18 5 21 5 S23 16 24 20" fill="none" stroke="#1a2028" stroke-width="1.6" stroke-linecap="round"/><path d="M2 20 C6 20 7 11 10 11 S13 20 14 20" fill="none" stroke="#009289" stroke-width="1.2" stroke-linecap="round" opacity=".8"/><path d="M12 20 C16 20 18 8 21 8 S23.5 19 24 20" fill="none" stroke="#726dc4" stroke-width="1.2" stroke-linecap="round" opacity=".8"/></svg><span>Peak Deconvolution</span></a>
+  <nav class="pagesections" aria-label="On this page" data-section-nav>
+    <ul>
+        <li><a href="#members">Members</a></li>
+        <li><a href="#roles">Roles</a></li>
+        <li><a href="#working">Ways of working</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
 
 <main class="site-main" id="main" tabindex="-1">
   <section class="block first" id="members" aria-labelledby="members-title">
@@ -94,7 +107,7 @@
           <div><dt>EEE lead</dt><dd>EEE primary, BME support.</dd></div>
           <div><dt>BME + EEE</dt><dd>Shared &mdash; neither side leads.</dd></div>
         </dl>
-        <p class="note mt-2">Per-member subtask counts and lead task-weeks are computed live in the dashboard's <a href="../dashboard/#team">Team</a> section, so they stay correct as the plan changes. They are deliberately not copied here.</p>
+        <p class="note mt-2">Per-member subtask counts and lead task-weeks are computed at load time in the dashboard's <a href="../dashboard/#team">Team</a> section, so they stay correct as the plan changes. They are deliberately not copied here.</p>
       </div>
     </div>
   </section>
