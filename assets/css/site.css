@@ -1,0 +1,366 @@
+/* ==========================================================================
+   Peak Deconvolution — site shell
+   Shared chrome for every page: skip link, global site bar, section bar,
+   and the light page shell used by the non-dashboard pages.
+
+   Loaded by:
+     /index.html, /presentations/, /project/, /team/, /resources/
+       -> shell + chrome (this file carries the whole design)
+     /dashboard/index.html
+       -> chrome only; the dashboard keeps css/styles.css + css/depth.css.
+          Everything page-level here is scoped to .site-page, which the
+          dashboard body does not carry.
+
+   The one token this file hands to the dashboard is --site-h, the height of
+   the global bar. dashboard/css/styles.css offsets its own floating section
+   pill, sticky table heads and hero padding from it.
+   ========================================================================== */
+
+:root {
+  /* height of the global bar — read by dashboard/css/styles.css */
+  --site-h: 54px;
+
+  /* ground + ink (same family as the dashboard, prefixed so the two
+     stylesheets can never collide when both are loaded) */
+  --s-ground: #f3f1eb;
+  --s-ink: #1a2028;
+  --s-ink-2: #4b5560;
+  --s-ink-3: #626c76;
+  --s-line: rgba(26, 32, 40, 0.11);
+  --s-line-soft: rgba(26, 32, 40, 0.065);
+
+  --s-teal: #009289;
+  --s-blue: #00578c;
+  --s-violet: #726dc4;
+  --s-plum: #772f6f;
+  --s-gold: #946200;
+  --s-rose: #c2466f;
+  --s-amber: #c98a1b;
+  --s-amber-ink: #8a5a00;
+  --s-amber-tint: #f7ead0;
+  --s-midterm: #1f2b38;
+
+  --s-glass: rgba(255, 255, 255, 0.58);
+  --s-glass-strong: rgba(255, 255, 255, 0.8);
+  --s-glass-border: rgba(26, 32, 40, 0.08);
+  --s-glass-edge: rgba(255, 255, 255, 0.75);
+
+  --s-f-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --s-f-ui: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --s-f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  --s-r-s: 8px;
+  --s-r-m: 12px;
+  --s-r-l: 18px;
+
+  --s-gutter: clamp(16px, 4vw, 48px);
+  --s-page-max: 1180px;
+  --s-bar-h: 44px;               /* section bar height */
+  --s-ease: cubic-bezier(0.22, 0.8, 0.24, 1);
+}
+
+/* ---------- skip link (every page) ---------------------------------------- */
+.skip-link {
+  position: fixed; z-index: 100; top: 8px; left: 8px;
+  padding: 10px 16px; border-radius: 999px;
+  background: #fff; color: var(--s-ink); font-family: var(--s-f-ui); font-size: 0.8125rem; font-weight: 600;
+  text-decoration: none; box-shadow: 0 8px 24px -10px rgba(31, 43, 56, 0.5), 0 0 0 1px rgba(26, 32, 40, 0.1);
+  transform: translateY(calc(-100% - 16px));
+}
+.skip-link:focus, .skip-link:focus-visible { transform: none; }
+
+/* ==========================================================================
+   Global site bar — present on every page, including the dashboard
+   ========================================================================== */
+.sitebar {
+  position: fixed; z-index: 30; inset: 0 0 auto 0;
+  padding-top: env(safe-area-inset-top, 0px);
+  background: rgba(252, 251, 248, 0.82);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  backdrop-filter: blur(16px) saturate(1.2);
+  border-bottom: 1px solid var(--s-line-soft);
+  font-family: var(--s-f-ui);
+}
+.sitebar-in {
+  width: min(100%, var(--s-page-max)); margin: 0 auto;
+  height: var(--site-h); padding-inline: var(--s-gutter);
+  display: flex; align-items: center; gap: 16px;
+}
+
+.sitebrand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--s-ink); margin-right: auto; }
+.sitebrand-mark { width: 24px; height: 24px; flex: none; }
+.sitebrand-text { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.sitebrand-text strong { font-family: var(--s-f-display); font-size: 1rem; font-weight: 500; letter-spacing: -0.01em; }
+.sitebrand-text span { font-family: var(--s-f-mono); font-size: 0.62rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--s-ink-3); }
+
+/* the disclosure button. Hidden at wide widths, where the links are already
+   visible. It is a real button so touch and keyboard both reach it. */
+.sitenav-toggle {
+  display: none; align-items: center; gap: 9px;
+  height: 36px; padding: 0 14px 0 11px; border-radius: 999px;
+  border: 1px solid var(--s-line); background: rgba(255, 255, 255, 0.7);
+  color: var(--s-ink); font-size: 0.8125rem; font-weight: 500; font-family: inherit; cursor: pointer;
+}
+.sitenav-toggle:hover { background: #fff; }
+.sitenav-bars { display: grid; gap: 3px; width: 15px; }
+.sitenav-bars i { display: block; height: 1.6px; border-radius: 2px; background: currentColor; transition: transform 200ms var(--s-ease), opacity 160ms; }
+.sitenav-toggle[aria-expanded="true"] .sitenav-bars i:nth-child(1) { transform: translateY(4.6px) rotate(45deg); }
+.sitenav-toggle[aria-expanded="true"] .sitenav-bars i:nth-child(2) { opacity: 0; }
+.sitenav-toggle[aria-expanded="true"] .sitenav-bars i:nth-child(3) { transform: translateY(-4.6px) rotate(-45deg); }
+
+.sitenav ul { display: flex; align-items: center; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.sitenav a {
+  display: block; padding: 7px 12px; border-radius: 999px;
+  font-size: 0.8125rem; font-weight: 500; color: var(--s-ink-2); text-decoration: none;
+  transition: color 160ms var(--s-ease), background-color 160ms var(--s-ease);
+}
+.sitenav a:hover { color: var(--s-ink); background: rgba(26, 32, 40, 0.05); }
+.sitenav a[aria-current="page"] { color: var(--s-ink); background: rgba(26, 32, 40, 0.075); font-weight: 600; }
+
+/* Collapsed menu is a JS enhancement: without JS the links stay in the bar
+   and simply wrap, so navigation never depends on the script. */
+.js .sitenav-toggle { display: none; }
+@media (max-width: 880px) {
+  .js .sitenav-toggle { display: inline-flex; }
+  .js .sitenav {
+    position: absolute; left: 0; right: 0; top: 100%;
+    padding: 8px var(--s-gutter) 16px;
+    background: #fbfaf7;
+    border-bottom: 1px solid var(--s-line);
+    box-shadow: 0 18px 40px -26px rgba(31, 43, 56, 0.55);
+  }
+  .js .sitenav[hidden] { display: none; }
+  .js .sitenav ul { display: grid; gap: 2px; width: min(100%, var(--s-page-max)); margin: 0 auto; }
+  .js .sitenav a { padding: 11px 12px; font-size: 0.9375rem; border-radius: var(--s-r-m); }
+  .sitebar-in { gap: 10px; }
+}
+@media (max-width: 880px) { :root { --site-h: 52px; } }
+@media (max-width: 420px) { .sitebrand-text span { display: none; } }
+
+/* ==========================================================================
+   Section bar — in-page links, one per page, only to IDs on that page.
+   The dashboard has its own (.topnav in dashboard/css/styles.css); this is
+   the version the other pages use.
+   ========================================================================== */
+.sectionbar {
+  position: fixed; z-index: 20; left: 50%;
+  top: calc(env(safe-area-inset-top, 0px) + var(--site-h) + 10px);
+  transform: translateX(-50%);
+  width: max-content; max-width: min(calc(100% - 2 * var(--s-gutter)), var(--s-page-max));
+  height: var(--s-bar-h); display: flex; align-items: center;
+  padding: 0 6px; border-radius: 999px;
+  background: var(--s-glass);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+  backdrop-filter: blur(18px) saturate(1.25);
+  border: 1px solid var(--s-glass-border);
+  box-shadow: inset 0 1px 0 var(--s-glass-edge), 0 1px 2px rgba(31, 43, 56, 0.05), 0 14px 40px -18px rgba(31, 43, 56, 0.14);
+  overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 12px, #000 calc(100% - 12px), transparent);
+  mask: linear-gradient(90deg, transparent, #000 12px, #000 calc(100% - 12px), transparent);
+}
+.sectionbar::-webkit-scrollbar { display: none; }
+.sectionbar ul { display: flex; align-items: center; gap: 2px; margin: 0; padding: 0 6px; list-style: none; }
+.sectionbar a {
+  display: block; padding: 6px 12px; border-radius: 999px; white-space: nowrap;
+  font-size: 0.8125rem; font-weight: 500; color: var(--s-ink-2); text-decoration: none;
+  transition: color 160ms var(--s-ease), background-color 160ms var(--s-ease);
+}
+.sectionbar a:hover { color: var(--s-ink); }
+.sectionbar a[aria-current="true"] { color: var(--s-ink); background: rgba(26, 32, 40, 0.065); }
+
+/* ==========================================================================
+   Page shell — scoped to .site-page so none of it reaches the dashboard
+   ========================================================================== */
+.site-page {
+  margin: 0;
+  color: var(--s-ink);
+  font-family: var(--s-f-ui);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  background: var(--s-ground);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+.site-page * , .site-page *::before, .site-page *::after { box-sizing: border-box; }
+.site-page h1, .site-page h2, .site-page h3, .site-page h4 { margin: 0; font-weight: 500; text-wrap: balance; }
+.site-page p, .site-page ul, .site-page ol, .site-page dl { margin: 0; }
+.site-main a { color: var(--s-blue); }
+.site-page :focus-visible { outline: 2px solid var(--s-blue); outline-offset: 2px; border-radius: 4px; }
+.site-page button { font: inherit; color: inherit; cursor: pointer; }
+.site-page [hidden] { display: none !important; }
+.site-page ::selection { background: rgba(0, 146, 137, 0.18); }
+.site-page code { font-family: var(--s-f-mono); font-size: 0.86em; padding: 1px 5px; border-radius: 4px; background: rgba(26, 32, 40, 0.05); }
+
+html:has(.site-page) { scroll-behavior: smooth; }
+.site-page .block { scroll-margin-top: calc(var(--site-h) + var(--s-bar-h) + 34px); }
+
+/* static light ground — the same family of gradients as the dashboard's
+   3D scene ground, without loading Three.js on these pages */
+.site-ground {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(1400px 900px at 80% -10%, #ffffff 0%, rgba(255, 255, 255, 0) 60%),
+    radial-gradient(1200px 800px at 6% 108%, #ebe8f0 0%, rgba(235, 232, 240, 0) 60%),
+    linear-gradient(180deg, #f6f4ef 0%, var(--s-ground) 50%, #efece6 100%);
+}
+.site-main { position: relative; z-index: 1; }
+.site-main:focus { outline: none; }
+
+.wrap { width: min(100%, var(--s-page-max)); margin: 0 auto; padding-inline: var(--s-gutter); }
+.site-page .block { padding-block: clamp(48px, 7vw, 76px) 0; }
+.site-page .block.first { padding-top: calc(var(--site-h) + var(--s-bar-h) + clamp(40px, 7vw, 76px)); }
+
+.sec-head { margin-bottom: 24px; }
+.eyebrow {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+  font-family: var(--s-f-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--s-ink-3);
+}
+.eyebrow::before { content: ""; width: 18px; height: 1px; background: currentColor; opacity: 0.6; }
+.sec-title { font-family: var(--s-f-display); font-size: clamp(1.7rem, 3.2vw, 2.25rem); line-height: 1.1; letter-spacing: -0.02em; font-weight: 420; }
+.sec-lede { margin-top: 10px; max-width: 64ch; color: var(--s-ink-2); }
+
+/* ---------- glass card ---------------------------------------------------- */
+.card {
+  position: relative;
+  background: var(--s-glass);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+  backdrop-filter: blur(18px) saturate(1.25);
+  border: 1px solid var(--s-glass-border);
+  border-radius: var(--s-r-l);
+  box-shadow: inset 0 1px 0 var(--s-glass-edge), 0 1px 2px rgba(31, 43, 56, 0.05), 0 14px 40px -18px rgba(31, 43, 56, 0.14);
+  padding: clamp(20px, 3vw, 28px);
+}
+.card h3 { font-family: var(--s-f-display); font-size: 1.125rem; font-weight: 480; letter-spacing: -0.01em; }
+.card > * + * { margin-top: 10px; }
+
+.grid { display: grid; gap: 16px; }
+.grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 1000px) { .grid.three { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 740px) { .grid.two, .grid.three { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- hero ---------------------------------------------------------- */
+.site-hero-title {
+  font-family: var(--s-f-display); font-weight: 380; letter-spacing: -0.035em; line-height: 0.98;
+  font-size: clamp(2.6rem, 6vw, 4.4rem); font-variation-settings: "opsz" 144;
+}
+.site-hero-title em { font-style: italic; font-weight: 300; color: var(--s-ink-2); }
+.site-hero-desc { margin-top: 18px; max-width: 58ch; font-size: 1.0625rem; color: var(--s-ink-2); }
+
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px;
+  font-size: 0.72rem; font-weight: 500; letter-spacing: 0.02em; color: var(--s-ink-2);
+  background: rgba(255, 255, 255, 0.4); border: 1px solid var(--s-line);
+}
+.tag .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--s-teal); }
+.tag.mono { font-family: var(--s-f-mono); color: var(--s-ink); border-color: rgba(26, 32, 40, 0.28); background: rgba(255, 255, 255, 0.6); }
+
+/* provisional marker — used wherever the content is a placeholder */
+.prov {
+  display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: 999px;
+  font-family: var(--s-f-mono); font-size: 0.64rem; letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--s-amber-ink); background: var(--s-amber-tint); border: 1px solid rgba(201, 138, 27, 0.35);
+  white-space: nowrap;
+}
+.note {
+  padding: 14px 18px; border-radius: var(--s-r-m);
+  background: rgba(255, 255, 255, 0.52); border: 1px solid var(--s-line-soft);
+  border-left: 3px solid var(--s-amber);
+  font-size: 0.8438rem; color: var(--s-ink-2); max-width: 74ch;
+}
+.note strong { color: var(--s-ink); font-weight: 600; }
+.note + .note { margin-top: 10px; }
+
+/* small spacing utilities */
+.mt-1 { margin-top: 12px; } .mt-2 { margin-top: 20px; } .mt-3 { margin-top: 30px; }
+
+/* ---------- link cards ---------------------------------------------------- */
+.linkcard { display: block; text-decoration: none; color: inherit; transition: transform 200ms var(--s-ease), box-shadow 200ms var(--s-ease); }
+.linkcard:hover { transform: translateY(-2px); box-shadow: inset 0 1px 0 var(--s-glass-edge), 0 20px 46px -20px rgba(31, 43, 56, 0.26); }
+.go { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8125rem; font-weight: 600; color: var(--s-blue); }
+.go svg { width: 14px; height: 14px; flex: none; }
+
+/* ---------- lists --------------------------------------------------------- */
+.deflist { display: grid; gap: 0; }
+.deflist > div { display: grid; grid-template-columns: 116px minmax(0, 1fr); gap: 8px 18px; padding: 12px 0; border-top: 1px solid var(--s-line-soft); }
+.deflist > div:first-child { border-top: 0; }
+.deflist dt { font-family: var(--s-f-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--s-ink-3); padding-top: 2px; }
+.deflist dd { margin: 0; }
+@media (max-width: 560px) { .deflist > div { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
+.bullets { padding-left: 1.1em; color: var(--s-ink-2); }
+.bullets li + li { margin-top: 6px; }
+
+/* ---------- work-package rows --------------------------------------------- */
+.wp-list { display: grid; }
+.wp-row { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; gap: 6px 16px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--s-line-soft); }
+.wp-row:first-child { border-top: 0; }
+.wp-code { font-family: var(--s-f-mono); font-size: 0.8125rem; font-weight: 600; color: var(--wpc, var(--s-ink-2)); }
+.wp-name { font-weight: 500; }
+.wp-span { font-family: var(--s-f-mono); font-size: 0.72rem; color: var(--s-ink-3); white-space: nowrap; }
+.wp-sub { grid-column: 2 / -1; font-size: 0.8125rem; color: var(--s-ink-3); }
+[data-wp="WP1"] { --wpc: #00756e; } [data-wp="WP2"] { --wpc: #00578c; } [data-wp="WP3"] { --wpc: #5d58ad; }
+[data-wp="WP4"] { --wpc: #772f6f; } [data-wp="WP5"] { --wpc: #805300; } [data-wp="WP6"] { --wpc: #a3375c; }
+@media (max-width: 560px) { .wp-row { grid-template-columns: 52px minmax(0, 1fr); } .wp-span { grid-column: 2; } }
+
+/* ---------- week strip (presentations) ------------------------------------ */
+.weeks { display: grid; grid-template-columns: repeat(auto-fill, minmax(136px, 1fr)); gap: 12px; }
+.week {
+  padding: 14px 16px; border-radius: var(--s-r-m);
+  background: rgba(255, 255, 255, 0.5); border: 1px solid var(--s-line-soft);
+}
+.week .wk { font-family: var(--s-f-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--s-ink-3); }
+.week .what { margin-top: 4px; font-weight: 500; }
+.week .tbc { margin-top: 6px; font-size: 0.78rem; color: var(--s-ink-3); }
+.week.is-pres { border-left: 3px solid var(--s-amber); }
+.week.is-mid { border-left: 3px solid var(--s-midterm); background: rgba(255, 255, 255, 0.72); }
+
+/* ---------- people -------------------------------------------------------- */
+.people { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+.person { display: flex; gap: 14px; align-items: flex-start; }
+.monogram {
+  flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72); border: 1px solid var(--s-line);
+  font-family: var(--s-f-mono); font-size: 0.8125rem; font-weight: 600; color: var(--s-ink-2);
+}
+.person .dept { font-family: var(--s-f-mono); font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--s-ink-3); }
+.person .name { font-family: var(--s-f-display); font-size: 1.05rem; font-weight: 480; }
+.person .role { font-size: 0.8125rem; color: var(--s-ink-2); margin-top: 3px; }
+
+/* ---------- footer -------------------------------------------------------- */
+.site-foot { margin-top: clamp(56px, 8vw, 96px); border-top: 1px solid var(--s-line-soft); padding-block: 28px 40px; }
+.site-foot-in { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; font-size: 0.78rem; color: var(--s-ink-3); }
+.site-foot-in a { color: var(--s-ink-2); }
+
+/* ---------- motion / contrast preferences --------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html:has(.site-page) { scroll-behavior: auto; }
+  .site-page *, .site-page *::before, .site-page *::after,
+  .sitenav-bars i, .sitenav a, .sectionbar a, .linkcard {
+    transition-duration: 1ms !important; animation-duration: 1ms !important;
+  }
+  .linkcard:hover { transform: none; }
+}
+@media (forced-colors: active) {
+  .site-ground { display: none; }
+  .sitebar, .sectionbar, .card { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+
+/* ==========================================================================
+   Dashboard integration
+   dashboard/index.html keeps its own floating section pill (.topnav). These
+   are the only rules this file applies to that page: the brand moved up into
+   the global bar, so the pill centres its links instead.
+   ========================================================================== */
+.page-dashboard .topnav > nav { margin-inline: auto; }
+@media (max-width: 960px) { .page-dashboard .topnav > nav { margin-inline: 0; } }
+
+/* ---------- home hero layout ---------------------------------------------- */
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: clamp(28px, 4vw, 56px); align-items: end; }
+.hero-facts { align-self: end; }
+.glance-title { font-family: var(--s-f-display); font-size: 1.125rem; font-weight: 480; letter-spacing: -0.01em; margin-bottom: 4px; }
+.hero-facts .deflist > div { grid-template-columns: 116px minmax(0, 1fr); }
+a.go { text-decoration: none; }
+a.go:hover { text-decoration: underline; }
+@media (max-width: 900px) { .hero-grid { grid-template-columns: minmax(0, 1fr); align-items: start; } }

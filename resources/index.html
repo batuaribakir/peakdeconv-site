@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resources — Peak Deconvolution</title>
+<meta name="description" content="Repository, data sources, tooling and reading material for the Peak Deconvolution project site.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..400&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap">
+<link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/site.css">
+<script>document.documentElement.classList.replace("no-js", "js");</script>
+</head>
+<body class="site-page">
+
+<div class="site-ground" aria-hidden="true"></div>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="sitebar">
+  <div class="sitebar-in">
+    <a class="sitebrand" href="../">
+      <svg class="sitebrand-mark" viewBox="0 0 26 26" aria-hidden="true"><path d="M2 20 C6 20 7 8 10 8 S13 18 15 17 S18 5 21 5 S23 16 24 20" fill="none" stroke="#1a2028" stroke-width="1.6" stroke-linecap="round"/><path d="M2 20 C6 20 7 11 10 11 S13 20 14 20" fill="none" stroke="#009289" stroke-width="1.2" stroke-linecap="round" opacity=".8"/><path d="M12 20 C16 20 18 8 21 8 S23.5 19 24 20" fill="none" stroke="#726dc4" stroke-width="1.2" stroke-linecap="round" opacity=".8"/></svg>
+      <span class="sitebrand-text"><strong>Peak Deconvolution</strong><span>Team 1 &middot; Deep Learning</span></span>
+    </a>
+    <button class="sitenav-toggle" id="sitenav-toggle" type="button" aria-expanded="false" aria-controls="sitenav-menu">
+      <span class="sitenav-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>Menu</span>
+    </button>
+    <nav class="sitenav" id="sitenav-menu" aria-label="Site">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="../dashboard/">Dashboard</a></li>
+        <li><a href="../presentations/">Presentations</a></li>
+        <li><a href="../project/">Project</a></li>
+        <li><a href="../team/">Team</a></li>
+        <li><a href="../resources/" aria-current="page">Resources</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<nav class="sectionbar" id="sectionbar" aria-label="On this page" data-section-nav>
+  <ul>
+    <li><a href="#repository">Repository</a></li>
+    <li><a href="#data">Data</a></li>
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#reading">Reading</a></li>
+  </ul>
+</nav>
+
+<main class="site-main" id="main" tabindex="-1">
+  <section class="block first" id="repository" aria-labelledby="repository-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Resources</div>
+        <h1 class="sec-title" id="repository-title">Repository and site</h1>
+        <p class="sec-lede">Where this site lives and how it is put together.</p>
+      </div>
+      <div class="card">
+        <dl class="deflist">
+          <div><dt>Repository</dt><dd><a href="https://github.com/batuaribakir/peakdeconv-site">github.com/batuaribakir/peakdeconv-site</a></dd></div>
+          <div><dt>Structure</dt><dd>A static multi-page site at the repository root, with the dashboard kept intact in <code>dashboard/</code>.</dd></div>
+          <div><dt>Running it</dt><dd>Serve the repository root over HTTP and open <code>/</code>. The README has the exact command.</dd></div>
+          <div><dt>Deployment</dt><dd>Not deployed yet. <span class="prov">Provisional</span></dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="data" aria-labelledby="data-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Data</div>
+        <h2 class="sec-title" id="data-title">Where the schedule comes from</h2>
+        <p class="sec-lede">Every week, span, owner and milestone shown on this site traces back to one workbook. Nothing in the schedule is typed in by hand.</p>
+      </div>
+      <div class="card">
+        <dl class="deflist">
+          <div><dt>Source</dt><dd><code>PeakDeconv_Gantt_Chart.xlsx</code>, sheets <em>Task overview</em> and <em>Team&nbsp;1 &middot; DL</em>.</dd></div>
+          <div><dt>Generated</dt><dd><code>dashboard/data/project-data.js</code>, produced by <code>dashboard/tools/extract_project_data.py</code>. It is generated output and is not edited by hand.</dd></div>
+          <div><dt>Statuses</dt><dd>Task statuses are dashboard state, not workbook data. They are saved in the browser that set them.</dd></div>
+          <div><dt>Measurement data</dt><dd>Experimental data is not part of this repository. <span class="prov">Provisional</span></dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="stack" aria-labelledby="stack-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Stack</div>
+        <h2 class="sec-title" id="stack-title">What the site is built with</h2>
+      </div>
+      <div class="grid two">
+        <div class="card">
+          <h3>The site</h3>
+          <ul class="bullets">
+            <li>Plain HTML, CSS and JavaScript. No build step and no package manager.</li>
+            <li>Classic scripts rather than modules, so the files also open from disk.</li>
+            <li>Relative links throughout, so the same files work at a local server root and under a project path once deployed.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Loaded from the network</h3>
+          <ul class="bullets">
+            <li>Google Fonts &mdash; Fraunces, Instrument Sans and IBM Plex Mono, on every page.</li>
+            <li>Three.js r134 from cdnjs, on the dashboard only, for its background scene.</li>
+          </ul>
+          <p class="note">Offline, the pages still render on the plain light ground with fallback system fonts; the dashboard simply drops its 3D scene.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="reading" aria-labelledby="reading-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Reading</div>
+        <h2 class="sec-title" id="reading-title">References <span class="prov">Placeholder</span></h2>
+        <p class="sec-lede">Papers, datasets and tool documentation used by the project will be listed here.</p>
+      </div>
+      <div class="card">
+        <p>Nothing is listed yet. References will be added as they are actually used, with enough detail to find the source &mdash; not a reading list assembled for appearance.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <footer class="site-foot">
+    <div class="wrap"><div class="site-foot-in">
+      <span>Peak Deconvolution &middot; Team 1 &middot; Deep Learning track &middot; ENG401/402</span>
+      <span>Site shell in progress &middot; <a href="../dashboard/">Project dashboard</a></span>
+    </div></div>
+  </footer>
+</main>
+
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>

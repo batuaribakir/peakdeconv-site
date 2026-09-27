@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Peak Deconvolution — Team 1 (Deep Learning)</title>
+<meta name="description" content="Project site for Peak Deconvolution, Team 1's deep-learning track: plan, schedule, presentations, team and resources.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..400&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap">
+<link rel="icon" href="./assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./assets/css/site.css">
+<script>document.documentElement.classList.replace("no-js", "js");</script>
+</head>
+<body class="site-page">
+
+<div class="site-ground" aria-hidden="true"></div>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="sitebar">
+  <div class="sitebar-in">
+    <a class="sitebrand" href="./">
+      <svg class="sitebrand-mark" viewBox="0 0 26 26" aria-hidden="true"><path d="M2 20 C6 20 7 8 10 8 S13 18 15 17 S18 5 21 5 S23 16 24 20" fill="none" stroke="#1a2028" stroke-width="1.6" stroke-linecap="round"/><path d="M2 20 C6 20 7 11 10 11 S13 20 14 20" fill="none" stroke="#009289" stroke-width="1.2" stroke-linecap="round" opacity=".8"/><path d="M12 20 C16 20 18 8 21 8 S23.5 19 24 20" fill="none" stroke="#726dc4" stroke-width="1.2" stroke-linecap="round" opacity=".8"/></svg>
+      <span class="sitebrand-text"><strong>Peak Deconvolution</strong><span>Team 1 &middot; Deep Learning</span></span>
+    </a>
+    <button class="sitenav-toggle" id="sitenav-toggle" type="button" aria-expanded="false" aria-controls="sitenav-menu">
+      <span class="sitenav-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>Menu</span>
+    </button>
+    <nav class="sitenav" id="sitenav-menu" aria-label="Site">
+      <ul>
+        <li><a href="./" aria-current="page">Home</a></li>
+        <li><a href="./dashboard/">Dashboard</a></li>
+        <li><a href="./presentations/">Presentations</a></li>
+        <li><a href="./project/">Project</a></li>
+        <li><a href="./team/">Team</a></li>
+        <li><a href="./resources/">Resources</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<nav class="sectionbar" id="sectionbar" aria-label="On this page" data-section-nav>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#focus">Focus</a></li>
+    <li><a href="#packages">Packages</a></li>
+    <li><a href="#explore">Explore</a></li>
+    <li><a href="#status">Status</a></li>
+  </ul>
+</nav>
+
+<main class="site-main" id="main" tabindex="-1">
+  <section class="block first" id="overview" aria-labelledby="overview-title">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="tags">
+          <span class="tag"><span class="dot" aria-hidden="true"></span>Team 1</span>
+          <span class="tag mono">DL &middot; Deep Learning track</span>
+          <span class="tag">ENG401/402</span>
+        </div>
+        <h1 class="site-hero-title" id="overview-title">Peak<br><em>Deconvolution</em></h1>
+        <p class="site-hero-desc">Separating overlapping square-wave voltammetry signals into per-analyte peaks. This site collects the plan, the schedule and the working material for Team&nbsp;1's deep-learning track.</p>
+        <p class="note mt-3"><strong>This site is being built.</strong> The dashboard is complete and running on real schedule data. Every other page is a shell: the structure and the schedule facts are in place, the written content is provisional and will be replaced as the work progresses. Nothing here reports a result.</p>
+      </div>
+      <aside class="card hero-facts" aria-labelledby="glance-title">
+        <h2 class="glance-title" id="glance-title">The plan at a glance</h2>
+        <dl class="deflist">
+          <div><dt>Duration</dt><dd>15 project weeks</dd></div>
+          <div><dt>Packages</dt><dd>6 work packages, 23 subtasks</dd></div>
+          <div><dt>Midterm</dt><dd>Week&nbsp;8</dd></div>
+          <div><dt>Presentations</dt><dd>Weeks 3, 5, 7, 10, 12, 14</dd></div>
+          <div><dt>Team</dt><dd>2 members, BME and EEE</dd></div>
+          <div><dt>Source</dt><dd>Generated from the project workbook</dd></div>
+        </dl>
+        <p class="mt-1"><a class="go" href="./dashboard/">Open the dashboard <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="block" id="focus" aria-labelledby="focus-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Focus</div>
+        <h2 class="sec-title" id="focus-title">What the project is about</h2>
+        <p class="sec-lede">A short orientation. The full outline lives on the <a href="./project/">Project</a> page, and the week-by-week plan on the <a href="./dashboard/">Dashboard</a>.</p>
+      </div>
+      <div class="grid three">
+        <div class="card">
+          <h3>The measurement</h3>
+          <p>Square-wave voltammetry on a sample that holds more than one analyte produces peaks that sit on top of one another. Reading a single analyte off that combined curve is the difficulty the project starts from.</p>
+        </div>
+        <div class="card">
+          <h3>The track</h3>
+          <p>Team&nbsp;1 works the deep-learning route: acquire and prepare data, develop and adapt models, make their behaviour explainable, and serve the whole pipeline through a web interface.</p>
+        </div>
+        <div class="card">
+          <h3>The plan</h3>
+          <p>Six work packages across fifteen weeks, 23 subtasks in total, with a midterm in week&nbsp;8. The schedule is generated from the project workbook rather than written by hand.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="packages" aria-labelledby="packages-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Work packages</div>
+        <h2 class="sec-title" id="packages-title">Six packages, one pipeline</h2>
+        <p class="sec-lede">Spans are the weeks the package's subtasks occupy in the schedule. Statuses are tracked in the dashboard, not here.</p>
+      </div>
+      <div class="card">
+        <div class="wp-list">
+          <div class="wp-row" data-wp="WP1">
+            <span class="wp-code">WP1</span>
+            <span class="wp-name">Local Dataset Acquisition</span>
+            <span class="wp-span">Weeks 2–6</span>
+            <span class="wp-sub">4 subtasks</span>
+          </div>
+          <div class="wp-row" data-wp="WP2">
+            <span class="wp-code">WP2</span>
+            <span class="wp-name">Existing Dataset Preparation and Preprocessing</span>
+            <span class="wp-span">Weeks 2–3</span>
+            <span class="wp-sub">3 subtasks</span>
+          </div>
+          <div class="wp-row" data-wp="WP3">
+            <span class="wp-code">WP3</span>
+            <span class="wp-name">Model Development and Evaluation</span>
+            <span class="wp-span">Weeks 2–7</span>
+            <span class="wp-sub">4 subtasks</span>
+          </div>
+          <div class="wp-row" data-wp="WP4">
+            <span class="wp-code">WP4</span>
+            <span class="wp-name">Model Adaptation and Evaluation on Local Data</span>
+            <span class="wp-span">Weeks 6–14</span>
+            <span class="wp-sub">5 subtasks</span>
+          </div>
+          <div class="wp-row" data-wp="WP5">
+            <span class="wp-code">WP5</span>
+            <span class="wp-name">Explainable AI (XAI)</span>
+            <span class="wp-span">Weeks 3–15</span>
+            <span class="wp-sub">3 subtasks</span>
+          </div>
+          <div class="wp-row" data-wp="WP6">
+            <span class="wp-code">WP6</span>
+            <span class="wp-name">Web Interface Development and Integration</span>
+            <span class="wp-span">Weeks 2–15</span>
+            <span class="wp-sub">4 subtasks</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="explore" aria-labelledby="explore-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Explore</div>
+        <h2 class="sec-title" id="explore-title">Where to go next</h2>
+      </div>
+      <div class="grid two">
+        <a class="card linkcard" href="./dashboard/">
+          <h3>Dashboard</h3>
+          <p>The 15-week Gantt, the six work packages, a task tracker with saved statuses, workload analytics and the milestone track.</p>
+          <span class="go">Open the dashboard <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+        </a>
+        <a class="card linkcard" href="./presentations/">
+          <h3>Presentations</h3>
+          <p>The presentation weeks taken from the project schedule, plus the place where slides and notes will be collected.</p>
+          <span class="go">See the slots <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+        </a>
+        <a class="card linkcard" href="./project/">
+          <h3>Project</h3>
+          <p>What the project sets out to do, how the work is broken into packages, and what is deliberately out of scope.</p>
+          <span class="go">Read the outline <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+        </a>
+        <a class="card linkcard" href="./team/">
+          <h3>Team</h3>
+          <p>Who is on Team 1, which department each member comes from, and how lead roles are split across the tasks.</p>
+          <span class="go">Meet the team <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+        </a>
+        <a class="card linkcard" href="./resources/">
+          <h3>Resources</h3>
+          <p>The repository, the workbook the schedule is generated from, the tools in use and a place for reading material.</p>
+          <span class="go">Browse resources <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="status" aria-labelledby="status-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Status</div>
+        <h2 class="sec-title" id="status-title">What is here, what is not</h2>
+      </div>
+      <div class="grid two">
+        <div class="card">
+          <h3>In place</h3>
+          <ul class="bullets">
+            <li>The dashboard: schedule, work packages, task tracker, analytics and milestones, driven by the project workbook.</li>
+            <li>Shared navigation across the site, and a section bar on each page.</li>
+            <li>Page structure for presentations, project outline, team and resources.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Still to come <span class="prov">Provisional</span></h3>
+          <ul class="bullets">
+            <li>Written content for the presentation, project, team and resources pages.</li>
+            <li>A richer home page treatment.</li>
+            <li>Public deployment, so the site is reachable outside a local server.</li>
+          </ul>
+          <p class="note">No experimental results, metrics or figures are published anywhere on this site yet. When they are, they will be labelled with the run they come from.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <footer class="site-foot">
+    <div class="wrap"><div class="site-foot-in">
+      <span>Peak Deconvolution &middot; Team 1 &middot; Deep Learning track &middot; ENG401/402</span>
+      <span>Site shell in progress &middot; <a href="./dashboard/">Project dashboard</a></span>
+    </div></div>
+  </footer>
+</main>
+
+<script src="./assets/js/site.js" defer></script>
+</body>
+</html>
