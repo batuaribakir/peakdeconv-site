@@ -15,7 +15,10 @@ No build step, no package manager: plain HTML, CSS and JavaScript.
 │   ├── js/site.js        global panel controller + section scroll-spy
 │   └── icons/favicon.svg
 ├── tools/
-│   └── check-schedule-snapshot.py    verifies the values copied into the pages
+│   ├── check-schedule-snapshot.py   verifies the values copied into the pages
+│   ├── stage-site.py                builds the directory GitHub Pages serves
+│   └── validate-site.py             checks that directory before it is published
+├── .github/workflows/pages.yml      the deployment
 └── dashboard/            the project dashboard (see dashboard/README.md)
 ```
 
@@ -43,7 +46,65 @@ In-page anchors work too, for example `/dashboard/#tasks` or `/project/#packages
 
 Every link on the site is relative, so the same files also work when the site is served
 from a sub-path such as `https://<user>.github.io/peakdeconv-site/` — no base URL or
-rewrite is needed.
+rewrite is needed. That is what the deployment below relies on.
+
+## Deployment
+
+The site is published at **<https://batuaribakir.github.io/peakdeconv-site/>** by
+`.github/workflows/pages.yml`, which runs on every push to `main` and can also be started
+by hand from **Actions → Deploy site to GitHub Pages → Run workflow**. Pages is configured
+with **Settings → Pages → Source: GitHub Actions**; there is no `gh-pages` branch and
+nothing is committed by the deployment.
+
+There is no build step. The workflow stages the files the site needs and uploads *only*
+that directory:
+
+1. `python3 tools/check-schedule-snapshot.py` — the run fails if Home, Project or
+   Presentations have fallen behind `dashboard/data/project-data.js`, so a stale page is
+   never published.
+2. `python3 tools/stage-site.py _site` — copies the 33 files the six pages load at run
+   time into `_site/`, each keeping its path so `index.html` stays at the top level and
+   every relative link still resolves.
+3. `python3 tools/validate-site.py _site` — prints the staged tree, then fails on a
+   missing entry page or asset, a link that resolves to nothing, or anything that must
+   stay out of the artifact.
+4. `actions/upload-pages-artifact` uploads `_site`, and a second job deploys it with
+   `actions/deploy-pages` in the `github-pages` environment.
+
+`tools/stage-site.py` works from an allow-list, not an exclude-list: only the paths in its
+`MANIFEST` are copied, and a path that has gone missing fails the run rather than
+producing a thinner site. So the published artifact contains no `.git/`, `.github/`,
+`README.md`, `tools/`, `dashboard/tools/`, `dashboard/data/source/` or `.xlsx` — and none
+of the ~5.5 MB of `dashboard/assets/spline/` design files, which the dashboard names in
+source comments but never loads. `_site/` is 33 files, about 283 KB.
+
+### Inspecting a deployment
+
+Run the same three commands locally to get exactly what CI uploads:
+
+```
+python3 tools/check-schedule-snapshot.py
+python3 tools/stage-site.py _site
+python3 tools/validate-site.py _site
+python3 -m http.server 8000 --directory _site
+```
+
+`validate-site.py` lists every staged file with its size; the server then lets you walk
+`/`, `/dashboard/`, `/presentations/`, `/project/`, `/team/` and `/resources/` against the
+real artifact rather than the repository. To reproduce the published URL's
+`/peakdeconv-site/` prefix, stage one level down and serve the parent:
+
+```
+python3 tools/stage-site.py /tmp/pages/peakdeconv-site
+python3 tools/validate-site.py /tmp/pages/peakdeconv-site
+python3 -m http.server 8000 --directory /tmp/pages
+```
+
+Then open <http://localhost:8000/peakdeconv-site/>.
+
+On GitHub, **Actions** shows each run: the *Validate the staged directory* step holds the
+file listing, and the `github-pages` deployment on the *Deploy* job links to the live URL.
+`_site/` is build output — delete it when you are done, or leave it untracked.
 
 ## Navigation
 
@@ -128,5 +189,5 @@ the "checked on" date it carries.
 The dashboard is complete and runs on data generated from the project workbook. The other
 pages are a shell: their structure and the schedule facts are real, the prose around them
 is marked **Provisional** and will be replaced. No results or metrics are published yet.
-The repository is private while the project is in progress, so the link on the Resources
-page is marked team-only.
+The repository is public, and the site is deployed to GitHub Pages at
+<https://batuaribakir.github.io/peakdeconv-site/>.
