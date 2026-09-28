@@ -84,20 +84,22 @@ drawn directly in `index.html`; use `validate-site.py` for the current file coun
 
 ## Home parallax prototype
 
-Home's hero contains an SVG illustration of four Gaussian component peaks and their sum.
+Home's Signal section contains an SVG illustration of four Gaussian component peaks and their sum.
 The curves are synthetic and labelled as such; they do not represent an experiment or a
-model result. ScrollTrigger moves the decorative ambient glow, grid and entire graph at
-different speeds on wide screens, then reveals the component strokes. The navigation,
-copy and axis geometry remain readable in the normal page flow. There is no scroll pin,
-video, Spline or extra scrolling container in this first prototype.
+model result. On a viewport at least 741 px wide and 560 px high, the figure stays visible
+for a natural 185vh scroll track. ScrollTrigger moves the decorative ambient glow, grid
+and graph at different speeds, progressively reveals the component strokes and advances
+a small progress bar. The navigation and copy remain in normal page flow. There is no
+GSAP pin, video, Spline or extra scrolling container.
 
 The browser-ready GSAP 3.15.0 core and ScrollTrigger distribution files are copied from
 the published `gsap@3.15.0` npm package into `assets/vendor/gsap/`. Their included license
 headers and the [standard license](https://gsap.com/standard-license) apply. If scripts
-fail to load, the illustration remains complete and static; narrow viewports and users
-who request reduced motion receive the static illustration by design. The Home-specific
-CSS and JS do not load on Dashboard. To inspect the effect, scroll Home slowly from the
-top on a desktop viewport, then compare it with a phone width and reduced motion.
+fail to load, the illustration remains complete and static without a long empty scroll
+track; narrow or short viewports and users who request reduced motion receive the static
+illustration by design. The Home-specific CSS and JS do not load on Dashboard. To inspect
+the effect, open `/#signal` on a wide screen and scroll through the scene, then compare it
+with a phone width and reduced motion.
 
 ### Inspecting a deployment
 
