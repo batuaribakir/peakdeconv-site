@@ -36,7 +36,11 @@ MANIFEST = [
     "dashboard/index.html",
     # Shared chrome: global panel, page bar, page shell.
     "assets/css/site.css",
+    "assets/css/home.css",
     "assets/js/site.js",
+    "assets/js/home-parallax.js",
+    "assets/vendor/gsap/gsap.min.js",
+    "assets/vendor/gsap/ScrollTrigger.min.js",
     "assets/icons/favicon.svg",
     # Dashboard styles, data and its own favicon.
     "dashboard/css/styles.css",
