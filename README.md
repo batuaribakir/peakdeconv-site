@@ -12,7 +12,10 @@ No build step, no package manager: plain HTML, CSS and JavaScript.
 ├── resources/            repository, data sources, stack, reading
 ├── assets/
 │   ├── css/site.css      shared chrome (global panel, page bar) + page shell
+│   ├── css/home.css      Home illustration and responsive layout
 │   ├── js/site.js        global panel controller + section scroll-spy
+│   ├── js/home-parallax.js  scroll animation for Home only
+│   ├── vendor/gsap/      pinned GSAP 3.15.0 and ScrollTrigger browser files
 │   └── icons/favicon.svg
 ├── tools/
 │   ├── check-schedule-snapshot.py   verifies the values copied into the pages
@@ -62,7 +65,7 @@ that directory:
 1. `python3 tools/check-schedule-snapshot.py` — the run fails if Home, Project or
    Presentations have fallen behind `dashboard/data/project-data.js`, so a stale page is
    never published.
-2. `python3 tools/stage-site.py _site` — copies the 33 files the six pages load at run
+2. `python3 tools/stage-site.py _site` — copies the files the six pages load at run
    time into `_site/`, each keeping its path so `index.html` stays at the top level and
    every relative link still resolves.
 3. `python3 tools/validate-site.py _site` — prints the staged tree, then fails on a
@@ -76,7 +79,25 @@ that directory:
 producing a thinner site. So the published artifact contains no `.git/`, `.github/`,
 `README.md`, `tools/`, `dashboard/tools/`, `dashboard/data/source/` or `.xlsx` — and none
 of the ~5.5 MB of `dashboard/assets/spline/` design files, which the dashboard names in
-source comments but never loads. `_site/` is 33 files, about 283 KB.
+source comments but never loads. Home adds a self-hosted animation library and an SVG
+drawn directly in `index.html`; use `validate-site.py` for the current file count and size.
+
+## Home parallax prototype
+
+Home's hero contains an SVG illustration of four Gaussian component peaks and their sum.
+The curves are synthetic and labelled as such; they do not represent an experiment or a
+model result. ScrollTrigger moves the decorative ambient glow, grid and entire graph at
+different speeds on wide screens, then reveals the component strokes. The navigation,
+copy and axis geometry remain readable in the normal page flow. There is no scroll pin,
+video, Spline or extra scrolling container in this first prototype.
+
+The browser-ready GSAP 3.15.0 core and ScrollTrigger distribution files are copied from
+the published `gsap@3.15.0` npm package into `assets/vendor/gsap/`. Their included license
+headers and the [standard license](https://gsap.com/standard-license) apply. If scripts
+fail to load, the illustration remains complete and static; narrow viewports and users
+who request reduced motion receive the static illustration by design. The Home-specific
+CSS and JS do not load on Dashboard. To inspect the effect, scroll Home slowly from the
+top on a desktop viewport, then compare it with a phone width and reduced motion.
 
 ### Inspecting a deployment
 
