@@ -35,6 +35,8 @@
     var ticking = false;
     window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(function () { ticking = false; pick(); }); } }, { passive: true });
     window.addEventListener("resize", function () { current = null; pick(); });
+    // the pill is measured in px, so measure again once the web fonts have changed the link widths
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { current = null; pick(); });
     pick();
   }
   function initReveal() {

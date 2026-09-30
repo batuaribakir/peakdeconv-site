@@ -1,6 +1,6 @@
 /* ==========================================================================
    Spatial interaction settings — the ONLY place to tune the background
-   scene, depth and pointer shading. Nothing here knows about tasks, charts
+   scene and depth. Nothing here knows about tasks, charts
    or state; the dashboard never reads it.
 
    The interaction language follows assets/spline/interactive_3_d_parallax_scene.spline
@@ -45,7 +45,7 @@
     scrollDrift: {},
 
     light: {
-      followSpeed: 9,     // 1/s — pointer shading follow
+      followSpeed: 9,     // 1/s — pointer position follow
       resetSpeed: 5,      // 1/s — ease back when the pointer leaves
       restIntensity: 0.38,
       activeIntensity: 1,

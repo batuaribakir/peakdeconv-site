@@ -4,20 +4,19 @@
   function $() { return P.$.apply(null, arguments); }
   function $$() { return P.$$.apply(null, arguments); }
   var I = P.I;
-  var MID = P.MID;
-  var OWNERS = P.OWNERS;
   var PKG = P.PKG;
   function S() { return P.S.apply(null, arguments); }
   var STATUS = P.STATUS;
   var S_KEYS = P.S_KEYS;
   var TASK = P.TASK;
-  var TOTAL_TW = P.TOTAL_TW;
   var WEEKS = P.WEEKS;
   function esc() { return P.esc.apply(null, arguments); }
   function glyph() { return P.glyph.apply(null, arguments); }
   function hideTip() { return P.hideTip.apply(null, arguments); }
   function ownerChip() { return P.ownerChip.apply(null, arguments); }
-  function pct() { return P.pct.apply(null, arguments); }
+  function isLocked() { return P.isLocked.apply(null, arguments); }
+  function syncLock() { return P.syncLock.apply(null, arguments); }
+  function toggleLock() { return P.toggleLock.apply(null, arguments); }
   function segIcon() { return P.segIcon.apply(null, arguments); }
   function setStatus() { return P.setStatus.apply(null, arguments); }
 
@@ -26,37 +25,33 @@
      ====================================================================== */
   var drawer = $("#drawer"), scrim = $("#scrim"), drawerId = null, lastFocus = null;
   function drawerHtml(t) {
-    var p = PKG[t.wp], s = S(t.id);
+    var p = PKG[t.wp], s = S(t.id), locked = isLocked(t.id);
     var weeks = WEEKS.map(function (w) {
       var on = t.weeks.indexOf(w.week) >= 0;
       return '<div class="dw"><i class="' + (on ? "on " : "") + (w.week === t.fixedWeek ? "fx " : "") + (w.kind === "midterm" ? "mid" : "") + '"></i><span class="' + (w.kind === "presentation" ? "p" : "") + '">' + w.week + "</span></div>";
     }).join("");
     return '<div class="dr-head" data-wp="' + t.wp + '">' +
-      '<div class="dr-top"><span class="dr-crumb">' + p.id + " · " + esc(p.title) + '</span><button type="button" class="dr-close" id="dr-close" aria-label="Close details">' + I.close + "</button></div>" +
+      '<div class="dr-top"><span class="dr-crumb">' + t.id + " · " + esc(p.title) + '</span><button type="button" class="dr-close" id="dr-close" aria-label="Close details">' + I.close + "</button></div>" +
       '<h3 class="dr-title" id="dr-title">' + esc(t.name) + "</h3>" +
-      '<div class="dr-tags"><span class="tag" style="font-family:var(--f-mono);color:var(--wp-ink)">' + t.id + "</span>" + ownerChip(t.owner) + (t.dl ? '<span class="tag tag-dl">DL · Team 1 deep learning</span>' : "") + "</div></div>" +
+      '<div class="dr-tags">' + ownerChip(t.owner) + "</div></div>" +
       '<div class="dr-body" data-wp="' + t.wp + '">' +
-      '<div class="dr-sec"><h4>Status</h4><div class="dr-status" role="group" aria-label="Set status">' + S_KEYS.map(function (k) {
-        return '<button type="button" data-dset="' + k + '" data-s="' + k + '" aria-pressed="' + (s === k) + '">' + segIcon(k) + "<span>" + STATUS[k].label + "<br><small>weight " + STATUS[k].w + "</small></span></button>";
-      }).join("") + "</div></div>" +
-      '<div class="dr-sec"><h4>Schedule · weeks 1–15</h4><div class="dr-weeks" aria-hidden="true">' + weeks + "</div></div>" +
-      '<div class="dr-sec"><h4>Details</h4><dl class="dl-list">' +
-      "<dt>Code</dt><dd class='mono'>" + t.id + "</dd>" +
-      "<dt>Work package</dt><dd>" + p.id + " · " + esc(p.title) + "</dd>" +
-      "<dt>Planned weeks</dt><dd>" + esc(t.weeksLabel) + (t.segments.length > 1 ? '<span class="sub">Split around the week ' + MID + " midterm</span>" : "") + "</dd>" +
-      "<dt>Duration</dt><dd>" + t.duration + " week" + (t.duration > 1 ? "s" : "") + '<span class="sub">' + pct(t.duration / TOTAL_TW) + "% of " + TOTAL_TW + " planned task-weeks</span></dd>" +
-      "<dt>Owner</dt><dd>" + esc(OWNERS[t.owner].label) + '<span class="sub">' + esc(OWNERS[t.owner].meaning) + "</span></dd>" +
-      "<dt>Fixed delivery</dt><dd>Week " + t.fixedWeek + '<span class="sub">Earlier weeks of this task may be rearranged, not this one.</span></dd>' +
-      "<dt>Package final week</dt><dd>◆ Week " + p.finalWeek + "</dd>" +
-      (t.dl ? "<dt>Track</dt><dd>Team 1 · Deep Learning</dd>" : "") +
-      (t.id === "WP6.3" ? "<dt>Scope</dt><dd>Single task, result queries only</dd>" : "") +
-      "</dl></div>" +
-      '<div class="dr-sec"><h4>Other tasks in ' + p.id + '</h4><div class="dr-siblings">' + p.tasks.map(function (x) {
+      '<div class="dr-status" role="group" aria-label="Set status">' + S_KEYS.map(function (k) {
+        return '<button type="button" data-dset="' + k + '" data-s="' + k + '" aria-pressed="' + (s === k) + '">' + segIcon(k) + "<span>" + STATUS[k].label + "</span></button>";
+      }).join("") + "</div>" +
+      '<div class="dr-weeks" aria-hidden="true">' + weeks + "</div>" +
+      '<div class="dr-lockrow"><span>Week ' + t.fixedWeek + '</span><button type="button" class="lock-btn lock-switch' + (locked ? " is-locked" : "") + '" data-lock="' + t.id + '" aria-pressed="' + locked + '" aria-label="' + (locked ? "Unlock" : "Lock") + " delivery week, " + t.id + ", week " + t.fixedWeek + '">' +
+        (locked ? I.lock : I.unlock).replace("<svg", '<svg class="lock-ic"') + '<span class="lock-txt">' + (locked ? "Locked" : "Unlocked") + "</span></button></div>" +
+      '<dl class="dl-list">' +
+      "<dt>Weeks</dt><dd>" + esc(t.weeksLabel.replace(/^Weeks? /, "")) + "</dd>" +
+      "<dt>Duration</dt><dd>" + t.duration + " wk</dd>" +
+      "<dt>Final week</dt><dd>◆ " + p.finalWeek + "</dd>" +
+      "</dl>" +
+      '<div class="dr-siblings">' + p.tasks.map(function (x) {
         return '<button type="button" data-goto="' + x.id + '"' + (x.id === t.id ? ' aria-current="true"' : "") + '><span class="c">' + x.id + '</span><span>' + esc(x.name) + "</span>" + glyph(S(x.id)) + "</button>";
-      }).join("") + "</div></div>" +
-      '<p class="dr-note">Status is set in this dashboard and saved in this browser. It is not part of the workbook.</p>' +
+      }).join("") + "</div>" +
       "</div>";
   }
+
   function openDrawer(id, from) {
     var t = TASK[id]; if (!t) return;
     if (!drawerId) lastFocus = from || document.activeElement;
@@ -67,7 +62,6 @@
     drawer.classList.add("open"); scrim.classList.add("open");
     hideTip();
     $("#dr-close").focus({ preventScroll: true });
-    document.dispatchEvent(new Event("pd:surfaces"));
   }
   function closeDrawer() {
     if (!drawerId) return;
@@ -79,6 +73,7 @@
   drawer.addEventListener("click", function (e) {
     if (e.target.closest("#dr-close")) { closeDrawer(); return; }
     var b = e.target.closest("[data-dset]"); if (b) { setStatus(drawerId, b.dataset.dset); return; }
+    var lk = e.target.closest("[data-lock]"); if (lk) { toggleLock(drawerId); return; }
     var g = e.target.closest("[data-goto]"); if (g) openDrawer(g.dataset.goto);
   });
   scrim.addEventListener("click", closeDrawer);
@@ -96,6 +91,8 @@
     if (!drawerId) return;
     var s = S(drawerId);
     $$("[data-dset]", drawer).forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.dset === s)); });
+    var lb = $("[data-lock]", drawer);
+    if (lb) { syncLock(lb, TASK[drawerId]); $(".lock-txt", lb).textContent = isLocked(drawerId) ? "Locked" : "Unlocked"; }
     $$("[data-goto]", drawer).forEach(function (b) {
       var old = $(".status-glyph", b); old.outerHTML = glyph(S(b.dataset.goto));
     });

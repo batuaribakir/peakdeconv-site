@@ -14,14 +14,10 @@
   function svgEl() { return P.svgEl.apply(null, arguments); }
   function weekKind() { return P.weekKind.apply(null, arguments); }
 
-  /* ======================================================================
-     A · HERO — planned activity trace resolved into WP components
-     Each scheduled task-week contributes a unit-area Gaussian (σ = 0.5 wk)
-     centred on its week, so a plateau reads as the number of active tasks.
-     ====================================================================== */
+  /* A · HERO — planned activity trace, one smoothed curve per work package */
   function renderTrace() {
     var svg = $("#trace");
-    var VW = 560, VH = 300, m = { l: 30, r: 10, t: 26, b: 46 };
+    var VW = 560, VH = 320, m = { l: 34, r: 10, t: 14, b: 40 };
     var pw = VW - m.l - m.r, ph = VH - m.t - m.b;
     var SIG = 0.5, NORM = 1 / (SIG * Math.sqrt(2 * Math.PI));
     function comp(p, x) {
@@ -43,10 +39,9 @@
     svg.innerHTML = "";
     var g = svgEl("g", { class: "axis" }, svg);
     // midterm band + presentation guides
-    svgEl("rect", { x: X(MID - 0.5), y: m.t, width: pw / NW, height: ph, fill: "rgba(31,43,56,0.06)" }, g);
-    svgEl("text", { x: X(MID), y: m.t + 10, "text-anchor": "middle", style: "font-size:8.5px;letter-spacing:.14em;fill:rgba(31,43,56,.6)" }, g).textContent = "MIDTERM";
+    svgEl("rect", { x: X(MID - 0.5), y: m.t, width: pw / NW, height: ph, fill: "rgba(31,43,56,0.1)" }, g);
     for (var v = 0; v <= yMax; v += 2) {
-      svgEl("line", { x1: m.l, x2: m.l + pw, y1: Y(v), y2: Y(v), stroke: v ? "rgba(26,32,40,0.06)" : "rgba(26,32,40,0.3)" }, g);
+      svgEl("line", { x1: m.l, x2: m.l + pw, y1: Y(v), y2: Y(v), stroke: v ? "rgba(26,32,40,0.12)" : "rgba(26,32,40,0.5)" }, g);
       svgEl("text", { x: m.l - 8, y: Y(v) + 3.5, "text-anchor": "end" }, g).textContent = v;
     }
     for (var w = 1; w <= NW; w++) {
@@ -56,8 +51,6 @@
       if (isP) svgEl("circle", { cx: X(w), cy: m.t + ph + 26, r: 2.4, fill: "var(--amber)" }, g);
       if (w === MID) svgEl("rect", { x: X(w) - 3, y: m.t + ph + 23.5, width: 6, height: 5, rx: 1, fill: "var(--midterm)" }, g);
     }
-    svgEl("text", { x: m.l + pw, y: m.t + ph + 40, "text-anchor": "end", style: "font-size:9px" }, g).textContent = "week";
-    svgEl("text", { x: m.l - 8, y: m.t - 6, "text-anchor": "start", style: "font-size:9px" }, g).textContent = "active tasks";
 
     var cg = svgEl("g", {}, svg);
     PKGS.forEach(function (p, i) {
@@ -93,7 +86,7 @@
 
     var lg = $("#trace-legend");
     lg.innerHTML = PKGS.map(function (p) {
-      return '<button type="button" data-wp="' + p.id + '"><i></i>' + p.id + " · " + esc(p.short) + "</button>";
+      return '<button type="button" data-wp="' + p.id + '"><i></i>' + esc(p.short) + "</button>";
     }).join("");
     $$("button", lg).forEach(function (b) {
       function on() { svg.classList.add("focus"); $$('[data-wp="' + b.dataset.wp + '"]', svg).forEach(function (n) { n.classList.add("on"); }); }
@@ -111,20 +104,20 @@
       var c = row.wp[p.id];
       return '<span class="tr" data-wp="' + p.id + '"><span><i></i>' + p.id + " " + esc(p.short) + "</span><span>" + c.n + (c.done ? " · " + c.done + " done" : "") + "</span></span>";
     }).join("");
-    return '<span class="tk">' + head + "</span>" + (lines || "No scheduled subtasks") +
-      (row.total ? '<span class="tr" style="margin-top:4px;border-top:1px solid rgba(26,32,40,.1);padding-top:4px"><b>Active subtasks</b><span>' + row.total + "</span></span>" : "");
+    return '<span class="tk">' + head + "</span>" + (lines || "No tasks") +
+      (row.total ? '<span class="tr tr-total"><b>Total</b><span>' + row.total + "</span></span>" : "");
   }
 
   function renderNext(d) {
-    var el = $("#next-card"), html = '<span class="nc-label">Next open milestones</span>';
+    var el = $("#next-card"), html = "";
     if (d.nextFixed) {
       var t = d.nextFixed, more = d.nextFixedSame.length - 1;
-      html += '<span class="nc-week">Week ' + t.fixedWeek + '</span><span class="nc-what">Fixed delivery · <b>' + t.id + "</b> " + esc(t.name) + (more > 0 ? " <span>+" + more + " more</span>" : "") + "</span>";
+      html += '<span class="nc-week">Week ' + t.fixedWeek + '</span><span class="nc-what"><b>' + t.id + "</b> " + esc(t.name) + (more > 0 ? " <span>+" + more + "</span>" : "") + "</span>";
     }
     if (d.nextWp) {
-      html += '<span class="nc-week">Week ' + d.nextWp.finalWeek + '</span><span class="nc-what">◆ <b>' + d.nextWp.id + "</b> " + esc(d.nextWp.title) + " · planned final week</span>";
+      html += '<span class="nc-week">Week ' + d.nextWp.finalWeek + '</span><span class="nc-what">◆ <b>' + d.nextWp.id + "</b> " + esc(d.nextWp.title) + "</span>";
     }
-    if (!d.nextFixed && !d.nextWp) html += '<span class="nc-week">—</span><span class="nc-what">Every task is marked completed.</span>';
+    if (!html) html = '<span class="nc-what">All done</span>';
     el.innerHTML = html;
   }
 

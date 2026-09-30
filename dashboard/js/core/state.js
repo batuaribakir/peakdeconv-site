@@ -12,12 +12,15 @@
 
   /* ---------- state (single source, persisted) --------------------------- */
   var KEY = "pd-dashboard.team1.v1";
-  var state = { status: {}, filters: { q: "", status: "all", wp: "all", owner: "all", week: "all" } };
+  var state = { status: {}, unlocked: {}, filters: { q: "", status: "all", wp: "all", owner: "all", week: "all" } };
   (function load() {
     try {
       var raw = JSON.parse(localStorage.getItem(KEY) || "null");
       if (raw && raw.status) Object.keys(raw.status).forEach(function (id) {
         if (TASK[id] && STATUS[raw.status[id]] && raw.status[id] !== "todo") state.status[id] = raw.status[id];
+      });
+      if (raw && raw.unlocked) Object.keys(raw.unlocked).forEach(function (id) {
+        if (TASK[id] && raw.unlocked[id] === true) state.unlocked[id] = true;
       });
       if (raw && raw.filters) Object.keys(state.filters).forEach(function (k) {
         if (typeof raw.filters[k] === "string") state.filters[k] = raw.filters[k];
@@ -28,6 +31,8 @@
     try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
   }
   function S(id) { return state.status[id] || "todo"; }
+  // A task's delivery week is locked unless the user has opened it.
+  function isLocked(id) { return !state.unlocked[id]; }
 
   var subscribers = [];
   function onChange(fn) { subscribers.push(fn); }
@@ -41,6 +46,13 @@
     save();
     emit(id);
   }
+  function setLock(id, on) {
+    if (!TASK[id] || isLocked(id) === on) return;
+    if (on) delete state.unlocked[id]; else state.unlocked[id] = true;
+    save();
+    emit(id);
+  }
+  function toggleLock(id) { setLock(id, !isLocked(id)); }
   function resetAll() { state.status = {}; save(); emit(null); }
 
   /* ---------- derived metrics -------------------------------------------- */
@@ -81,7 +93,7 @@
       });
       d.week.push(row);
     }
-    var open = TASKS.filter(function (t) { return S(t.id) !== "done"; });
+    var open = TASKS.filter(function (t) { return S(t.id) !== "done" && isLocked(t.id); });
     open.sort(function (a, b) { return a.fixedWeek - b.fixedWeek || a.order - b.order; });
     d.nextFixed = open[0] || null;
     d.nextFixedSame = open.filter(function (t) { return d.nextFixed && t.fixedWeek === d.nextFixed.fixedWeek; });
@@ -92,6 +104,9 @@
 
   P.save = save;
   P.S = S;
+  P.isLocked = isLocked;
+  P.setLock = setLock;
+  P.toggleLock = toggleLock;
   P.onChange = onChange;
   P.emit = emit;
   P.setStatus = setStatus;
