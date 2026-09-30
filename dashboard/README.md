@@ -29,18 +29,17 @@ dashboard/
 ├── index.html                       page structure + script order
 ├── css/
 │   ├── styles.css                   dashboard design system (tokens, components)
-│   └── depth.css                    spatial layer: scene ground + grain, pointer shading (isolated)
+│   └── depth.css                    spatial layer: scene ground + grain (isolated)
 ├── js/
 │   ├── core/                        model.js · state.js · util.js
 │   ├── ui/                          tooltip.js · drawer.js · nav.js
 │   ├── views/                       hero · kpis · gantt · packages · tracker · charts · milestones · team
 │   ├── app.js                       boot: render views, wire them to state
 │   └── interactions/                spatial layer — no dashboard logic
-│       ├── config.js                scene, camera sway, depth + shading settings
+│       ├── config.js                scene, camera sway and depth settings
 │       ├── pointer-controller.js    one pointer listener + one rAF loop
 │       ├── background-scene.js      light Three.js scene (ribbons, particles, camera sway)
-│       ├── parallax.js              moves [data-depth] dashboard layers
-│       └── cursor-light.js          violet pointer shading + glass response
+│       └── parallax.js              moves [data-depth] dashboard layers
 ├── data/
 │   ├── project-data.js              GENERATED (window.PD_DATA) — do not edit
 │   └── source/PeakDeconv_Gantt_Chart.xlsx   source of truth
@@ -86,7 +85,9 @@ Both come from `derive()` in `js/core/state.js`, and every view subscribes to it
 
 Statuses and filters are saved in `localStorage` under `pd-dashboard.team1.v1`. That storage belongs to this browser only.
 
-**Reset progress:** go to **Task tracker → Reset progress** and confirm. Alternatively, run `PD.reset()` in the console.
+**Reset progress:** go to **Tasks → Reset** and confirm. Alternatively, run `PD.reset()` in the console.
+
+**Delivery lock:** every task's delivery week starts locked, as in the workbook. Click the lock on the task's last Gantt cell, in the Tasks table, or in the task drawer to unlock it, and click again to lock it. The choice is saved with the statuses (`unlocked` in the same `localStorage` entry). The Milestones lane and the "next" card count only locked deliveries. Reset progress does not change locks.
 
 ## Spatial layer
 
@@ -115,21 +116,11 @@ The dashboard's own layers move with the same damping as the scene camera (0.125
 
 The movement uses the individual CSS `translate` property, so it composes with reveal and hover transforms. Hit-testing follows what you see.
 
-### Pointer shading
-
-The cursor casts a **soft dark-violet shading** (`--shade-tint: 58, 36, 96`). It is deliberately quiet.
-
-- **Behind the content:** a violet pool.
-- **Above the content:** a faint violet core, with `pointer-events: none`.
-- **On every glass panel:** a violet sheen and rim through an injected `.glass-light` child. The panel's shadow is violet and cast away from the cursor.
-
-Tune its strength with `--shade-pool`, `--shade-core` and `--shade-size` in `css/depth.css`.
-
 ### Performance
 
-- The page uses one pointer listener, one scroll listener and one rAF loop. Per-frame writes go only to a few layer elements and the small light children, so there are no layout passes.
+- The page uses one pointer listener, one scroll listener and one rAF loop. Per-frame writes go only to a few layer elements, so there are no layout passes.
 - Measured in headless Chrome with the live 3D scene and continuous pointer motion: 61 fps, 0 layout passes, and about 19 ms of script time per second.
 - Under `prefers-reduced-motion` the scene is rendered once and stays still.
-- Touch devices get no parallax and no pointer shading.
+- Touch devices get no parallax.
 
 The Phase 1 version is preserved in `backups/phase-1-dashboard/`.

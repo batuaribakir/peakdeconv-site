@@ -14,12 +14,14 @@
   var TASK = P.TASK;
   var TASKS = P.TASKS;
   var WEEKS = P.WEEKS;
-  function dlBadge() { return P.dlBadge.apply(null, arguments); }
   function esc() { return P.esc.apply(null, arguments); }
   function glyph() { return P.glyph.apply(null, arguments); }
   function openDrawer() { return P.openDrawer.apply(null, arguments); }
   function openWp() { return P.openWp.apply(null, arguments); }
   function ownerChip() { return P.ownerChip.apply(null, arguments); }
+  function syncLock() { return P.syncLock.apply(null, arguments); }
+  function toggleLock() { return P.toggleLock.apply(null, arguments); }
+  var OWNER_SHORT = P.OWNER_SHORT;
   var state = P.state;
 
   /* ======================================================================
@@ -27,12 +29,12 @@
      ====================================================================== */
   var gantt = $("#gantt");
   function renderGantt() {
-    var head = '<div class="g-head" role="row"><div class="g-corner" role="columnheader"><span>Work package / task</span><span>Lead</span></div>' +
+    var head = '<div class="g-head" role="row"><div class="g-corner" role="columnheader"></div>' +
       WEEKS.map(function (w) {
         var cls = w.kind === "presentation" ? "is-pres" : w.kind === "midterm" ? "is-mid" : "";
         var k = w.kind === "presentation" ? "Pres" : w.kind === "midterm" ? "Mid" : "";
-        var t = w.kind === "presentation" ? "<span class='tk'>Presentation week</span>Week " + w.week + " — one of our presentations (weeks " + PRES.join(", ") + ")" :
-          w.kind === "midterm" ? "<span class='tk'>Midterm</span>Week " + w.week + " — no scheduled task work" : "";
+        var t = w.kind === "presentation" ? "<span class='tk'>Presentation</span>Week " + w.week :
+          w.kind === "midterm" ? "<span class='tk'>Midterm</span>Week " + w.week : "";
         return '<div class="g-wk ' + cls + '" role="columnheader" data-w="' + w.week + '"' + (t ? ' tabindex="0" data-tip="' + esc(t) + '"' : "") + '><span class="n">' + w.week + '</span><span class="k">' + k + "</span></div>";
       }).join("") + "</div>";
 
@@ -45,16 +47,16 @@
         '<div class="g-label" role="rowheader"><span class="g-code">' + p.id + '</span><span class="g-name"><span class="t">' + esc(p.title) + '</span></span><span class="g-meta"><span class="g-wpcount" data-wpcount="' + p.id + '">0/' + p.tasks.length + "</span></span></div>" +
         '<div class="g-track">' +
         p.barSegments.map(function (s) { return '<div class="wp-bar" style="grid-column:' + s[0] + "/" + (s[1] + 1) + ';grid-row:1"></div>'; }).join("") +
-        '<button type="button" class="diamond" style="grid-column:' + p.finalWeek + ';grid-row:1" aria-label="' + p.id + " planned final week, week " + p.finalWeek + '" data-tip="' + esc("<span class='tk'>◆ Planned final week</span><b>" + p.id + "</b> " + p.title + " · Week " + p.finalWeek) + '" data-final="' + p.id + '"></button>' +
+        '<button type="button" class="diamond" style="grid-column:' + p.finalWeek + ';grid-row:1" aria-label="' + p.id + " planned final week, week " + p.finalWeek + '" data-tip="' + esc("<b>" + p.id + "</b> " + p.title + " · Week " + p.finalWeek) + '" data-final="' + p.id + '"></button>' +
         "</div></div>";
       var tRows = p.tasks.map(function (t) {
         var bars = t.segments.map(function (s, i) {
           return '<div class="bar o-' + t.owner + '" style="grid-column:' + s[0] + "/" + (s[1] + 1) + ';grid-row:1">' +
-            '<span class="bar-state"></span>' + (t.dl && i === 0 ? '<span class="bar-dl">DL</span>' : "") + "</div>";
+            '<span class="bar-state"></span></div>';
         }).join("");
-        var fx = '<div class="fx" style="grid-column:' + t.fixedWeek + ';grid-row:1" data-tip="' + esc("<span class='tk'>Fixed delivery week</span><b>" + t.id + "</b> · Week " + t.fixedWeek + "<br>The earlier weeks may be rearranged, not this one.") + '">' + I.lock + "</div>";
+        var fx = '<button type="button" class="fx is-locked" style="grid-column:' + t.fixedWeek + ';grid-row:1" data-lock="' + t.id + '" data-tip="Locked" aria-pressed="true">' + I.lock.replace("<svg", '<svg class="lock-ic"') + "</button>";
         return '<div class="g-row task" role="row" tabindex="0" data-id="' + t.id + '" data-wp="' + t.wp + '" data-owner="' + t.owner + '" aria-label="' + esc(t.id + " " + t.name + ", " + t.weeksLabel + ", " + OWNERS[t.owner].label) + '">' +
-          '<div class="g-label" role="rowheader"><span class="g-code">' + t.id + '</span><span class="g-name"><span class="t">' + esc(t.name) + "</span>" + (t.dl ? dlBadge() : "") + '</span><span class="g-meta">' + ownerChip(t.owner, "", true) + '<span class="g-status" data-gs="' + t.id + '"></span></span></div>' +
+          '<div class="g-label" role="rowheader"><span class="g-code">' + t.id + '</span><span class="g-name"><span class="t">' + esc(t.name) + "</span>" + "</span>" + '<span class="g-meta">' + ownerChip(t.owner) + '<span class="g-status" data-gs="' + t.id + '"></span></span></div>' +
           '<div class="g-track">' + bars + fx + "</div></div>";
       }).join("");
       return wpRow + tRows;
@@ -90,6 +92,8 @@
     gantt.addEventListener("focusin", function (e) { var r = e.target.closest(".g-row.task"); if (r) highlight(r.dataset.id); });
     gantt.addEventListener("focusout", function (e) { if (!gantt.contains(e.relatedTarget)) clearHl(); });
     gantt.addEventListener("click", function (e) {
+      var lk = e.target.closest("[data-lock]");
+      if (lk) { e.stopPropagation(); toggleLock(lk.dataset.lock); return; }
       var dm = e.target.closest("[data-final]");
       if (dm) { openWp(dm.dataset.final); return; }
       var r = e.target.closest(".g-row.task"); if (r) openDrawer(r.dataset.id, r);
@@ -107,15 +111,15 @@
     // legend (owners are toggles that emphasise their tasks)
     var lg = $("#gantt-legend");
     lg.innerHTML =
-      '<span class="lg-group"><span class="lg-title">Lead</span>' + OWNER_KEYS.map(function (o) {
-        return '<button type="button" class="lg-item" data-owner="' + o + '" aria-pressed="false" data-tip="' + esc("<b>" + OWNERS[o].label + "</b> — " + OWNERS[o].meaning + "<br>Click to emphasise these tasks") + '"><span class="sw sw-' + o + '"></span>' + esc(OWNERS[o].label) + "</button>";
+      '<span class="lg-group">' + OWNER_KEYS.map(function (o) {
+        return '<button type="button" class="lg-item" data-owner="' + o + '" aria-pressed="false"><span class="sw sw-' + o + '"></span>' + esc(OWNER_SHORT[o]) + "</button>";
       }).join("") + "</span>" +
-      '<span class="lg-group"><span class="lg-title">Markers</span>' +
+      '<span class="lg-group">' +
       '<span class="lg-item"><span class="sw sw-pres"></span>Presentation</span>' +
       '<span class="lg-item"><span class="sw sw-mid"></span>Midterm</span>' +
-      '<span class="lg-item"><span class="sw sw-diamond"></span>Planned final week</span>' +
-      '<span class="lg-item"><span class="sw sw-lock" style="display:inline-grid;place-items:center;background:var(--ink);color:#fff;border-radius:4px;width:16px;height:16px">' + I.lock.replace("<svg", '<svg style="width:10px;height:10px"') + "</span>Fixed delivery</span>" +
-      '<span class="lg-item">' + dlBadge() + "Deep-learning modelling</span></span>";
+      '<span class="lg-item"><span class="sw sw-diamond"></span>Final week</span>' +
+      '<span class="lg-item"><span class="sw-lock is-locked">' + I.lock + "</span>Locked</span>" +
+      '<span class="lg-item"><span class="sw-lock">' + I.unlock + "</span>Unlocked</span></span>";
     $$("button[data-owner]", lg).forEach(function (b) {
       b.addEventListener("click", function () {
         var on = b.getAttribute("aria-pressed") !== "true";
@@ -138,6 +142,7 @@
         b.classList.toggle("is-done", s === "done"); b.classList.toggle("is-prog", s === "prog");
         var st = $(".bar-state", b); st.innerHTML = s === "done" && i === 0 ? I.check : "";
       });
+      syncLock($('[data-lock="' + t.id + '"]', gantt), t);
       var row = $('.g-row.task[data-id="' + t.id + '"]', gantt);
       row.setAttribute("aria-label", t.id + " " + t.name + ", " + t.weeksLabel + ", " + OWNERS[t.owner].label + ", " + STATUS[s].label);
     });

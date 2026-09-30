@@ -1,12 +1,12 @@
 /* ==========================================================================
    Central pointer / frame controller.
    One pointermove listener, one scroll listener, one requestAnimationFrame
-   loop for the whole page. Effects (parallax, cursor light, background
-   scene) register as frame subscribers and receive the same damped state:
+   loop for the whole page. Effects (parallax, background scene) register as
+   frame subscribers and receive the same damped state:
 
      frame.px, frame.py   camera tilt, normalised −1…1 (damped, Spline 0.125/frame)
-     frame.lx, frame.ly   light position in viewport px (faster Follow damping)
-     frame.li             light intensity (rest → active)
+     frame.lx, frame.ly   pointer position in viewport px (faster follow damping)
+     frame.li             pointer activity (rest → active)
      frame.rawX, rawY     last raw pointer position (for forwarding to the 3D scene)
      frame.scroll         0…1 page scroll progress
      frame.dt, frame.t    seconds since last frame / timestamp

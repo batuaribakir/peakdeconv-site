@@ -53,9 +53,8 @@
   <canvas id="scene-canvas" class="scene-canvas"></canvas>
   <div class="scene-grain"></div>
 </div>
-<div class="light-field" id="light-field" aria-hidden="true"><div class="lf-glow"></div></div>
 
-<header class="topnav glass" id="topnav" data-lift>
+<header class="topnav glass" id="topnav">
   <button class="navbtn" type="button" data-nav-toggle aria-expanded="false" aria-controls="navpanel">
     <span class="navbtn-bars" aria-hidden="true"><i></i><i></i><i></i></span>
     <span>Menu</span>
@@ -80,9 +79,9 @@
       <li class="nav-pill" id="nav-pill" aria-hidden="true"></li>
     </ul>
   </nav>
-  <a class="nav-progress" href="#health" aria-label="Weighted project progress">
+  <a class="nav-progress" href="#health" aria-label="Project progress">
     <svg viewBox="0 0 22 22" aria-hidden="true"><circle class="ring-bg" cx="11" cy="11" r="8.5" fill="none" stroke-width="3"/><circle class="ring-fg" id="nav-ring" cx="11" cy="11" r="8.5" fill="none" stroke-width="3" stroke-linecap="round" stroke-dasharray="53.41" stroke-dashoffset="53.41"/></svg>
-    <span><strong id="nav-pct">0%</strong> weighted</span>
+    <strong id="nav-pct">0%</strong>
   </a>
 </header>
 
@@ -92,50 +91,30 @@
   <section class="block hero" id="overview" aria-labelledby="hero-title">
     <div class="wrap hero-grid" data-depth="section">
       <div class="hero-copy">
-        <div class="hero-tags">
-          <span class="tag"><span class="dot" aria-hidden="true"></span>Team 1</span>
-          <span class="tag tag-dl">DL · Deep Learning track</span>
-          <span class="tag">ENG401/402</span>
-        </div>
         <h1 class="hero-title" id="hero-title">Peak<br><em>Deconvolution</em></h1>
-        <p class="hero-desc">Separating overlapping square-wave voltammetry signals into per-analyte peaks. This is the deep-learning track's plan across six work packages and fifteen weeks, from dataset acquisition to an explainable, web-served pipeline.</p>
         <dl class="hero-facts">
-          <div class="fact"><dt>Weighted progress</dt><dd><span id="hf-weighted">0</span><small>%</small></dd></div>
-          <div class="fact"><dt>Tasks completed</dt><dd><span id="hf-done">0</span><small id="hf-total">/ 23</small></dd></div>
-          <div class="fact"><dt>Work packages</dt><dd id="hf-wps">6</dd></div>
-          <div class="fact"><dt>Duration</dt><dd><span id="hf-weeks">15</span><small>weeks</small></dd></div>
+          <div class="fact"><dt>Tasks done</dt><dd><span id="hf-done">0</span><small id="hf-total">/ 23</small></dd></div>
+          <div class="fact"><dt>Packages</dt><dd id="hf-wps">6</dd></div>
+          <div class="fact"><dt>Weeks</dt><dd id="hf-weeks">15</dd></div>
         </dl>
         <div class="next-card" id="next-card" aria-live="polite"></div>
       </div>
 
-      <figure class="hero-figure glass" data-lift data-depth="panel" style="margin:0">
-        <div class="fig-head">
-          <figcaption class="fig-title">Planned activity, resolved by work package</figcaption>
-          <span class="fig-note">task-weeks · kernel-smoothed</span>
-        </div>
-        <svg class="trace-svg" id="trace" viewBox="0 0 560 300" role="img" aria-label="Planned active subtasks per week, drawn as a summed trace and its six work-package components"></svg>
+      <figure class="hero-figure glass" data-depth="panel" style="margin:0">
+        <svg class="trace-svg" id="trace" viewBox="0 0 560 320" role="img" aria-label="Planned active subtasks per week, drawn as a summed trace and its six work-package components"></svg>
         <div class="trace-legend" id="trace-legend"></div>
       </figure>
     </div>
   </section>
 
-  <!-- B · Project health -->
+  <!-- B · Progress -->
   <section class="block" id="health" aria-labelledby="health-title">
     <div class="wrap" data-depth="section">
-      <div class="sec-head reveal">
-        <div>
-          <div class="eyebrow">Project health</div>
-          <h2 class="sec-title" id="health-title">Where the plan stands</h2>
-        </div>
-        <p class="sec-aside">Statuses are set in this dashboard, not in the workbook. They're saved in this browser only.</p>
-      </div>
-      <div class="health glass reveal" data-lift data-depth="panel">
+      <div class="sec-head reveal"><h2 class="sec-title" id="health-title">Progress</h2></div>
+      <div class="health glass reveal" data-depth="panel">
         <div class="health-main">
-          <div class="label">Weighted project progress</div>
           <div class="big-num"><span id="kpi-weighted">0</span><sup>%</sup></div>
-          <p class="formula">Σ(duration × weight) ÷ Σ(duration) over <span id="kpi-tw">70</span> scheduled task-weeks. Weights: <code>Not started 0</code> <code>In progress 0.5</code> <code>Completed 1</code>.</p>
           <div class="stack-bar" id="stack-bar" role="img" aria-label="Task-weeks by status"><span class="sb-done"></span><span class="sb-prog"></span><span class="sb-todo"></span></div>
-          <div class="stack-legend" id="stack-legend"></div>
         </div>
         <div class="kpis" id="kpis"></div>
       </div>
@@ -145,23 +124,13 @@
   <!-- C · Schedule (Gantt) -->
   <section class="block" id="schedule" aria-labelledby="schedule-title">
     <div class="wrap" data-depth="section">
-      <div class="sec-head reveal">
-        <div>
-          <div class="eyebrow">Schedule · weeks 1–15</div>
-          <h2 class="sec-title" id="schedule-title">The work plan</h2>
-          <p class="sec-lede">Every subtask on the fifteen-week grid. Bar texture shows who leads the task, the outlined cell with a lock is its fixed delivery week, and ◆ marks each work package's planned final week. Click a row for details.</p>
-        </div>
-      </div>
-      <div class="gantt-shell glass reveal" data-lift data-depth="panel">
+      <div class="sec-head reveal"><h2 class="sec-title" id="schedule-title">Schedule</h2></div>
+      <div class="gantt-shell glass reveal" data-depth="panel">
         <div class="gantt-toolbar">
           <div class="legend" id="gantt-legend"></div>
         </div>
         <div class="gantt-scroll" id="gantt-scroll" tabindex="0" aria-label="Gantt chart, scrollable">
           <div class="gantt" id="gantt" role="table" aria-label="Project schedule"></div>
-        </div>
-        <div class="gantt-foot">
-          <span>Fixed delivery week: the earlier weeks of a task may be rearranged, not this one.</span>
-          <span>WP6.3 chatbot: single task, result queries only.</span>
         </div>
       </div>
     </div>
@@ -170,39 +139,27 @@
   <!-- D · Work packages -->
   <section class="block" id="packages" aria-labelledby="packages-title">
     <div class="wrap" data-depth="section">
-      <div class="sec-head reveal">
-        <div>
-          <div class="eyebrow">Work packages</div>
-          <h2 class="sec-title" id="packages-title">Six packages, one pipeline</h2>
-        </div>
-        <p class="sec-aside">Span, planned final week and completion for each package. Select one to open its first open task.</p>
-      </div>
-      <div class="wp-plate glass reveal" id="wp-plate" data-lift data-depth="panel"></div>
+      <div class="sec-head reveal"><h2 class="sec-title" id="packages-title">Work packages</h2></div>
+      <div class="wp-plate glass reveal" id="wp-plate" data-depth="panel"></div>
     </div>
   </section>
 
-  <!-- E · Task tracker -->
+  <!-- E · Tasks -->
   <section class="block" id="tasks" aria-labelledby="tasks-title">
     <div class="wrap" data-depth="section">
-      <div class="sec-head reveal">
-        <div>
-          <div class="eyebrow">Task tracker</div>
-          <h2 class="sec-title" id="tasks-title">Mark progress</h2>
-        </div>
-        <p class="sec-aside">Every change updates the whole dashboard at once and is saved in this browser.</p>
-      </div>
-      <div class="tracker glass reveal" data-lift data-depth="panel">
+      <div class="sec-head reveal"><h2 class="sec-title" id="tasks-title">Tasks</h2></div>
+      <div class="tracker glass reveal" data-depth="panel">
         <form class="filters" id="filters" role="search" onsubmit="return false">
           <div class="field search">
-            <label for="f-q">Search</label>
+            <label class="sr-only" for="f-q">Search</label>
             <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-            <input id="f-q" type="search" placeholder="Search tasks or codes" autocomplete="off">
+            <input id="f-q" type="search" placeholder="Search" autocomplete="off">
           </div>
-          <div class="field"><label for="f-status">Status</label><select id="f-status"></select></div>
-          <div class="field"><label for="f-wp">Work package</label><select id="f-wp"></select></div>
-          <div class="field"><label for="f-owner">Owner</label><select id="f-owner"></select></div>
-          <div class="field"><label for="f-week">Active in week</label><select id="f-week"></select></div>
-          <button class="btn" type="button" id="f-clear">Clear filters</button>
+          <div class="field"><label class="sr-only" for="f-status">Status</label><select id="f-status"></select></div>
+          <div class="field"><label class="sr-only" for="f-wp">Work package</label><select id="f-wp"></select></div>
+          <div class="field"><label class="sr-only" for="f-owner">Lead</label><select id="f-owner"></select></div>
+          <div class="field"><label class="sr-only" for="f-week">Week</label><select id="f-week"></select></div>
+          <button class="btn" type="button" id="f-clear">Clear</button>
         </form>
         <div class="tracker-bar">
           <span class="count" id="t-count"></span>
@@ -211,12 +168,11 @@
         <div class="ttable-scroll"><table class="ttable" id="ttable">
           <thead><tr>
             <th scope="col">Status</th><th scope="col">Code</th><th scope="col">Task</th>
-            <th scope="col" class="td-hide-m">Weeks</th><th scope="col" class="td-dur">Wks</th>
-            <th scope="col" class="td-hide-m">Owner</th><th scope="col" class="td-hide-m">Fixed</th>
+            <th scope="col" class="td-hide-m">Weeks</th><th scope="col" class="td-hide-m">Lead</th><th scope="col" class="td-hide-m">Lock</th>
           </tr></thead>
           <tbody id="tbody"></tbody>
         </table></div>
-        <div class="empty" id="t-empty" hidden>No tasks match these filters. <button class="btn" type="button" id="t-empty-clear" style="margin-left:8px">Clear filters</button></div>
+        <div class="empty" id="t-empty" hidden>No tasks <button class="btn" type="button" id="t-empty-clear" style="margin-left:8px">Clear</button></div>
       </div>
     </div>
   </section>
@@ -224,26 +180,20 @@
   <!-- F · Analytics -->
   <section class="block" id="analytics" aria-labelledby="analytics-title">
     <div class="wrap" data-depth="section">
-      <div class="sec-head reveal">
-        <div>
-          <div class="eyebrow">Analytics</div>
-          <h2 class="sec-title" id="analytics-title">Load and completion</h2>
-        </div>
-        <p class="sec-aside">Computed from the schedule and your statuses. Solid means completed, a light tint means still open.</p>
-      </div>
+      <div class="sec-head reveal"><h2 class="sec-title" id="analytics-title">Analytics</h2></div>
       <div class="an-grid">
-        <div class="an-panel wide glass reveal" data-lift data-depth="panel">
-          <div class="an-head"><h3 class="an-title">Planned workload by week</h3><span class="an-sub">active subtasks per week, stacked by package</span></div>
+        <div class="an-panel wide glass reveal" data-depth="panel">
+          <div class="an-head"><h3 class="an-title">Workload by week</h3></div>
           <svg class="chart" id="ch-week" viewBox="0 0 640 470" role="img" aria-label="Active subtasks per week stacked by work package"></svg>
           <div class="an-legend" id="ch-week-legend"></div>
         </div>
-        <div class="an-panel glass reveal" data-lift data-depth="panel">
-          <div class="an-head"><h3 class="an-title">Task-weeks by package</h3><span class="an-sub">bar length = scheduled task-weeks</span></div>
-          <svg class="chart" id="ch-wp" viewBox="0 0 420 250" role="img" aria-label="Scheduled task-weeks and weighted completion by work package"></svg>
+        <div class="an-panel glass reveal" data-depth="panel">
+          <div class="an-head"><h3 class="an-title">Packages</h3></div>
+          <svg class="chart" id="ch-wp" viewBox="0 0 420 212" role="img" aria-label="Scheduled task-weeks and weighted completion by work package"></svg>
         </div>
-        <div class="an-panel glass reveal" data-lift data-depth="panel">
-          <div class="an-head"><h3 class="an-title">Distribution by owner</h3><span class="an-sub">tasks and task-weeks per lead role</span></div>
-          <svg class="chart" id="ch-owner" viewBox="0 0 420 206" role="img" aria-label="Tasks and task-weeks by owner role"></svg>
+        <div class="an-panel glass reveal" data-depth="panel">
+          <div class="an-head"><h3 class="an-title">Leads</h3></div>
+          <svg class="chart" id="ch-owner" viewBox="0 0 420 190" role="img" aria-label="Tasks and task-weeks by owner role"></svg>
         </div>
       </div>
     </div>
@@ -252,16 +202,9 @@
   <!-- G · Milestones -->
   <section class="block" id="milestones" aria-labelledby="milestones-title">
     <div class="wrap" data-depth="section">
-      <div class="sec-head reveal">
-        <div>
-          <div class="eyebrow">Milestones</div>
-          <h2 class="sec-title" id="milestones-title">Presentations, midterm, deliveries</h2>
-        </div>
-        <p class="sec-aside">Presentations are amber circles, the midterm is the dark band, a coloured ◆ is a package's planned final week, and a lock counts that week's fixed task deliveries.</p>
-      </div>
-      <div class="ms-shell glass reveal" data-lift data-depth="panel">
+      <div class="sec-head reveal"><h2 class="sec-title" id="milestones-title">Milestones</h2></div>
+      <div class="ms-shell glass reveal" data-depth="panel">
         <div class="ms-scroll"><div class="ms-track" id="ms-track"></div></div>
-        <div class="agenda" id="agenda"></div>
       </div>
     </div>
   </section>
@@ -269,27 +212,16 @@
   <!-- H · Team -->
   <section class="block" id="team" aria-labelledby="team-title">
     <div class="wrap" data-depth="section">
-      <div class="sec-head reveal">
-        <div>
-          <div class="eyebrow">Team 1 · DL</div>
-          <h2 class="sec-title" id="team-title">Team</h2>
-        </div>
-      </div>
-      <div class="team glass reveal" id="team-grid" data-lift data-depth="panel"></div>
+      <div class="sec-head reveal"><h2 class="sec-title" id="team-title">Team</h2></div>
+      <div class="team glass reveal" id="team-grid" data-depth="panel"></div>
     </div>
   </section>
 
-  <footer class="foot">
-    <div class="wrap"><div class="foot-in">
-      <span>Source: PeakDeconv_Gantt_Chart.xlsx (Task overview, Team 1 · DL). Statuses are stored locally in this browser.</span>
-      <span>Peak Deconvolution · Team 1 · Deep Learning</span>
-    </div></div>
-  </footer>
+  <footer class="foot"></footer>
 </main>
 
 <div class="scrim" id="scrim"></div>
-<aside class="drawer glass" id="drawer" data-lift role="dialog" aria-modal="true" aria-labelledby="dr-title" aria-hidden="true"></aside>
-<div class="light-overlay" id="light-overlay" aria-hidden="true"><div class="lo-core"></div></div>
+<aside class="drawer glass" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title" aria-hidden="true"></aside>
 <div class="tip" id="tip" role="tooltip"></div>
 
 <!-- data (generated from data/source/PeakDeconv_Gantt_Chart.xlsx) -->
@@ -316,7 +248,6 @@
 <script src="js/interactions/pointer-controller.js"></script>
 <script src="js/interactions/background-scene.js"></script>
 <script src="js/interactions/parallax.js"></script>
-<script src="js/interactions/cursor-light.js"></script>
 <!-- shared site chrome: the global menu panel only. This page's section
      navigation stays with js/ui/nav.js. -->
 <script src="../assets/js/site.js" defer></script>

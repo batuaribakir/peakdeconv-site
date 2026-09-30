@@ -1,7 +1,7 @@
 /* ==========================================================================
    Boot — renders every view from the model, wires them to the one state
    model, then tells the spatial layer that the surfaces exist.
-   Dashboard logic lives in js/core, js/ui and js/views; the spatial layer
+   Dashboard logic lives in js/core, js/ui and js/views; the depth layer
    (js/interactions) only listens for the "pd:surfaces" event.
    ========================================================================== */
 (function (P) {
@@ -37,7 +37,6 @@
   // console / README helpers
   P.reset = P.resetAll;
 
-  // spatial layer scripts load after this file; they collect surfaces on load
-  // and again whenever a view re-renders one (drawer open, etc.)
+  // the depth layer loads after this file and collects its elements on load
   document.dispatchEvent(new Event("pd:surfaces"));
 })(window.PD);

@@ -61,7 +61,6 @@ MANIFEST = [
     "dashboard/js/views/tracker.js",
     "dashboard/js/interactions/background-scene.js",
     "dashboard/js/interactions/config.js",
-    "dashboard/js/interactions/cursor-light.js",
     "dashboard/js/interactions/parallax.js",
     "dashboard/js/interactions/pointer-controller.js",
 ]

@@ -4,7 +4,7 @@
   function $() { return P.$.apply(null, arguments); }
   var MID = P.MID;
   var NW = P.NW;
-  var OWNERS = P.OWNERS;
+  var OWNER_SHORT = P.OWNER_SHORT;
   var OWNER_KEYS = P.OWNER_KEYS;
   var PKGS = P.PKGS;
   var PRES = P.PRES;
@@ -35,7 +35,7 @@
     var v = "var(--" + p.id.toLowerCase() + ")";
     if (part === "done") return "fill:" + v;
     if (part === "prog") return "fill:url(#h-" + svg.id + "-" + p.id + ")";
-    return "fill:color-mix(in oklab, " + v + " 20%, white)";
+    return "fill:color-mix(in oklab, " + v + " 42%, white)";
   }
   var geoTransition = "y 520ms cubic-bezier(.22,.8,.24,1), height 520ms cubic-bezier(.22,.8,.24,1), x 520ms cubic-bezier(.22,.8,.24,1), width 520ms cubic-bezier(.22,.8,.24,1)";
 
@@ -53,10 +53,7 @@
       if (v) svgEl("line", { x1: m.l, x2: m.l + pw, y1: Y(v), y2: Y(v) }, g);
       svgEl("text", { x: m.l - 8, y: Y(v) + 3.5, "text-anchor": "end" }, svg).textContent = v;
     }
-    svgEl("rect", { x: m.l + (MID - 1) * band, y: m.t, width: band, height: ph, fill: "rgba(31,43,56,0.05)" }, svg);
-    var midLbl = svgEl("text", { "text-anchor": "start", style: "font-size:9px;letter-spacing:.16em;fill:rgba(31,43,56,.6)" }, svg);
-    midLbl.setAttribute("transform", "translate(" + (m.l + (MID - 0.5) * band + 3) + " " + (Y(0) - 8) + ") rotate(-90)");
-    midLbl.textContent = "MIDTERM";
+    svgEl("rect", { x: m.l + (MID - 1) * band, y: m.t, width: band, height: ph, fill: "rgba(31,43,56,0.1)" }, svg);
     svgEl("line", { class: "baseline", x1: m.l, x2: m.l + pw, y1: Y(0), y2: Y(0) }, svg);
     chWeek = { svg: svg, Y: Y, yMax: yMax, ph: ph, rects: [] };
     for (var w = 1; w <= NW; w++) {
@@ -77,9 +74,7 @@
       var hit = svgEl("rect", { class: "hit", x: m.l + (w - 1) * band, y: m.t, width: band, height: ph + 34 }, col);
       (function (wk) { bindTip(hit, function () { return weekTip(wk); }); })(w);
     }
-    svgEl("text", { x: m.l + pw, y: VH - 6, "text-anchor": "end", style: "font-size:9.5px" }, svg).textContent = "week";
-    $("#ch-week-legend").innerHTML = PKGS.map(function (p) { return '<span data-wp="' + p.id + '"><i></i>' + p.id + " " + esc(p.short) + "</span>"; }).join("") +
-      '<span style="margin-left:auto;color:var(--ink-3)">solid completed · hatched in progress · tint open</span>';
+    $("#ch-week-legend").innerHTML = PKGS.map(function (p) { return '<span data-wp="' + p.id + '"><i></i>' + esc(p.short) + "</span>"; }).join("");
   }
   function updateWeekChart(d) {
     var stackAcc = {};
@@ -94,31 +89,29 @@
 
   var chWp = {};
   function buildWpChart() {
-    var svg = $("#ch-wp"), VW = 420, lab = 118, right = 74, rowH = 38, top = 8;
+    var svg = $("#ch-wp"), VW = 420, lab = 150, right = 62, rowH = 34, top = 6;
     var maxTW = Math.max.apply(null, PKGS.map(function (p) { return p.tw; }));
     var sc = (VW - lab - right) / maxTW;
     svg.innerHTML = ""; hatchDefs(svg);
     chWp = { svg: svg, rows: [] };
     PKGS.forEach(function (p, i) {
       var y = top + i * rowH, g = svgEl("g", { "data-wp": p.id }, svg);
-      svgEl("text", { class: "lbl-strong", x: 0, y: y + 13 }, g).textContent = p.id;
-      svgEl("text", { class: "lbl", x: 34, y: y + 13 }, g).textContent = p.short;
+      svgEl("text", { class: "lbl-strong", x: 0, y: y + 14 }, g).textContent = p.id;
+      svgEl("text", { class: "lbl", x: 46, y: y + 14 }, g).textContent = p.short;
       var parts = {};
       ["done", "prog", "todo"].forEach(function (part) {
-        var r = svgEl("rect", { y: y + 4, height: 13, rx: 2.5, style: wpFill(p, part, svg) + ";transition:" + geoTransition }, g);
+        var r = svgEl("rect", { y: y + 3, height: 17, rx: 3, style: wpFill(p, part, svg) + ";transition:" + geoTransition }, g);
         r.style.x = lab + "px"; r.style.width = "0px";
         parts[part] = r;
       });
-      var val = svgEl("text", { class: "val", x: lab + p.tw * sc + 8, y: y + 14.5 }, g);
-      svgEl("text", { class: "lbl", x: lab, y: y + 32, style: "font-size:10px;fill:var(--ink-3)" }, g).textContent = p.tw + " task-weeks · " + p.tasks.length + " tasks";
-      var hit = svgEl("rect", { class: "hit", x: 0, y: y, width: VW, height: rowH - 2 }, g);
+      var val = svgEl("text", { class: "val", x: lab + p.tw * sc + 8, y: y + 15.5 }, g);
+      var hit = svgEl("rect", { class: "hit", x: 0, y: y, width: VW, height: rowH }, g);
       bindTip(hit, function () {
         var x = derive().wp[p.id];
         return "<span class='tk'>" + p.id + " · " + esc(p.short) + "</span>" +
-          "<span class='tr'><span>Completed</span><span>" + x.count.done + " tasks · " + x.tw.done + " tw</span></span>" +
-          "<span class='tr'><span>In progress</span><span>" + x.count.prog + " tasks · " + x.tw.prog + " tw</span></span>" +
-          "<span class='tr'><span>Not started</span><span>" + x.count.todo + " tasks · " + x.tw.todo + " tw</span></span>" +
-          "<span class='tr' style='margin-top:4px'><b>Weighted</b><span>" + pct(x.pct) + "%</span></span>";
+          "<span class='tr'><span>Done</span><span>" + x.count.done + "</span></span>" +
+          "<span class='tr'><span>In progress</span><span>" + x.count.prog + "</span></span>" +
+          "<span class='tr'><span>Not started</span><span>" + x.count.todo + "</span></span>";
       });
       chWp.rows.push({ p: p, parts: parts, val: val, sc: sc, lab: lab });
     });
@@ -137,7 +130,7 @@
 
   var chOwn = {};
   function buildOwnerChart() {
-    var svg = $("#ch-owner"), VW = 420, lab = 86, W0 = VW - lab - 6;
+    var svg = $("#ch-owner"), VW = 420, lab = 92, W0 = VW - lab - 6;
     svg.innerHTML = ""; hatchDefs(svg);
     var ownFill = { bme: "fill:var(--slate)", eee: "fill:color-mix(in oklab, var(--slate) 16%, white);stroke:color-mix(in oklab, var(--slate) 55%, white);stroke-width:1", shared: "fill:url(#h-ch-owner-shared);stroke:color-mix(in oklab, var(--slate) 55%, white);stroke-width:1" };
     var byTasks = {}, byTw = {};
@@ -145,36 +138,35 @@
       byTasks[o] = TASKS.filter(function (t) { return t.owner === o; }).length;
       byTw[o] = TASKS.filter(function (t) { return t.owner === o; }).reduce(function (s, t) { return s + t.duration; }, 0);
     });
-    [["Tasks", byTasks, TASKS.length, 6], ["Task-weeks", byTw, TOTAL_TW, 50]].forEach(function (row) {
+    [["Tasks", byTasks, TASKS.length, 4], ["Weeks", byTw, TOTAL_TW, 40]].forEach(function (row) {
       var y = row[3], cur = lab;
-      svgEl("text", { class: "lbl", x: 0, y: y + 14 }, svg).textContent = row[0];
+      svgEl("text", { class: "lbl", x: 0, y: y + 15 }, svg).textContent = row[0];
       OWNER_KEYS.forEach(function (o) {
         var w = row[1][o] / row[2] * W0;
-        var r = svgEl("rect", { x: cur + 0.5, y: y + 2, width: Math.max(0, w - 2.5), height: 16, rx: 3, style: ownFill[o] }, svg);
-        if (w > 26) svgEl("text", { x: cur + 7, y: y + 14, style: "font-family:var(--f-mono);font-size:10.5px;font-weight:600;" + (o === "bme" ? "fill:#fff" : "fill:var(--ink);paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round") }, svg).textContent = row[1][o];
-        bindTip(r, function () { return "<span class='tk'>" + row[0] + "</span><b>" + OWNERS[o].label + "</b> · " + row[1][o] + " of " + row[2] + " (" + pct(row[1][o] / row[2]) + "%)"; });
+        var r = svgEl("rect", { x: cur + 0.5, y: y + 1, width: Math.max(0, w - 2.5), height: 20, rx: 4, style: ownFill[o] }, svg);
+        if (w > 26) svgEl("text", { x: cur + 8, y: y + 16, style: "font-family:var(--f-mono);font-size:13px;font-weight:600;" + (o === "bme" ? "fill:#fff" : "fill:var(--ink);paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round") }, svg).textContent = row[1][o];
+        bindTip(r, function () { return "<b>" + OWNER_SHORT[o] + "</b> · " + row[1][o] + " / " + row[2]; });
         cur += w;
       });
     });
     // per-owner completion rows
     chOwn = { svg: svg, rows: [] };
     OWNER_KEYS.forEach(function (o, i) {
-      var y = 104 + i * 32;
-      var sw = svgEl("rect", { x: 0, y: y + 2, width: 12, height: 10, rx: 2, style: ownFill[o] }, svg);
-      svgEl("text", { class: "lbl", x: 18, y: y + 11 }, svg).textContent = OWNERS[o].label;
-      svgEl("rect", { x: lab, y: y + 4, width: W0 - 64, height: 6, rx: 3, fill: "rgba(26,32,40,0.07)" }, svg);
-      var bar = svgEl("rect", { x: lab, y: y + 4, height: 6, rx: 3, fill: "var(--st-done)", style: "transition:" + geoTransition }, svg);
+      var y = 86 + i * 34;
+      svgEl("rect", { x: 0, y: y + 1, width: 14, height: 12, rx: 3, style: ownFill[o] }, svg);
+      svgEl("text", { class: "lbl", x: 22, y: y + 13 }, svg).textContent = OWNER_SHORT[o];
+      svgEl("rect", { x: lab, y: y + 2, width: W0 - 70, height: 10, rx: 5, fill: "rgba(26,32,40,0.12)" }, svg);
+      var bar = svgEl("rect", { x: lab, y: y + 2, height: 10, rx: 5, fill: "var(--st-done)", style: "transition:" + geoTransition }, svg);
       bar.style.width = "0px";
-      var val = svgEl("text", { class: "val", x: VW - 2, y: y + 11, "text-anchor": "end" }, svg);
-      chOwn.rows.push({ o: o, bar: bar, val: val, W: W0 - 64 });
+      var val = svgEl("text", { class: "val", x: VW - 2, y: y + 13, "text-anchor": "end" }, svg);
+      chOwn.rows.push({ o: o, bar: bar, val: val, W: W0 - 70 });
     });
-    svgEl("text", { class: "lbl", x: 0, y: 92, style: "font-size:10px;fill:var(--ink-3);letter-spacing:.06em" }, svg).textContent = "WEIGHTED COMPLETION BY LEAD";
   }
   function updateOwnerChart(d) {
     chOwn.rows.forEach(function (r) {
       var x = d.owner[r.o];
       r.bar.style.width = (x.pct * r.W) + "px";
-      r.val.textContent = x.done + "/" + x.tasks + " · " + pct(x.pct) + "%";
+      r.val.textContent = pct(x.pct) + "%";
     });
   }
 

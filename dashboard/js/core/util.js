@@ -37,6 +37,7 @@
   /* ---------- icons (one stroke family, 16px grid) ------------------------ */
   var I = {
     lock: '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.6" fill="currentColor"/><path d="M5.5 7V5.2a2.5 2.5 0 0 1 5 0V7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
+    unlock: '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.6" fill="currentColor"/><path d="M5.5 7V5.2a2.5 2.5 0 0 1 4.8-1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
     close: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
     check: '<svg class="bar-check" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.3l2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     reset: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5v2.8h2.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -58,11 +59,22 @@
     if (s === "prog") return '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 2.4a5.6 5.6 0 0 1 0 11.2z" fill="currentColor"/></svg>';
     return '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.3" fill="currentColor"/><path d="M5.2 8.2l1.9 1.9 3.8-4" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   }
-  var OWNER_SHORT = { bme: "BME", eee: "EEE", shared: "BME+EEE" };
-  function ownerChip(o, extra, short) {
-    return '<span class="owner-chip ' + (extra || "") + '" data-owner="' + o + '"' + (short ? ' title="' + esc(OWNERS[o].label + " — " + OWNERS[o].meaning) + '"' : "") + '><span class="sw sw-' + o + '"></span>' + esc(short ? OWNER_SHORT[o] : OWNERS[o].label) + "</span>";
+  var OWNER_SHORT = { bme: "BME", eee: "EEE", shared: "BME + EEE" };
+  function ownerChip(o, extra) {
+    return '<span class="owner-chip ' + (extra || "") + '" data-owner="' + o + '"><span class="sw sw-' + o + '"></span>' + esc(OWNER_SHORT[o]) + "</span>";
   }
-  function dlBadge() { return '<span class="dl-badge" title="Team 1 · Deep Learning modelling task">DL</span>'; }
+  // One toggle for a task's delivery week, used by the Gantt, the table and the drawer.
+  function lockLabel(t, locked) { return (locked ? "Unlock" : "Lock") + " delivery week, " + t.id + ", week " + t.fixedWeek; }
+  function lockTip(locked) { return locked ? "Locked" : "Unlocked"; }
+  function syncLock(el, t) {
+    var on = P.isLocked(t.id);
+    el.classList.toggle("is-locked", on);
+    el.setAttribute("aria-pressed", String(on));
+    el.setAttribute("aria-label", lockLabel(t, on));
+    if (el.hasAttribute("data-tip")) el.setAttribute("data-tip", lockTip(on));
+    var ic = el.querySelector("svg.lock-ic");
+    if (ic) ic.outerHTML = (on ? I.lock : I.unlock).replace("<svg", '<svg class="lock-ic"');
+  }
   function segControl(t) {
     return '<div class="seg" role="group" aria-label="Status of ' + esc(t.id) + '">' + S_KEYS.map(function (s) {
       return '<button type="button" data-set="' + s + '" data-id="' + t.id + '" data-s="' + s + '" aria-pressed="' + (S(t.id) === s) + '" aria-label="' + STATUS[s].label + '" data-tip="' + STATUS[s].label + '">' + segIcon(s) + "</button>";
@@ -79,8 +91,8 @@
   P.glyph = glyph;
   P.segIcon = segIcon;
   P.ownerChip = ownerChip;
-  P.dlBadge = dlBadge;
   P.segControl = segControl;
+  P.syncLock = syncLock;
   P.reduceMotion = reduceMotion;
   P.SVGNS = SVGNS;
   P.I = I;
