@@ -41,6 +41,8 @@
       '<div class="dr-weeks" aria-hidden="true">' + weeks + "</div>" +
       '<div class="dr-lockrow"><span>Week ' + t.fixedWeek + '</span><button type="button" class="lock-btn lock-switch' + (locked ? " is-locked" : "") + '" data-lock="' + t.id + '" aria-pressed="' + locked + '" aria-label="' + (locked ? "Unlock" : "Lock") + " delivery week, " + t.id + ", week " + t.fixedWeek + '">' +
         (locked ? I.lock : I.unlock).replace("<svg", '<svg class="lock-ic"') + '<span class="lock-txt">' + (locked ? "Locked" : "Unlocked") + "</span></button></div>" +
+      (locked ? "" : '<div class="dr-move"><button type="button" class="btn" data-move="-1" aria-label="Move one week earlier"' + (P.canMove(t.id, -1) ? "" : " disabled") + ">" + I.left + '</button><button type="button" class="btn" data-move="1" aria-label="Move one week later"' + (P.canMove(t.id, 1) ? "" : " disabled") + ">" + I.right + "</button>" +
+        (P.shiftOf(t.id) ? '<button type="button" class="btn" data-plan aria-label="Back to the planned weeks">' + I.reset + "Plan</button>" : "") + "</div>") +
       '<dl class="dl-list">' +
       "<dt>Weeks</dt><dd>" + esc(t.weeksLabel.replace(/^Weeks? /, "")) + "</dd>" +
       "<dt>Duration</dt><dd>" + t.duration + " wk</dd>" +
@@ -74,6 +76,8 @@
     if (e.target.closest("#dr-close")) { closeDrawer(); return; }
     var b = e.target.closest("[data-dset]"); if (b) { setStatus(drawerId, b.dataset.dset); return; }
     var lk = e.target.closest("[data-lock]"); if (lk) { toggleLock(drawerId); return; }
+    var mv = e.target.closest("[data-move]"); if (mv) { P.moveTask(drawerId, +mv.dataset.move); return; }
+    if (e.target.closest("[data-plan]")) { P.moveTaskTo(drawerId, 0); return; }
     var g = e.target.closest("[data-goto]"); if (g) openDrawer(g.dataset.goto);
   });
   scrim.addEventListener("click", closeDrawer);
@@ -87,12 +91,20 @@
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     }
   });
+  // redraw the open drawer in place and keep focus on the same control
+  function refreshDrawer() {
+    if (!drawerId) return;
+    var a = document.activeElement, sel = null;
+    if (drawer.contains(a)) sel = a.hasAttribute("data-move") ? '[data-move="' + a.dataset.move + '"]' : a.hasAttribute("data-lock") ? "[data-lock]" : a.hasAttribute("data-plan") ? "[data-plan]" : a.id ? "#" + a.id : null;
+    drawer.innerHTML = drawerHtml(TASK[drawerId]);
+    if (sel) { var n = $(sel, drawer); if (n && !n.disabled) n.focus({ preventScroll: true }); else $("#dr-close").focus({ preventScroll: true }); }
+  }
   function updateDrawer() {
     if (!drawerId) return;
     var s = S(drawerId);
     $$("[data-dset]", drawer).forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.dset === s)); });
-    var lb = $("[data-lock]", drawer);
-    if (lb) { syncLock(lb, TASK[drawerId]); $(".lock-txt", lb).textContent = isLocked(drawerId) ? "Locked" : "Unlocked"; }
+    // the move controls exist only while the task is unlocked
+    if (!!$(".dr-move", drawer) === isLocked(drawerId)) refreshDrawer();
     $$("[data-goto]", drawer).forEach(function (b) {
       var old = $(".status-glyph", b); old.outerHTML = glyph(S(b.dataset.goto));
     });
@@ -102,4 +114,5 @@
   P.openDrawer = openDrawer;
   P.closeDrawer = closeDrawer;
   P.updateDrawer = updateDrawer;
+  P.refreshDrawer = refreshDrawer;
 })(window.PD = window.PD || {});

@@ -134,11 +134,17 @@
       $("#t-no").focus();
     }
     idle();
+    // "Restore plan" appears only while some task sits away from its planned weeks
+    var restore = $("#t-restore");
+    restore.addEventListener("click", function () { P.restorePlan(); });
+    P.refreshRestore();
   }
+  function refreshRestore() { $("#t-restore").hidden = P.movedCount() === 0; }
 
   P.fillFilters = fillFilters;
   P.matches = matches;
   P.renderTable = renderTable;
   P.updateTableStatus = updateTableStatus;
   P.bindTable = bindTable;
+  P.refreshRestore = refreshRestore;
 })(window.PD = window.PD || {});

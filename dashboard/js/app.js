@@ -29,6 +29,19 @@
   P.onChange(P.updateOwnerChart);
   P.onChange(P.updateMilestones);
   P.onChange(P.updateDrawer);
+
+  // a task was moved (or the plan restored): redraw everything that shows weeks
+  P.onSchedule(function () {
+    P.renderTrace(false);
+    P.refreshGantt();
+    P.renderPlate();
+    P.renderTable();
+    P.renderMilestones();
+    P.buildWeekChart();
+    P.snapWeekChart();
+    P.refreshDrawer();
+    P.refreshRestore();
+  });
   P.emit(null);
 
   P.initNav();

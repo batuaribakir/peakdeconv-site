@@ -87,6 +87,13 @@
     });
   }
 
+  function snapWeekChart() {
+    chWeek.rects.forEach(function (r) { r.el.style.transition = "none"; });
+    updateWeekChart(derive());
+    chWeek.svg.getBoundingClientRect();
+    chWeek.rects.forEach(function (r) { r.el.style.transition = geoTransition; });
+  }
+
   var chWp = {};
   function buildWpChart() {
     var svg = $("#ch-wp"), VW = 420, lab = 150, right = 62, rowH = 34, top = 6;
@@ -174,6 +181,7 @@
   P.wpFill = wpFill;
   P.buildWeekChart = buildWeekChart;
   P.updateWeekChart = updateWeekChart;
+  P.snapWeekChart = snapWeekChart;
   P.buildWpChart = buildWpChart;
   P.updateWpChart = updateWpChart;
   P.buildOwnerChart = buildOwnerChart;
