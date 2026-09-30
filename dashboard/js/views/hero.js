@@ -15,7 +15,7 @@
   function weekKind() { return P.weekKind.apply(null, arguments); }
 
   /* A · HERO — planned activity trace, one smoothed curve per work package */
-  function renderTrace() {
+  function renderTrace(animate) {
     var svg = $("#trace");
     var VW = 560, VH = 320, m = { l: 34, r: 10, t: 14, b: 40 };
     var pw = VW - m.l - m.r, ph = VH - m.t - m.b;
@@ -58,7 +58,7 @@
       svgEl("path", { class: "comp-line", "data-wp": p.id, d: path(comps[i], false), style: "stroke:var(--wp)" }, cg);
     });
     var sp = svgEl("path", { class: "sum", d: path(sum, false) }, svg);
-    if (!reduceMotion.matches && sp.getTotalLength) {
+    if (animate !== false && !reduceMotion.matches && sp.getTotalLength) {
       var L = sp.getTotalLength();
       sp.style.strokeDasharray = L; sp.style.strokeDashoffset = L;
       sp.getBoundingClientRect();

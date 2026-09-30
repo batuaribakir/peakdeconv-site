@@ -22,12 +22,31 @@
   function syncLock() { return P.syncLock.apply(null, arguments); }
   function toggleLock() { return P.toggleLock.apply(null, arguments); }
   var OWNER_SHORT = P.OWNER_SHORT;
+  var MID = P.MID;
+  var NW = P.NW;
+  function isLocked() { return P.isLocked.apply(null, arguments); }
   var state = P.state;
 
   /* ======================================================================
      C · GANTT
      ====================================================================== */
   var gantt = $("#gantt");
+  function wpTrack(p) {
+    return p.barSegments.map(function (s) { return '<div class="wp-bar" style="grid-column:' + s[0] + "/" + (s[1] + 1) + ';grid-row:1"></div>'; }).join("") +
+      '<button type="button" class="diamond" style="grid-column:' + p.finalWeek + ';grid-row:1" aria-label="' + p.id + " planned final week, week " + p.finalWeek + '" data-tip="' + esc("<b>" + p.id + "</b> " + p.title + " · Week " + p.finalWeek) + '" data-final="' + p.id + '"></button>';
+  }
+  function taskTrack(t) {
+    // where the task sat in the plan, when it has been moved
+    var ghost = P.shiftOf(t.id) ? t.base.segments.map(function (s) {
+      return '<div class="bar-ghost" style="grid-column:' + s[0] + "/" + (s[1] + 1) + ';grid-row:1"></div>';
+    }).join("") : "";
+    var bars = t.segments.map(function (s) {
+      return '<div class="bar o-' + t.owner + '" style="grid-column:' + s[0] + "/" + (s[1] + 1) + ';grid-row:1">' +
+        '<span class="bar-state"></span></div>';
+    }).join("");
+    var fx = '<button type="button" class="fx is-locked" style="grid-column:' + t.fixedWeek + ';grid-row:1" data-lock="' + t.id + '" data-tip="Locked" aria-pressed="true">' + I.lock.replace("<svg", '<svg class="lock-ic"') + "</button>";
+    return ghost + bars + fx;
+  }
   function renderGantt() {
     var head = '<div class="g-head" role="row"><div class="g-corner" role="columnheader"></div>' +
       WEEKS.map(function (w) {
@@ -45,19 +64,11 @@
     var rows = PKGS.map(function (p) {
       var wpRow = '<div class="g-row wp" role="row" data-wp="' + p.id + '">' +
         '<div class="g-label" role="rowheader"><span class="g-code">' + p.id + '</span><span class="g-name"><span class="t">' + esc(p.title) + '</span></span><span class="g-meta"><span class="g-wpcount" data-wpcount="' + p.id + '">0/' + p.tasks.length + "</span></span></div>" +
-        '<div class="g-track">' +
-        p.barSegments.map(function (s) { return '<div class="wp-bar" style="grid-column:' + s[0] + "/" + (s[1] + 1) + ';grid-row:1"></div>'; }).join("") +
-        '<button type="button" class="diamond" style="grid-column:' + p.finalWeek + ';grid-row:1" aria-label="' + p.id + " planned final week, week " + p.finalWeek + '" data-tip="' + esc("<b>" + p.id + "</b> " + p.title + " · Week " + p.finalWeek) + '" data-final="' + p.id + '"></button>' +
-        "</div></div>";
+        '<div class="g-track">' + wpTrack(p) + "</div></div>";
       var tRows = p.tasks.map(function (t) {
-        var bars = t.segments.map(function (s, i) {
-          return '<div class="bar o-' + t.owner + '" style="grid-column:' + s[0] + "/" + (s[1] + 1) + ';grid-row:1">' +
-            '<span class="bar-state"></span></div>';
-        }).join("");
-        var fx = '<button type="button" class="fx is-locked" style="grid-column:' + t.fixedWeek + ';grid-row:1" data-lock="' + t.id + '" data-tip="Locked" aria-pressed="true">' + I.lock.replace("<svg", '<svg class="lock-ic"') + "</button>";
         return '<div class="g-row task" role="row" tabindex="0" data-id="' + t.id + '" data-wp="' + t.wp + '" data-owner="' + t.owner + '" aria-label="' + esc(t.id + " " + t.name + ", " + t.weeksLabel + ", " + OWNERS[t.owner].label) + '">' +
           '<div class="g-label" role="rowheader"><span class="g-code">' + t.id + '</span><span class="g-name"><span class="t">' + esc(t.name) + "</span>" + "</span>" + '<span class="g-meta">' + ownerChip(t.owner) + '<span class="g-status" data-gs="' + t.id + '"></span></span></div>' +
-          '<div class="g-track">' + bars + fx + "</div></div>";
+          '<div class="g-track">' + taskTrack(t) + "</div></div>";
       }).join("");
       return wpRow + tRows;
     }).join("");
@@ -84,6 +95,49 @@
       $$(".is-hl, .is-hl-wp, .c-hl", gantt).forEach(function (n) { n.classList.remove("is-hl", "is-hl-wp", "c-hl"); });
       $$("#gantt-legend [data-owner]").forEach(function (n) { n.style.color = ""; n.style.fontWeight = ""; });
     }
+    // rebuild the bars after a task has moved; the rows, labels and listeners stay
+    P.refreshGantt = function () {
+      var keep = hlId; clearHl();
+      PKGS.forEach(function (p) {
+        $('.g-row.wp[data-wp="' + p.id + '"] .g-track', gantt).innerHTML = wpTrack(p);
+        p.tasks.forEach(function (t) {
+          var row = $('.g-row.task[data-id="' + t.id + '"]', gantt);
+          $(".g-track", row).innerHTML = taskTrack(t);
+          syncLock($('[data-lock="' + t.id + '"]', row), t);
+        });
+      });
+      if (keep) highlight(keep);
+    };
+
+    // drag a bar of an unlocked task sideways; it snaps to working weeks
+    var drag = null, suppressClick = false;
+    function ordOf(col, dx) { return col < MID ? col - 1 : col > MID ? col - 2 : (dx > 0 ? MID - 1 : MID - 2); }
+    gantt.addEventListener("pointerdown", function (e) {
+      if (e.button !== 0) return;
+      var grip = e.target.closest(".bar, .fx"), row = grip && grip.closest(".g-row.task");
+      if (!row || isLocked(row.dataset.id)) return;
+      var t = TASK[row.dataset.id];
+      drag = { id: t.id, x0: e.clientX, col0: t.weeks[0], start: P.shiftOf(t.id), colW: $(".g-track", row).getBoundingClientRect().width / NW, on: false, row: row, pid: e.pointerId };
+    });
+    gantt.addEventListener("pointermove", function (e) {
+      if (!drag) return;
+      var dx = e.clientX - drag.x0;
+      if (!drag.on) {
+        if (Math.abs(dx) < 5) return;
+        drag.on = true; gantt.classList.add("is-dragging");
+        try { drag.row.setPointerCapture(drag.pid); } catch (err) { /* ignore */ }
+      }
+      var col = Math.max(1, Math.min(NW, drag.col0 + Math.round(dx / drag.colW)));
+      P.moveTaskTo(drag.id, drag.start + ordOf(col, dx) - ordOf(drag.col0, 0));
+    });
+    function endDrag() {
+      if (!drag) return;
+      if (drag.on) { suppressClick = true; setTimeout(function () { suppressClick = false; }, 60); }
+      gantt.classList.remove("is-dragging"); drag = null;
+    }
+    gantt.addEventListener("pointerup", endDrag);
+    gantt.addEventListener("pointercancel", endDrag);
+
     gantt.addEventListener("pointerover", function (e) {
       var r = e.target.closest(".g-row.task"); if (r) highlight(r.dataset.id);
       else if (e.target.closest(".g-row.wp, .g-head")) clearHl();
@@ -92,6 +146,7 @@
     gantt.addEventListener("focusin", function (e) { var r = e.target.closest(".g-row.task"); if (r) highlight(r.dataset.id); });
     gantt.addEventListener("focusout", function (e) { if (!gantt.contains(e.relatedTarget)) clearHl(); });
     gantt.addEventListener("click", function (e) {
+      if (suppressClick) { suppressClick = false; return; }
       var lk = e.target.closest("[data-lock]");
       if (lk) { e.stopPropagation(); toggleLock(lk.dataset.lock); return; }
       var dm = e.target.closest("[data-final]");
@@ -101,6 +156,7 @@
     gantt.addEventListener("keydown", function (e) {
       var r = e.target.closest(".g-row.task"); if (!r || e.target !== r) return;
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDrawer(r.dataset.id, r); }
+      if (e.altKey && (e.key === "ArrowLeft" || e.key === "ArrowRight")) { e.preventDefault(); P.moveTask(r.dataset.id, e.key === "ArrowLeft" ? -1 : 1); return; }
       if (e.key === "ArrowDown" || e.key === "ArrowUp") {
         e.preventDefault();
         var all = $$(".g-row.task", gantt), i = all.indexOf(r) + (e.key === "ArrowDown" ? 1 : -1);
@@ -119,7 +175,7 @@
       '<span class="lg-item"><span class="sw sw-mid"></span>Midterm</span>' +
       '<span class="lg-item"><span class="sw sw-diamond"></span>Final week</span>' +
       '<span class="lg-item"><span class="sw-lock is-locked">' + I.lock + "</span>Locked</span>" +
-      '<span class="lg-item"><span class="sw-lock">' + I.unlock + "</span>Unlocked</span></span>";
+      '<span class="lg-item" data-tip="Drag to move"><span class="sw-lock">' + I.unlock + "</span>Unlocked</span></span>";
     $$("button[data-owner]", lg).forEach(function (b) {
       b.addEventListener("click", function () {
         var on = b.getAttribute("aria-pressed") !== "true";
@@ -144,6 +200,7 @@
       });
       syncLock($('[data-lock="' + t.id + '"]', gantt), t);
       var row = $('.g-row.task[data-id="' + t.id + '"]', gantt);
+      row.classList.toggle("is-free", !P.isLocked(t.id));
       row.setAttribute("aria-label", t.id + " " + t.name + ", " + t.weeksLabel + ", " + OWNERS[t.owner].label + ", " + STATUS[s].label);
     });
     PKGS.forEach(function (p) { $('[data-wpcount="' + p.id + '"]', gantt).textContent = d.wp[p.id].count.done + "/" + p.tasks.length; });

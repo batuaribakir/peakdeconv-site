@@ -63,6 +63,8 @@
         }).join("");
       });
     });
+    if (el.__bound) return;
+    el.__bound = true;
     el.addEventListener("click", function (e) {
       var dm = e.target.closest("[data-final]"); if (dm) { openWp(dm.dataset.final, dm); return; }
       var lk = e.target.closest("[data-fxweek]");

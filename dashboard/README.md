@@ -87,7 +87,17 @@ Statuses and filters are saved in `localStorage` under `pd-dashboard.team1.v1`. 
 
 **Reset progress:** go to **Tasks → Reset** and confirm. Alternatively, run `PD.reset()` in the console.
 
-**Delivery lock:** every task's delivery week starts locked, as in the workbook. Click the lock on the task's last Gantt cell, in the Tasks table, or in the task drawer to unlock it, and click again to lock it. The choice is saved with the statuses (`unlocked` in the same `localStorage` entry). The Milestones lane and the "next" card count only locked deliveries. Reset progress does not change locks.
+**Lock and move:** every task starts locked, at the week the workbook plans. Click the lock on the task's last Gantt cell, in the Tasks table, or in the task drawer to unlock it, and click again to lock the task where it now is.
+
+An unlocked task can be moved:
+
+- drag its bar sideways in the Gantt, or
+- use the arrow buttons in the task drawer, or
+- focus its Gantt row and press Alt+←/→.
+
+It moves in whole working weeks, so the midterm week is skipped, and it stops at weeks 1 and 15. The task keeps its length, and its delivery week moves with it. A dashed outline shows where the plan had it. The package's planned final week, bars, workload charts, milestones and the "next" card follow the move. **Restore plan** in the Tasks section puts every task back; **Plan** in the drawer does it for one task.
+
+Locks and moves are saved with the statuses (`unlocked` and `moved` in the same `localStorage` entry). Reset progress does not change them. The Milestones lane and the "next" card count only locked deliveries.
 
 ## Spatial layer
 

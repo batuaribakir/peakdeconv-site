@@ -405,6 +405,11 @@ section.block.hero { padding-top: calc(var(--nav-h) + 12px + var(--s7) + var(--s
 .fx:hover { box-shadow: inset 0 0 0 3px var(--ink); }
 .fx:not(.is-locked):hover { box-shadow: none; outline-color: var(--ink); }
 
+/* an unlocked task can be dragged sideways; a dashed outline marks where the plan had it */
+.g-row.is-free .bar { cursor: grab; touch-action: none; }
+.gantt.is-dragging, .gantt.is-dragging * { cursor: grabbing !important; user-select: none; }
+.bar-ghost { height: 1.6rem; margin: 0 3px; border-radius: 6px; border: 2px dashed var(--ink-4); pointer-events: none; }
+
 .wp-bar { height: 4px; margin: 0; border-radius: 2px; background: var(--wp); opacity: 0.7; }
 .diamond {
   justify-self: center; position: relative; z-index: 2; width: 1rem; height: 1rem; border-radius: 2.5px; border: 0; padding: 0;
@@ -634,6 +639,9 @@ footer.foot { height: var(--s8); }
 .dr-weeks .dw span.p { color: var(--amber-ink); font-weight: 600; }
 .dr-lockrow { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); font-family: var(--f-mono); font-size: var(--t-m); font-weight: 700; }
 .lock-switch { height: 2.5rem; padding: 0 16px; font-size: var(--t-s); }
+.dr-move { display: flex; gap: var(--s2); margin-top: calc(var(--s3) * -1); }
+.dr-move .btn { padding: 0 14px; }
+.dr-move .btn:disabled { opacity: 0.35; cursor: default; }
 .dl-list { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: 0; margin: 0; }
 .dl-list dt, .dl-list dd { padding: 10px 0; border-bottom: 1px solid var(--line-soft); font-size: var(--t-s); margin: 0; }
 .dl-list dt { color: var(--ink-3); font-weight: 600; }
