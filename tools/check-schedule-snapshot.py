@@ -2,9 +2,9 @@
 """Compare the schedule values copied into the static pages with the workbook.
 
 The dashboard builds everything it shows from dashboard/data/project-data.js at
-load time, so it is never stale. Home, Project and Presentations quote the same
-values in plain HTML, which means they can fall behind once the workbook is
-re-extracted. This script reads project-data.js, re-derives every quoted value
+load time, so it is never stale. Project and Presentations quote the same values
+in plain HTML, which means they can fall behind once the workbook is
+re-extracted. (Home quotes no schedule values, so it is not checked.) This script reads project-data.js, re-derives every quoted value
 and reports the ones that no longer match.
 
 Usage, from the repository root:
@@ -70,30 +70,6 @@ def main():
     n_tasks = len(tasks)
     pres = [w["week"] for w in weeks if w["kind"] == "presentation"]
     midterm = [w["week"] for w in weeks if w["kind"] == "midterm"]
-
-    # ---- Home -------------------------------------------------------------
-    home = (ROOT / "index.html").read_text(encoding="utf-8")
-    for wp in packages:
-        subs = [t for t in tasks if t["wp"] == wp["id"]]
-        block = re.search(
-            r'<div class="wp-row" data-wp="%s">(.*?)</div>' % wp["id"],
-            home, re.S)
-        if not block:
-            problems.append(("index.html", wp["id"], "row missing", wp["title"]))
-            continue
-        cells = re.findall(r'<span class="wp-[a-z]+">(.*?)</span>', block.group(1), re.S)
-        if len(cells) != 4:
-            problems.append(("index.html", wp["id"], "unexpected row shape", "4 cells"))
-            continue
-        _code, name, wspan, sub = (text(c) for c in cells)
-        compare("index.html", wp["id"] + " title", name, wp["title"])
-        compare("index.html", wp["id"] + " span", wspan, span(wp["taskWeeks"]))
-        compare("index.html", wp["id"] + " subtasks", sub, "%d subtasks" % len(subs))
-
-    contains("index.html", home, "duration", "%d project weeks" % n_weeks)
-    contains("index.html", home, "totals", "%d work packages, %d subtasks" % (len(packages), n_tasks))
-    contains("index.html", home, "midterm", "Week %d" % midterm[0])
-    contains("index.html", home, "presentations", "Weeks " + ", ".join(str(w) for w in pres))
 
     # ---- Project ----------------------------------------------------------
     proj = (ROOT / "project" / "index.html").read_text(encoding="utf-8")

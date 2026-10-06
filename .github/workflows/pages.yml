@@ -38,7 +38,7 @@ jobs:
         with:
           python-version: '3.x'
 
-      # Home, Project and Presentations quote the schedule in plain HTML.
+      # Project and Presentations quote the schedule in plain HTML.
       # This fails the run if any of those copied values have fallen behind
       # dashboard/data/project-data.js, so a stale page is never published.
       - name: Check the schedule snapshot against the workbook data
