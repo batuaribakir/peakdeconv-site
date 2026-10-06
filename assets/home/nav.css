@@ -1,0 +1,239 @@
+/* MAVIS Home — site navigation (behaviour in nav.js).
+ *
+ * Home's own copy of the site's global menu. Home cannot load assets/css/site.css (see the
+ * README, "Home"), so everything here is namespaced .home-nav-* and nothing reaches the scene.
+ * The menu is one fixed layer inside #root, before #runway: it has no box in the document's
+ * flow, so it adds nothing to the height that Home's scroll progress is measured against.
+ *
+ * Closed, the handle follows the page's palette (Home's --ink-rgb / --cream-rgb flip with
+ * body.inverted). The open panel is always dark.
+ */
+
+.home-nav {
+  --home-nav-ink: 3 16 17;
+  --home-nav-cream: 244 239 230;
+  --home-nav-teal: 34 190 198;
+  --home-nav-ease: cubic-bezier(.22, .61, .36, 1);                       /* Home's --ease-panel */
+  --home-nav-w: calc(min(320px, 86vw) + env(safe-area-inset-left, 0px)); /* panel */
+  --home-nav-handle-w: 16px;   /* clears the board's first column on 16:10 screens (17 px in at 1440x900) */
+  position: fixed;
+  inset: 0;
+  z-index: 50;             /* above #viewport, the only other layer at the root */
+  pointer-events: none;    /* the layer itself never takes a click, a tap or a wheel */
+  font-family: Jost, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+.home-nav[hidden] { display: none; }   /* until nav.js has wired it: without JavaScript, Home's <noscript> links stand in */
+
+/* ---------------------------------------------------------------- handle */
+
+/* A slim tab on the left edge, vertically centred, at every width: that is the composition's
+   side margin (the brand and the music button hold the top corners). Open, it rides out to the
+   panel's edge, so the pointer crosses between the two without passing over the page. */
+.home-nav-handle {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  z-index: 3;
+  box-sizing: border-box;
+  width: calc(var(--home-nav-handle-w) + env(safe-area-inset-left, 0px));
+  height: 128px;
+  padding: 0 0 0 env(safe-area-inset-left, 0px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 1px solid rgb(var(--cream-rgb, var(--home-nav-cream)) / .14);
+  border-left: 0;
+  border-radius: 0 10px 10px 0;
+  background: rgb(var(--ink-rgb, var(--home-nav-ink)) / .4);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: rgb(var(--cream-rgb, var(--home-nav-cream)) / .62);
+  font: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+  translate: 0 -50%;
+  transition: translate .45s var(--home-nav-ease), color .25s ease, border-color .25s ease,
+              background-color .6s ease, opacity .35s ease;
+}
+.home-nav-grip { display: grid; gap: 3px; }
+.home-nav-grip i {
+  display: block;
+  width: 10px;
+  height: 1.5px;
+  border-radius: 1px;
+  background: rgb(var(--home-nav-teal));
+  transition: transform .3s var(--home-nav-ease), opacity .2s ease;
+}
+.home-nav-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+}
+@media (hover: hover) {
+  .home-nav-handle:hover { color: rgb(var(--cream-rgb, var(--home-nav-cream))); border-color: rgb(var(--cream-rgb, var(--home-nav-cream)) / .26); }
+}
+.home-nav-handle:focus-visible { outline: 2px solid rgb(var(--home-nav-teal)); outline-offset: 3px; }
+/* touch: the same slim tab, with a larger target that stays inside the side margin */
+@media (pointer: coarse) {
+  .home-nav-handle::after { content: ""; position: absolute; top: -12px; right: -14px; bottom: -12px; left: 0; }
+}
+
+.home-nav.is-open .home-nav-handle {
+  width: var(--home-nav-handle-w);
+  padding-left: 0;
+  translate: var(--home-nav-w) -50%;
+  border-color: rgb(var(--home-nav-cream) / .1);
+  background: rgb(var(--home-nav-ink));
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;     /* see .home-nav-panel */
+  color: rgb(var(--home-nav-cream) / .62);
+}
+@media (hover: hover) {
+  .home-nav.is-open .home-nav-handle:hover { color: rgb(var(--home-nav-cream)); }
+}
+/* pinned (a click on the handle would now close it): the grip folds into a cross */
+.home-nav.is-pinned .home-nav-grip i:nth-child(1) { transform: translateY(4.5px) rotate(45deg); }
+.home-nav.is-pinned .home-nav-grip i:nth-child(2) { opacity: 0; }
+.home-nav.is-pinned .home-nav-grip i:nth-child(3) { transform: translateY(-4.5px) rotate(-45deg); }
+
+/* the closing sheet is a modal dialog: while it is open the menu steps away (nav.js also
+   closes it and makes it inert) */
+.home-nav.is-blocked .home-nav-handle { opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s linear .35s; }
+
+/* ---------------------------------------------------------------- panel */
+
+.home-nav-panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  box-sizing: border-box;
+  width: var(--home-nav-w);
+  display: flex;
+  flex-direction: column;
+  padding: calc(env(safe-area-inset-top, 0px) + 40px) 28px calc(env(safe-area-inset-bottom, 0px) + 28px) calc(env(safe-area-inset-left, 0px) + 32px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-right: 1px solid rgb(var(--home-nav-cream) / .1);
+  /* Opaque and not blurred: a backdrop-filter over the live scene changes how the browser
+     rasterises the scene's text while the menu is open (measured on beat 15's button), and
+     without one, any translucency shows the scene's headlines through the links. */
+  background: rgb(var(--home-nav-ink));
+  box-shadow: 24px 0 70px -30px rgb(0 0 0 / .55);
+  color: rgb(var(--home-nav-cream));
+  pointer-events: auto;
+  /* Closed: off-screen AND hidden, so its links are out of the tab order and the
+     accessibility tree; the visibility delay lets the slide-out play. */
+  translate: -102% 0;
+  visibility: hidden;
+  transition: translate .45s var(--home-nav-ease), visibility 0s linear .45s;
+}
+.home-nav.is-open .home-nav-panel { translate: none; visibility: visible; transition: translate .45s var(--home-nav-ease); }
+
+.home-nav-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.home-nav-title {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: rgb(var(--home-nav-teal));
+}
+.home-nav-team {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 18px;
+  letter-spacing: .02em;
+  text-transform: none;
+  color: rgb(var(--home-nav-cream) / .58);
+}
+.home-nav-close {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin: -8px -6px 0 0;
+  padding: 0;
+  border: 1px solid rgb(var(--home-nav-cream) / .18);
+  border-radius: 999px;
+  background: none;
+  color: rgb(var(--home-nav-cream) / .62);
+  cursor: pointer;
+  transition: color .25s ease, border-color .25s ease;
+}
+.home-nav-close svg { display: block; width: 12px; height: 12px; }
+@media (hover: hover) {
+  .home-nav-close:hover { color: rgb(var(--home-nav-cream)); border-color: rgb(var(--home-nav-teal) / .6); }
+}
+.home-nav-close:focus-visible { outline: 2px solid rgb(var(--home-nav-teal)); outline-offset: 3px; }
+
+.home-nav-list { margin-top: 44px; }
+.home-nav-list ul { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgb(var(--home-nav-cream) / .08); }
+.home-nav-list li { border-bottom: 1px solid rgb(var(--home-nav-cream) / .08); }
+/* rows echo the board's lit fragments: a 2px rule on the left, teal on the current page */
+.home-nav-link {
+  display: block;
+  padding: 13px 0 13px 16px;
+  border-left: 2px solid transparent;
+  color: rgb(var(--home-nav-cream) / .8);
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 27px;
+  letter-spacing: .01em;
+  text-decoration: none;
+  transition: color .22s ease, border-color .22s ease;
+}
+.home-nav-note {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  line-height: 17px;
+  letter-spacing: .02em;
+  color: rgb(var(--home-nav-cream) / .58);
+}
+@media (hover: hover) {
+  .home-nav-link:hover { color: rgb(var(--home-nav-cream)); border-left-color: rgb(var(--home-nav-cream) / .3); }
+}
+.home-nav-link:focus-visible { outline: 2px solid rgb(var(--home-nav-teal)); outline-offset: -2px; }
+.home-nav-link[aria-current="page"] { color: rgb(var(--home-nav-cream)); border-left-color: rgb(var(--home-nav-teal)); }
+
+/* ---------------------------------------------------------------- scrim (narrow screens) */
+
+/* Below 1024 px the panel covers most of the page and is opened by a tap, so the page behind
+   is dimmed and a tap on it closes the menu. Wider, a hover-opened panel dims nothing. */
+.home-nav-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgb(2 8 8 / .5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .35s ease, visibility 0s linear .35s;
+}
+.home-nav.is-open .home-nav-scrim { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity .35s ease; }
+@media (min-width: 1024px) { .home-nav-scrim { display: none; } }
+
+/* ---------------------------------------------------------------- preferences */
+
+@media (prefers-reduced-motion: reduce) {
+  .home-nav-handle, .home-nav-grip i, .home-nav-panel, .home-nav-scrim, .home-nav-close, .home-nav-link {
+    transition-duration: .01ms !important;
+    transition-delay: 0s !important;
+  }
+}
+@media (forced-colors: active) {
+  .home-nav-handle { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}

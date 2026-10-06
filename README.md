@@ -11,7 +11,7 @@ No build step, no package manager: plain HTML, CSS and JavaScript.
 ├── team/                 members, roles, ways of working
 ├── resources/            repository, data sources, stack, reading
 ├── assets/
-│   ├── home/             Home only: styles.css, src/ (ES modules), media/, audio/
+│   ├── home/             Home only: styles.css, nav.css + nav.js (its menu), src/ (ES modules), media/, audio/
 │   ├── css/site.css      shared chrome (global panel, page bar) + page shell
 │   ├── js/site.js        global panel controller + section scroll-spy
 │   └── icons/favicon.svg
@@ -78,7 +78,7 @@ that directory:
 producing a thinner site. So the published artifact contains no `.git/`, `.github/`,
 `README.md`, `tools/`, `dashboard/tools/`, `dashboard/data/source/` or `.xlsx` — and none
 of the ~5.5 MB of `dashboard/assets/spline/` design files, which the dashboard names in
-source comments but never loads. `_site/` is 66 files, about 2.4 MB; 2 MB of that is
+source comments but never loads. `_site/` is 68 files, about 2.4 MB; 2 MB of that is
 Home's music, which a browser fetches only when the music starts.
 
 Home's modules and music are reached from JavaScript, not from an `href` or `src`, so the
@@ -120,7 +120,7 @@ There are two navigations, with one job each.
 
 **Global — the six destinations of the site.** It lives in a panel that slides in from
 the left, and it is the same panel and the same state on every page, dashboard included —
-except Home, which carries no site chrome at all (see "Home" below).
+except Home, which has its own copy of it (see "Home" below).
 
 - From 1024 px up, a **handle sits on the left edge** of the window at all times, in the
   page's left margin. Hovering it opens the panel after ~90 ms. The handle then rides out
@@ -226,6 +226,13 @@ scroll behaviour of revertai.com.br from measurements (see its README).
   pushes the sticky stage off-screen while the closing sheet is open). Nothing may be added
   to the page outside `#root` either: progress is the scroll position over the whole
   document's height.
+- Its global menu is therefore a separate copy, `assets/home/nav.css` and `nav.js`, with
+  every class prefixed `home-nav-`: one `position: fixed` layer inside `#root`, just before
+  `#runway`, so it adds nothing to the document's height. It works as on the other pages
+  (hover, click to pin, focus, Escape, click outside), except that its slim handle stays on
+  the left edge at every width (the brand and the music button hold the top corners, so
+  there is no Menu button), and that while the closing sheet is open the menu is closed,
+  hidden and inert.
 - The chart's curves are a representative example from an open dataset, not one of our
   measurements: a square-wave voltammogram of a four-molecule mixture, and the four single
   molecules, from Duesselberg et al., ACS Electrochem. 2026

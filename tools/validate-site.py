@@ -68,6 +68,9 @@ REQUIRED = [
     "assets/home/src/field/travel.js",
     "assets/home/src/field/world.js",
     "assets/home/audio/lumen-ambient.mp3",
+    # Home: its own copy of the global menu (index.html also links both).
+    "assets/home/nav.css",
+    "assets/home/nav.js",
     # Home: presentation assets, reached from CSS url() and a module import.
     "assets/home/media/branding/mavis-mark.svg",
     "assets/home/media/system/lab.svg",
