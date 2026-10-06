@@ -5,12 +5,13 @@ No build step, no package manager: plain HTML, CSS and JavaScript.
 
 ```
 .
-├── index.html            Home
+├── index.html            Home: a scroll narrative (see "Home" below)
 ├── presentations/        presentation weeks, format, materials
 ├── project/              problem, work packages, schedule, scope
 ├── team/                 members, roles, ways of working
 ├── resources/            repository, data sources, stack, reading
 ├── assets/
+│   ├── home/             Home only: styles.css, src/ (ES modules), media/, audio/
 │   ├── css/site.css      shared chrome (global panel, page bar) + page shell
 │   ├── js/site.js        global panel controller + section scroll-spy
 │   └── icons/favicon.svg
@@ -31,7 +32,8 @@ to their `index.html`:
 python3 -m http.server 8000
 ```
 
-Then open <http://localhost:8000/>.
+Then open <http://localhost:8000/>. Home is built from ES modules, so it has to come from
+a server like this one: opened straight from the file system it stays blank.
 
 | Page          | URL                             |
 |---------------|---------------------------------|
@@ -59,10 +61,10 @@ nothing is committed by the deployment.
 There is no build step. The workflow stages the files the site needs and uploads *only*
 that directory:
 
-1. `python3 tools/check-schedule-snapshot.py` — the run fails if Home, Project or
+1. `python3 tools/check-schedule-snapshot.py` — the run fails if Project or
    Presentations have fallen behind `dashboard/data/project-data.js`, so a stale page is
    never published.
-2. `python3 tools/stage-site.py _site` — copies the 33 files the six pages load at run
+2. `python3 tools/stage-site.py _site` — copies the files the six pages load at run
    time into `_site/`, each keeping its path so `index.html` stays at the top level and
    every relative link still resolves.
 3. `python3 tools/validate-site.py _site` — prints the staged tree, then fails on a
@@ -76,7 +78,13 @@ that directory:
 producing a thinner site. So the published artifact contains no `.git/`, `.github/`,
 `README.md`, `tools/`, `dashboard/tools/`, `dashboard/data/source/` or `.xlsx` — and none
 of the ~5.5 MB of `dashboard/assets/spline/` design files, which the dashboard names in
-source comments but never loads. `_site/` is 33 files, about 283 KB.
+source comments but never loads. `_site/` is 66 files, about 2.4 MB; 2 MB of that is
+Home's music, which a browser fetches only when the music starts.
+
+Home's modules and music are reached from JavaScript, not from an `href` or `src`, so the
+link check in `validate-site.py` cannot see them. They are listed in its `REQUIRED` paths
+instead: a module added to `assets/home/src/`, or a file added to `assets/home/media/`,
+must go into both lists.
 
 ### Inspecting a deployment
 
@@ -111,7 +119,8 @@ file listing, and the `github-pages` deployment on the *Deploy* job links to the
 There are two navigations, with one job each.
 
 **Global — the six destinations of the site.** It lives in a panel that slides in from
-the left, and it is the same panel and the same state on every page, dashboard included.
+the left, and it is the same panel and the same state on every page, dashboard included —
+except Home, which carries no site chrome at all (see "Home" below).
 
 - From 1024 px up, a **handle sits on the left edge** of the window at all times, in the
   page's left margin. Hovering it opens the panel after ~90 ms. The handle then rides out
@@ -160,15 +169,75 @@ carries no `data-section-nav`.
 **Without JavaScript** the panel is not a control at all, so the whole chrome drops out of
 fixed positioning and into normal flow: the six global links render as a plain wrapped
 list at the top of the page and the page bar follows underneath. All six stay visible and
-clickable down to 390 px. Verified with JavaScript disabled at 390 px on every page.
+clickable down to 390 px. Verified with JavaScript disabled at 390 px on every page but
+Home, which shows a plain list of the other pages instead.
 
 `prefers-reduced-motion: reduce` removes the panel's slide, its open/close delays and the
 smooth scrolling.
 
+## Home
+
+Home introduces MAVIS, the Multi-Analyte Voltammetric Intelligence System. It is a scroll
+narrative: a tall scroll runway with one sticky, scaled stage, where a
+single animation-frame loop eases the scroll position into one progress value and draws
+every text beat and a Canvas2D particle field from it. No libraries and no build step.
+
+It is the "lumen" scroll study (<https://github.com/batuaribakir/lumen-scroll-study>),
+copied from its commit `237293c` with only the content replaced; the study rebuilds the
+scroll behaviour of revertai.com.br from measurements (see its README).
+
+- `assets/home/src/content.js` holds every word and the chart data. Copy changes go there,
+  keeping each block's line count and the counts listed at the top of the file.
+- Everything else under `assets/home/src/` and `styles.css` is the study's implementation,
+  kept as it is: scroll, timeline, particle field and their timing are untouched. The
+  departures are the paths of the modules and the music; the closing sheet, which lists
+  the site's pages instead of a contact form; beat 10's flipping letter, which starts
+  mirrored and flips into the normal letter (so the word ends as "Deconvolution"); the
+  closing beat, which has no fine print under its button and whose strip names only MAVIS and
+  the university (`dom.js` leaves out the parts left unset; the strip and Sources still fade in
+  at the same point);
+  beat 03's statement, widened so each of its two sentences keeps a line of its own; and the
+  presentation assets below. They live in `dom.js`, `ui.js` and the `styles.css` blocks
+  marked "Peak Deconvolution" and "MAVIS".
+- `assets/home/media/` holds assets from the MAVIS presentation, each placed inside a slot
+  the page already has, so no scene, timing or layer is added:
+  - `signals/pvdf-singles.js`: the single-molecule curves of the presentation's
+    "overlapping peaks" chart, drawn by `dom.js` as a component overlay inside the chart's
+    label layer (it fades in and out with the chart labels) and named at each peak;
+  - `branding/mavis-mark.svg`: the overlap mark (the site favicon), on the board's
+    "Identify & quantify" step; `mark-curve.svg` + `mark-peaks.svg` split it into the
+    two-tone brand mark before the name (curve in the text colour, peaks in teal);
+  - `system/lab.svg`, `data.svg`, `model.svg`, `app.svg`: stage icons of the presentation's
+    system diagram, extracted from its source, on the board's other steps;
+  - `signals/electrode.svg`: the screen-printed electrode in plan view, generated from the
+    geometry constants of the presentation's 3D electrode scene (fork scene, left);
+  - `molecules/*.svg`: the four molecules of the chart, drawn as atom dots and bonds from
+    PubChem 2D depictions (estradiol and melatonin are the presentation's molecules; ascorbic
+    acid and serotonin come from the same database) (fork scene, right);
+  - `system/network.svg`: a static network with the layer layout of the presentation's
+    network animation, fed by the chart's mixture and ending in the four molecules (beat 09);
+  - `vision/evidence.svg`: the presentation's "why" idea (the stretch of the curve behind
+    an answer) drawn on the chart's mixture curve, under beat 13's "Explainable AI" line. It
+    illustrates the idea; it is not an output of a model, and the page does not caption it.
+  The small marks are drawn through CSS masks in the text colour of their slot; the figures
+  are images placed inside an existing text block (absolutely positioned, so no text moves).
+- Home loads neither `assets/css/site.css` nor `assets/js/site.js`. Their global rules
+  clash with the stage (fonts, smooth scrolling, a `.tag` class, and an `overflow` that
+  pushes the sticky stage off-screen while the closing sheet is open). Nothing may be added
+  to the page outside `#root` either: progress is the scroll position over the whole
+  document's height.
+- The chart's curves are a representative example from an open dataset, not one of our
+  measurements: a square-wave voltammogram of a four-molecule mixture, and the four single
+  molecules, from Duesselberg et al., ACS Electrochem. 2026
+  (doi:10.1021/acselectrochem.6c00079, MIT licence). The page itself names the source only
+  in its Sources panel.
+- The music (`assets/home/audio/lumen-ambient.mp3`) is the study's original loop,
+  synthesised by its `tools/make-track.py`. Whether Home keeps it is not decided yet.
+
 ## Schedule values on the static pages
 
 The dashboard builds everything it shows from `dashboard/data/project-data.js` in the
-browser, so it is never out of date. **Home, Project and Presentations do not.** They hold
+browser, so it is never out of date. **Project and Presentations do not.** They hold
 a hand-written snapshot of the same values — package spans, subtask counts and names,
 the week totals, the midterm and presentation weeks — and those pages say so in place.
 

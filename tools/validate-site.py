@@ -3,8 +3,10 @@
 
 Three questions, in order:
 
-1. Is everything there? The six entry pages and the CSS, JS, data and icon
-   files they need.
+1. Is everything there? The six entry pages and the CSS, JS, data, icon and
+   audio files they need -- including Home's ES modules, music and media, which
+   are reached from JavaScript or CSS rather than from an href or src, so the
+   link check below cannot see them.
 2. Does anything resolve to nothing? Every local href and src in every staged
    page is followed to the file it names, so a page that survived staging
    while one of its assets did not is caught here rather than in the browser.
@@ -45,6 +47,43 @@ REQUIRED = [
     "dashboard/data/project-data.js",
     "dashboard/assets/icons/favicon.svg",
     "dashboard/js/app.js",
+    # Home: every module main.js imports (directly or through field/index.js) and the music
+    # ui.js points at. None of them appears in an href or src.
+    "assets/home/styles.css",
+    "assets/home/src/main.js",
+    "assets/home/src/config.js",
+    "assets/home/src/content.js",
+    "assets/home/src/dom.js",
+    "assets/home/src/stage.js",
+    "assets/home/src/timeline.js",
+    "assets/home/src/ui.js",
+    "assets/home/src/field/index.js",
+    "assets/home/src/field/chart.js",
+    "assets/home/src/field/circuit.js",
+    "assets/home/src/field/math.js",
+    "assets/home/src/field/particles.js",
+    "assets/home/src/field/quality.js",
+    "assets/home/src/field/sampler.js",
+    "assets/home/src/field/schedule.js",
+    "assets/home/src/field/travel.js",
+    "assets/home/src/field/world.js",
+    "assets/home/audio/lumen-ambient.mp3",
+    # Home: presentation assets, reached from CSS url() and a module import.
+    "assets/home/media/branding/mavis-mark.svg",
+    "assets/home/media/system/lab.svg",
+    "assets/home/media/system/data.svg",
+    "assets/home/media/system/model.svg",
+    "assets/home/media/system/app.svg",
+    "assets/home/media/signals/pvdf-singles.js",
+    "assets/home/media/branding/mark-curve.svg",
+    "assets/home/media/branding/mark-peaks.svg",
+    "assets/home/media/signals/electrode.svg",
+    "assets/home/media/molecules/ascorbic-acid.svg",
+    "assets/home/media/molecules/serotonin.svg",
+    "assets/home/media/molecules/estradiol.svg",
+    "assets/home/media/molecules/melatonin.svg",
+    "assets/home/media/system/network.svg",
+    "assets/home/media/vision/evidence.svg",
 ]
 
 # Must be absent. Each entry is (description, predicate over the staged path).
