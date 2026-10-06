@@ -59,6 +59,9 @@ MANIFEST = [
     "assets/home/src/field/travel.js",
     "assets/home/src/field/world.js",
     "assets/home/audio/lumen-ambient.mp3",
+    # Home: its own copy of the global menu (it cannot load the shared chrome above).
+    "assets/home/nav.css",
+    "assets/home/nav.js",
     # Home: assets from the MAVIS presentation (the SVGs are CSS masks in styles.css; the
     # single-molecule curves are a module content.js imports).
     "assets/home/media/branding/mavis-mark.svg",
