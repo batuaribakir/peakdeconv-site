@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Peak Deconvolution — project dashboard
+   MAVIS — development dashboard
    Light design system, tuned for projection: dark ink on near-opaque white
    panels, large type, few words. Every colour / radius / spacing decision is
    a token below.
@@ -57,10 +57,12 @@
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px;
   --s6: 32px; --s7: 48px; --s8: 72px; --s9: 112px;
 
-  /* type */
-  --f-display: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
-  --f-ui: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
-  --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  /* type: one sans (Instrument Sans) and one mono (IBM Plex Mono). The stacks are
+     defined once, in the shared ../../assets/css/site.css (--s-f-ui, --s-f-mono),
+     which this page always loads; these names keep the roles this file uses. */
+  --f-display: var(--s-f-ui);
+  --f-ui: var(--s-f-ui);
+  --f-mono: var(--s-f-mono);
 
   --t-xs: 0.875rem;
   --t-s: 0.95rem;

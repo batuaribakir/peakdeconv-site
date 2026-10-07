@@ -35,8 +35,8 @@
       pn++;
       return '<button type="button" class="ms-pres" data-tip="' + esc("<span class='tk'>Presentation " + pn + "</span>Week " + w) + '" aria-label="Presentation ' + pn + ", week " + w + '">P' + pn + "</button>";
     });
-    lane("Midterm", '<span class="sw sw-mid"></span>', function (w) {
-      return w === MID ? '<button type="button" class="ms-mid" data-tip="' + esc("<span class='tk'>Midterm</span>Week " + MID) + '" aria-label="Midterm, week ' + MID + '">Mid</button>' : "";
+    lane("Midpoint", '<span class="sw sw-mid"></span>', function (w) {
+      return w === MID ? '<button type="button" class="ms-mid" data-tip="' + esc("<span class='tk'>Midpoint</span>Week " + MID) + '" aria-label="Midpoint, week ' + MID + '">Mid</button>' : "";
     });
     lane("Final week", '<span class="sw sw-diamond"></span>', function (w) {
       var ps = PKGS.filter(function (p) { return p.finalWeek === w; });

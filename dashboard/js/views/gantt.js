@@ -53,12 +53,12 @@
         var cls = w.kind === "presentation" ? "is-pres" : w.kind === "midterm" ? "is-mid" : "";
         var k = w.kind === "presentation" ? "Pres" : w.kind === "midterm" ? "Mid" : "";
         var t = w.kind === "presentation" ? "<span class='tk'>Presentation</span>Week " + w.week :
-          w.kind === "midterm" ? "<span class='tk'>Midterm</span>Week " + w.week : "";
+          w.kind === "midterm" ? "<span class='tk'>Midpoint</span>Week " + w.week : "";
         return '<div class="g-wk ' + cls + '" role="columnheader" data-w="' + w.week + '"' + (t ? ' tabindex="0" data-tip="' + esc(t) + '"' : "") + '><span class="n">' + w.week + '</span><span class="k">' + k + "</span></div>";
       }).join("") + "</div>";
 
     var cols = '<div class="g-cols" aria-hidden="true"><div></div>' + WEEKS.map(function (w) {
-      return '<div data-w="' + w.week + '" class="' + (w.kind === "presentation" ? "c-pres" : w.kind === "midterm" ? "c-mid" : "") + '">' + (w.kind === "midterm" ? "<span>Midterm</span>" : "") + "</div>";
+      return '<div data-w="' + w.week + '" class="' + (w.kind === "presentation" ? "c-pres" : w.kind === "midterm" ? "c-mid" : "") + '">' + (w.kind === "midterm" ? "<span>Midpoint</span>" : "") + "</div>";
     }).join("") + "</div>";
 
     var rows = PKGS.map(function (p) {
@@ -172,7 +172,7 @@
       }).join("") + "</span>" +
       '<span class="lg-group">' +
       '<span class="lg-item"><span class="sw sw-pres"></span>Presentation</span>' +
-      '<span class="lg-item"><span class="sw sw-mid"></span>Midterm</span>' +
+      '<span class="lg-item"><span class="sw sw-mid"></span>Midpoint</span>' +
       '<span class="lg-item"><span class="sw sw-diamond"></span>Final week</span>' +
       '<span class="lg-item"><span class="sw-lock is-locked">' + I.lock + "</span>Locked</span>" +
       '<span class="lg-item" data-tip="Drag to move"><span class="sw-lock">' + I.unlock + "</span>Unlocked</span></span>";

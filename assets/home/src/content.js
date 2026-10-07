@@ -23,7 +23,7 @@ export const HINT = 'Scroll';
 // github.com/esemsc-ald24/ML-Biomarker-Sensing, MIT) — the measured mixture of the MAVIS
 // presentation's "overlapping peaks" chart. The 200-point curve is resampled to 41 points,
 // then offset and scaled to 0–1000; its shape is unchanged. It is a representative example,
-// not one of this project's own measurements.
+// not one of our own measurements.
 //
 // The four label keys are left empty: the molecules are named by the component overlay
 // (`parts`, drawn by dom.js inside #chartLabels), which labels each one at its own peak.
@@ -101,7 +101,7 @@ export const BEATS = [
     sub: 'Designed as one connected system, from measurement to explanation.',
     // no fine print under the button (the reference's `fineline`); the strip and Sources still
     // fade in at the point it would have
-    button: 'See the project' },
+    button: 'Explore MAVIS' },
 ];
 
 // System board (beat 14): three lenses (chips) over the five steps of the end-to-end system
@@ -129,10 +129,10 @@ export const TEAM = [
     frags: { answer: 'An answer you can check: the curve behind it, and how sure it is.' } },
 ];
 
-// The strip is one dotted row, MAVIS and the university, in the reference's partner list. Its
-// "Backed by" + bold name (`lead`, `name`) and the small teal word before the partners (`label`)
-// are left out; dom.js skips them when unset.
-export const BACKED = { partners: ['MAVIS', 'İzmir Kâtip Çelebi University'] };
+// The strip is the reference's partner row, holding only the product's name: MAVIS signs off the
+// page on its own. Its "Backed by" + bold name (`lead`, `name`) and the small teal word before the
+// partners (`label`) are left out; dom.js skips them when unset.
+export const BACKED = { partners: ['MAVIS'] };
 
 export const DOCS = {
   toggle: 'Sources',
@@ -145,14 +145,15 @@ export const DOCS = {
 };
 
 // Closing sheet (opened by the beat-15 button): the site's other pages. Three rows take the
-// places of the reference's three form fields; the primary page takes the submit button's.
+// places of the reference's three form fields (the same three pages as the site menu, in its
+// order); the latest presentation takes the submit button's.
 export const LEAD = {
-  title: 'Explore the project',
+  title: 'Explore MAVIS',
   sub: 'Each page goes one step deeper than this introduction.',
   links: [
-    { label: 'Slides and materials', text: 'Presentations', href: './presentations/' },
-    { label: 'Members and roles', text: 'Team', href: './team/' },
-    { label: 'Repository and data', text: 'Resources', href: './resources/' },
+    { label: 'Development plan and progress', text: 'Dashboard', href: './dashboard/' },
+    { label: 'Technical briefings', text: 'Presentations', href: './presentations/' },
+    { label: 'The people behind MAVIS', text: 'Team', href: './team/' },
   ],
-  primary: { text: 'Open the project page', href: './project/' },
+  primary: { text: 'Open the technical overview', href: './presentations/technical-overview.html' },
 };

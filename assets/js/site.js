@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Peak Deconvolution — site shell behaviour
+   MAVIS — shared site chrome behaviour
 
    Two independent pieces, both progressive enhancements:
 
@@ -7,7 +7,7 @@
         Menu button in the page bar on narrow screens)
      2. a scroll-spy for the page bar's section links
 
-   Loaded on every page, including the dashboard, where it only ever touches
+   Loaded on every page but Home, including the dashboard, where it only ever touches
    the global panel: the dashboard's section navigation is driven by
    dashboard/js/ui/nav.js and is deliberately left alone (its bar carries no
    [data-section-nav]).

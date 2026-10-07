@@ -149,7 +149,7 @@
   text-transform: uppercase;
   color: rgb(var(--home-nav-teal));
 }
-.home-nav-team {
+.home-nav-sub {
   display: block;
   margin-top: 6px;
   font-size: 13px;

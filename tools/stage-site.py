@@ -12,6 +12,10 @@ Every path keeps its place in the output, which is what makes the site's
 relative links work unchanged -- index.html stays at the top level, the
 dashboard stays in dashboard/.
 
+project/ and resources/ are retired: they stay in the repository for reference
+but are not listed here, so they are not published (validate-site.py refuses
+them if they come back).
+
 Usage, from the repository root:
 
     python3 tools/stage-site.py [output-directory]     # default: _site
@@ -25,18 +29,23 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
-# Everything the six pages load at run time, and nothing else.
+# Everything the four pages load at run time, and nothing else.
 MANIFEST = [
     # Entry pages.
     "index.html",
     "presentations/index.html",
-    "project/index.html",
     "team/index.html",
-    "resources/index.html",
     "dashboard/index.html",
+    # Presentations: each one a self-contained HTML file, plus the cover its card shows.
+    # A presentation that loads files of its own lists them here too.
+    "presentations/technical-overview.html",
+    "presentations/covers/technical-overview.webp",
     # Shared chrome: global panel, page bar, page shell.
     "assets/css/site.css",
     "assets/js/site.js",
+    # Shared ambient scene: the background of the dashboard, Presentations and Team.
+    "assets/css/ambient-scene.css",
+    "assets/js/ambient-scene.js",
     "assets/icons/favicon.svg",
     # Home: the scroll narrative's styles, its ES modules (imported from main.js, so no
     # page names them) and its music (requested only when it starts playing).
@@ -100,10 +109,8 @@ MANIFEST = [
     "dashboard/js/views/packages.js",
     "dashboard/js/views/team.js",
     "dashboard/js/views/tracker.js",
-    "dashboard/js/interactions/background-scene.js",
     "dashboard/js/interactions/config.js",
     "dashboard/js/interactions/parallax.js",
-    "dashboard/js/interactions/pointer-controller.js",
 ]
 
 

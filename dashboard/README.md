@@ -1,6 +1,6 @@
-# Peak Deconvolution: Team 1 (DL) project dashboard
+# MAVIS development dashboard
 
-This is an interactive, static dashboard for the Team 1 deep-learning track. It covers:
+This is an interactive, static dashboard for the MAVIS development plan. It covers:
 
 - the 15-week Gantt
 - work packages
@@ -29,17 +29,17 @@ dashboard/
 ├── index.html                       page structure + script order
 ├── css/
 │   ├── styles.css                   dashboard design system (tokens, components)
-│   └── depth.css                    spatial layer: scene ground + grain (isolated)
+│   └── depth.css                    spatial layer: depth of the dashboard's own panels
 ├── js/
 │   ├── core/                        model.js · state.js · util.js
 │   ├── ui/                          tooltip.js · drawer.js · nav.js
 │   ├── views/                       hero · kpis · gantt · packages · tracker · charts · milestones · team
 │   ├── app.js                       boot: render views, wire them to state
 │   └── interactions/                spatial layer — no dashboard logic
-│       ├── config.js                scene, camera sway and depth settings
-│       ├── pointer-controller.js    one pointer listener + one rAF loop
-│       ├── background-scene.js      light Three.js scene (ribbons, particles, camera sway)
+│       ├── config.js                depth settings of the dashboard's panels
 │       └── parallax.js              moves [data-depth] dashboard layers
+│   (the background scene and the pointer loop are shared with the other product pages:
+│    ../assets/css/ambient-scene.css + ../assets/js/ambient-scene.js)
 ├── data/
 │   ├── project-data.js              GENERATED (window.PD_DATA) — do not edit
 │   └── source/PeakDeconv_Gantt_Chart.xlsx   source of truth
@@ -95,7 +95,7 @@ An unlocked task can be moved:
 - use the arrow buttons in the task drawer, or
 - focus its Gantt row and press Alt+←/→.
 
-It moves in whole working weeks, so the midterm week is skipped, and it stops at weeks 1 and 15. The task keeps its length, and its delivery week moves with it. A dashed outline shows where the plan had it. The package's planned final week, bars, workload charts, milestones and the "next" card follow the move. **Restore plan** in the Tasks section puts every task back; **Plan** in the drawer does it for one task.
+It moves in whole working weeks, so the midterm week (labelled "Midpoint" on the page) is skipped, and it stops at weeks 1 and 15. The task keeps its length, and its delivery week moves with it. A dashed outline shows where the plan had it. The package's planned final week, bars, workload charts, milestones and the "next" card follow the move. **Restore plan** in the Tasks section puts every task back; **Plan** in the drawer does it for one task.
 
 Locks and moves are saved with the statuses (`unlocked` and `moved` in the same `localStorage` entry). Reset progress does not change them. The Milestones lane and the "next" card count only locked deliveries.
 
@@ -103,7 +103,7 @@ Locks and moves are saved with the statuses (`unlocked` and `moved` in the same 
 
 ### Background scene
 
-`js/interactions/background-scene.js` is our own light 3D scene, built with Three.js r134. It uses the global `THREE` from a script tag, with no modules and no build step.
+The background is our own light 3D scene, built with Three.js r134. It is shared with the site's Presentations and Team pages, so it lives outside this folder: `../assets/js/ambient-scene.js` (the scene, its settings and the one pointer/frame loop, exposed as `window.MavisAmbient`) and `../assets/css/ambient-scene.css` (the `#scene-layer` ground, canvas and grain). It uses the global `THREE` from a script tag, with no modules and no build step.
 
 It follows the interaction language of the reference scene `assets/spline/interactive_3_d_parallax_scene.spline`, but on a light ground and without its content, badge or cursor dot.
 
@@ -112,11 +112,11 @@ It follows the interaction language of the reference scene `assets/spline/intera
 - **Camera:** a perspective camera sways toward the pointer by ±7° horizontally and ±2.2° vertically, with an extra sideways pan. It uses the reference scene's damping of 0.125 per frame, returns to rest when the pointer leaves, and rises slightly as the page scrolls.
 - **Softness and cost:** the scene is rendered at 0.6× resolution (`scene.renderScale`), which keeps it soft and light on the GPU. Film grain is a CSS layer (`.scene-grain`).
 
-Everything is tunable in `js/interactions/config.js`: `camera`, and `scene` (ribbon control points, width, twist, opacity, hue, particle count).
+Everything is tunable in `MavisAmbient.config` at the top of `../assets/js/ambient-scene.js`: `camera`, and `scene` (ribbon control points, width, twist, opacity, hue, particle count). A change there changes the background of every product page.
 
 ### Dashboard depth
 
-The dashboard's own layers move with the same damping as the scene camera (0.125 per 60 fps frame, converted so it behaves the same at any frame rate). The movement is mostly sideways, since `verticalRatio` is 0.4:
+The dashboard's own layers (`js/interactions/parallax.js`, settings in `js/interactions/config.js`) subscribe to the shared frame loop and move with the same damping as the scene camera (0.125 per 60 fps frame, converted so it behaves the same at any frame rate). The movement is mostly sideways, since `verticalRatio` is 0.4:
 
 | Level (`data-depth`) | Element | Travel at full deflection |
 |---|---|---|

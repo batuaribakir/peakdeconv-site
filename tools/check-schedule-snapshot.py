@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Compare the schedule values copied into the static pages with the workbook.
+"""Compare the schedule values copied into project/index.html with the workbook.
 
 The dashboard builds everything it shows from dashboard/data/project-data.js at
-load time, so it is never stale. Project and Presentations quote the same values
-in plain HTML, which means they can fall behind once the workbook is
-re-extracted. (Home quotes no schedule values, so it is not checked.) This script reads project-data.js, re-derives every quoted value
-and reports the ones that no longer match.
+load time, so it is never stale. The retired Project page (project/index.html,
+kept in the repository but no longer published) quotes the same values in plain
+HTML, which means it can fall behind once the workbook is re-extracted. This
+script reads project-data.js, re-derives every quoted value and reports the ones
+that no longer match. No published page quotes schedule values any more, so the
+deployment does not run it; run it before publishing the Project page again.
 
 Usage, from the repository root:
 
@@ -97,14 +99,6 @@ def main():
              "Weeks " + ", ".join(str(w) for w in pres[:-1]) + " and %d" % pres[-1])
     contains("project/index.html", proj, "subtask total",
              "%d across the six packages." % n_tasks)
-
-    # ---- Presentations ----------------------------------------------------
-    pres_page = (ROOT / "presentations" / "index.html").read_text(encoding="utf-8")
-    found = re.findall(r'<div class="week is-(pres|mid)">\s*<div class="wk">Week (\d+)</div>', pres_page)
-    compare("presentations/index.html", "presentation weeks",
-            [int(w) for kind, w in found if kind == "pres"], pres)
-    compare("presentations/index.html", "midterm week",
-            [int(w) for kind, w in found if kind == "mid"], midterm)
 
     # ---- report -----------------------------------------------------------
     print("Checked %d values against %s" % (checks, DATA.relative_to(ROOT)))
