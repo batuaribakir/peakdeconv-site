@@ -1,6 +1,7 @@
 /* ==========================================================================
-   Spatial layer — background scene and depth parallax.
-   Isolated from the dashboard's component styles (styles.css).
+   Spatial layer — depth parallax of the dashboard's own content.
+   The background scene behind it is shared with the other product pages:
+   ../../assets/css/ambient-scene.css and ../../assets/js/ambient-scene.js.
 
    Stack (back → front)
      z0   #scene-layer        light 3D scene: ribbons · particles · grain (own camera sway)
@@ -8,32 +9,6 @@
      z20+ nav, drawer, tooltip (foreground controls — no parallax)
    ========================================================================== */
 
-:root {
-  --grain-opacity: 0.03;
-}
-
-/* ---------- scene (light 3D canvas + grain) -------------------------------- */
-.scene-layer {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
-  background:
-    radial-gradient(1400px 900px at 80% -10%, #ffffff 0%, rgba(255, 255, 255, 0) 60%),
-    radial-gradient(1200px 800px at 6% 108%, #ebe8f0 0%, rgba(235, 232, 240, 0) 60%),
-    linear-gradient(180deg, #f6f4ef 0%, var(--ground) 50%, #efece6 100%);
-}
-.scene-canvas {
-  position: absolute; inset: 0; width: 100%; height: 100%; display: block;
-  opacity: 0; transition: opacity 1200ms ease;
-}
-.scene-layer.is-ready .scene-canvas { opacity: 1; }
-.scene-grain {
-  position: absolute; inset: 0; opacity: var(--grain-opacity); mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
 /* ---------- depth layers in the page ------------------------------------------ */
 [data-depth] { translate: 0 0; }
 [data-depth="section"], [data-depth="panel"] { backface-visibility: hidden; }
-
-@media (forced-colors: active) {
-  .scene-canvas, .scene-grain { display: none; }
-}

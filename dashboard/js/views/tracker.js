@@ -36,7 +36,7 @@
     opts("#f-wp", [["all", "All packages"]].concat(PKGS.map(function (p) { return [p.id, p.id + " · " + p.short]; })));
     opts("#f-owner", [["all", "All leads"]].concat(OWNER_KEYS.map(function (o) { return [o, OWNERS[o].label]; })));
     opts("#f-week", [["all", "Any week"]].concat(WEEKS.map(function (w) {
-      return [String(w.week), "Week " + w.week + (w.kind === "presentation" ? " · Presentation" : w.kind === "midterm" ? " · Midterm" : "")];
+      return [String(w.week), "Week " + w.week + (w.kind === "presentation" ? " · Presentation" : w.kind === "midterm" ? " · Midpoint" : "")];
     })));
     var F = state.filters;
     $("#f-q").value = F.q; $("#f-status").value = F.status; $("#f-wp").value = F.wp; $("#f-owner").value = F.owner; $("#f-week").value = F.week;

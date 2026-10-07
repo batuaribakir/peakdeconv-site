@@ -99,7 +99,7 @@
 
   function weekTip(w) {
     var d = derive(), row = d.week[w - 1], k = weekKind(w);
-    var head = "Week " + w + (k === "presentation" ? " · Presentation" : k === "midterm" ? " · Midterm" : "");
+    var head = "Week " + w + (k === "presentation" ? " · Presentation" : k === "midterm" ? " · Midpoint" : "");
     var lines = PKGS.filter(function (p) { return row.wp[p.id].n; }).map(function (p) {
       var c = row.wp[p.id];
       return '<span class="tr" data-wp="' + p.id + '"><span><i></i>' + p.id + " " + esc(p.short) + "</span><span>" + c.n + (c.done ? " · " + c.done + " done" : "") + "</span></span>";

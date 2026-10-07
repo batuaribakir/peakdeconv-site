@@ -3,13 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Peak Deconvolution Tracker</title>
-<meta name="description" content="Team 1 (Deep Learning) project plan, 15-week schedule and progress tracker for the Peak Deconvolution project.">
+<title>Dashboard — MAVIS</title>
+<meta name="description" content="The MAVIS development plan: schedule, work packages, task tracker and progress.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..400&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap">
 <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="css/styles.css">
+<!-- shared ambient scene (the background of every product page) -->
+<link rel="stylesheet" href="../assets/css/ambient-scene.css">
 <link rel="stylesheet" href="css/depth.css">
 <!-- shared site chrome: the global menu panel, identical on every page -->
 <link rel="stylesheet" href="../assets/css/site.css">
@@ -27,28 +29,24 @@
 <div class="navpanel" id="navpanel">
   <div class="navpanel-head">
     <a class="navpanel-brand" href="../">
-      <svg viewBox="0 0 26 26" aria-hidden="true"><path d="M2 20 C6 20 7 8 10 8 S13 18 15 17 S18 5 21 5 S23 16 24 20" fill="none" stroke="#1a2028" stroke-width="1.6" stroke-linecap="round"/><path d="M2 20 C6 20 7 11 10 11 S13 20 14 20" fill="none" stroke="#009289" stroke-width="1.2" stroke-linecap="round" opacity=".8"/><path d="M12 20 C16 20 18 8 21 8 S23.5 19 24 20" fill="none" stroke="#726dc4" stroke-width="1.2" stroke-linecap="round" opacity=".8"/></svg>
-      <span><strong>Peak Deconvolution</strong><span>Team 1 &middot; Deep Learning</span></span>
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M4 24.5C7.6 24.5 8.4 7.5 11.4 7.5C14 7.5 14.3 17 16.2 17" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M16.2 17C18.1 17 18.6 9.5 21 9.5C23.8 9.5 24.6 24.5 28 24.5" fill="none" stroke="#009289" stroke-width="2.6" stroke-linecap="round"/></svg>
+      <span><strong>MAVIS</strong><small>Multi-Analyte Voltammetric Intelligence System</small></span>
     </a>
     <button class="navpanel-close" type="button" aria-label="Close menu"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
   </div>
   <nav aria-label="Site">
-    <div class="navpanel-eyebrow">Go to</div>
     <ul>
-        <li><a href="../">Home <small>the project in short</small></a></li>
-        <li><a href="../dashboard/" aria-current="page">Dashboard <small>live plan and tracker</small></a></li>
-        <li><a href="../presentations/">Presentations <small>weeks and materials</small></a></li>
-        <li><a href="../project/">Project <small>outline and scope</small></a></li>
-        <li><a href="../team/">Team <small>members and roles</small></a></li>
-        <li><a href="../resources/">Resources <small>repository and data</small></a></li>
+      <li><a href="../">Home <small>Overview</small></a></li>
+      <li><a href="../dashboard/" aria-current="page">Dashboard <small>Development plan and progress</small></a></li>
+      <li><a href="../presentations/">Presentations <small>Technical briefings</small></a></li>
+      <li><a href="../team/">Team <small>The people behind MAVIS</small></a></li>
     </ul>
   </nav>
-  <p class="navpanel-foot">ENG401/402 &middot; site shell in progress</p>
 </div>
 
 <div class="navscrim" aria-hidden="true"></div>
 
-<!-- Background: our own light 3D scene (js/interactions/background-scene.js). -->
+<!-- Background: the shared light 3D scene (../assets/js/ambient-scene.js). -->
 <div id="scene-layer" class="scene-layer" aria-hidden="true">
   <canvas id="scene-canvas" class="scene-canvas"></canvas>
   <div class="scene-grain"></div>
@@ -59,13 +57,12 @@
     <span class="navbtn-bars" aria-hidden="true"><i></i><i></i><i></i></span>
     <span>Menu</span>
   </button>
-  <a class="brand" href="#overview" aria-label="Peak Deconvolution — back to top">
-    <svg class="brand-mark" viewBox="0 0 26 26" aria-hidden="true">
-      <path d="M2 20 C6 20 7 8 10 8 S13 18 15 17 S18 5 21 5 S23 16 24 20" fill="none" stroke="#1a2028" stroke-width="1.6" stroke-linecap="round"/>
-      <path d="M2 20 C6 20 7 11 10 11 S13 20 14 20" fill="none" stroke="#009289" stroke-width="1.2" stroke-linecap="round" opacity=".8"/>
-      <path d="M12 20 C16 20 18 8 21 8 S23.5 19 24 20" fill="none" stroke="#726dc4" stroke-width="1.2" stroke-linecap="round" opacity=".8"/>
+  <a class="brand" href="#overview" aria-label="MAVIS — back to top">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+      <path d="M4 24.5C7.6 24.5 8.4 7.5 11.4 7.5C14 7.5 14.3 17 16.2 17" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M16.2 17C18.1 17 18.6 9.5 21 9.5C23.8 9.5 24.6 24.5 28 24.5" fill="none" stroke="#009289" stroke-width="2.6" stroke-linecap="round"/>
     </svg>
-    <span class="brand-name">Peak Deconvolution</span>
+    <span class="brand-name">MAVIS</span>
   </a>
   <nav aria-label="Sections">
     <ul class="nav-links" id="nav-links">
@@ -79,7 +76,7 @@
       <li class="nav-pill" id="nav-pill" aria-hidden="true"></li>
     </ul>
   </nav>
-  <a class="nav-progress" href="#health" aria-label="Project progress">
+  <a class="nav-progress" href="#health" aria-label="Development progress">
     <svg viewBox="0 0 22 22" aria-hidden="true"><circle class="ring-bg" cx="11" cy="11" r="8.5" fill="none" stroke-width="3"/><circle class="ring-fg" id="nav-ring" cx="11" cy="11" r="8.5" fill="none" stroke-width="3" stroke-linecap="round" stroke-dasharray="53.41" stroke-dashoffset="53.41"/></svg>
     <strong id="nav-pct">0%</strong>
   </a>
@@ -91,7 +88,7 @@
   <section class="block hero" id="overview" aria-labelledby="hero-title">
     <div class="wrap hero-grid" data-depth="section">
       <div class="hero-copy">
-        <h1 class="hero-title" id="hero-title">Peak<br><em>Deconvolution</em></h1>
+        <h1 class="hero-title" id="hero-title">MAVIS<br><em>Development plan</em></h1>
         <dl class="hero-facts">
           <div class="fact"><dt>Tasks done</dt><dd><span id="hf-done">0</span><small id="hf-total">/ 23</small></dd></div>
           <div class="fact"><dt>Packages</dt><dd id="hf-wps">6</dd></div>
@@ -130,7 +127,7 @@
           <div class="legend" id="gantt-legend"></div>
         </div>
         <div class="gantt-scroll" id="gantt-scroll" tabindex="0" aria-label="Gantt chart, scrollable">
-          <div class="gantt" id="gantt" role="table" aria-label="Project schedule"></div>
+          <div class="gantt" id="gantt" role="table" aria-label="Development schedule"></div>
         </div>
       </div>
     </div>
@@ -242,11 +239,12 @@
 <script src="js/ui/drawer.js"></script>
 <script src="js/ui/nav.js"></script>
 <script src="js/app.js"></script>
-<!-- spatial layer: independent of dashboard logic -->
+<!-- spatial layer: independent of dashboard logic. The scene and the pointer
+     loop are shared with the other product pages; the depth parallax of the
+     dashboard's own panels is this page's. -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script src="js/interactions/config.js"></script>
-<script src="js/interactions/pointer-controller.js"></script>
-<script src="js/interactions/background-scene.js"></script>
+<script src="../assets/js/ambient-scene.js"></script>
 <script src="js/interactions/parallax.js"></script>
 <!-- shared site chrome: the global menu panel only. This page's section
      navigation stays with js/ui/nav.js. -->
