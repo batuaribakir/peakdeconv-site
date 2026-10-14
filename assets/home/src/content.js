@@ -10,7 +10,7 @@
 //   [flip:x]     letter that flips when the palette inverts   \n   forced line break
 // Beat 10's [flip:D] starts mirrored and flips to the normal letter (styles.css, #flipE).
 
-import { SINGLES, E0, DE } from '../media/signals/pvdf-singles.js';
+import { COMPONENTS, VALUES, E0, DE } from '../media/signals/illustrative.js';
 
 // `mark`: the MAVIS overlap mark before the name, two-tone: the measured curve in the text colour,
 // its component peaks in teal (media/branding/mark-curve.svg + mark-peaks.svg).
@@ -18,29 +18,30 @@ export const BRAND = { name: 'MAVIS', mark: true };
 
 export const HINT = 'Scroll';
 
-// Chart: one square-wave voltammogram (0–0.8 V) of a sample holding four molecules, from the
-// open dataset of Duesselberg et al., ACS Electrochem. 2026 (doi:10.1021/acselectrochem.6c00079,
-// github.com/esemsc-ald24/ML-Biomarker-Sensing, MIT) — the measured mixture of the MAVIS
-// presentation's "overlapping peaks" chart. The 200-point curve is resampled to 41 points,
-// then offset and scaled to 0–1000; its shape is unchanged. It is a representative example,
-// not one of our own measurements.
+// Chart: an ILLUSTRATIVE voltammogram (0–0.8 V) of a sample holding the three molecules MAVIS
+// works with: dopamine, serotonin and melatonin. It is a model, not a measurement (see
+// media/signals/illustrative.js): no recorded mixture of these three molecules is available, so
+// the curve is the sum of three model peaks, and the caption says it is illustrative.
+// (Until October 2026 this chart showed measured mixtures from the open dataset of Duesselberg et
+// al., ACS Electrochem. 2026, first with estradiol, then of ascorbic acid, serotonin and melatonin.
+// Neither ascorbic acid nor estradiol is part of MAVIS any more, and that dataset has no dopamine.)
 //
 // The four label keys are left empty: the molecules are named by the component overlay
 // (`parts`, drawn by dom.js inside #chartLabels), which labels each one at its own peak.
 export const CHART = {
-  values: [94, 102, 117, 134, 153, 173, 201, 237, 291, 362, 457, 569, 688, 804, 900, 973, 1000, 943, 828, 707, 603, 517, 445, 392, 365, 369, 404, 446, 450, 401, 336, 288, 266, 257, 225, 165, 103, 55, 25, 9, 0],
+  values: VALUES,
   vMax: 1042,
   todayIndex: 20,
   labels: { first: '', mid: '', today: '', projected: '' },
   labelIndex: { first: 19, mid: 12, today: 26, projected: 32 },
   years: ['0 V', '0.4 V', '0.8 V'],
-  caption: 'Current vs. potential, one sweep',
-  // Component overlay: the presentation's single-molecule curves (media/signals/), each
-  // normalised to the same height as the mixture, as that chart draws them, and shown only
-  // around its own peak. E runs over the same 0–0.8 V axis as `values`.
+  caption: 'Illustrative curve, not measured',
+  // Component overlay: the model's three peaks (media/signals/), drawn at their true share of
+  // the composite (they add up to the curve above them) and shown only around their own peak.
+  // E runs over the same 0–0.8 V axis as `values`.
   parts: {
     E0, DE, E1: 0.8,
-    curves: SINGLES.map((s, k) => ({ ...s, name: ['ascorbic acid', 'serotonin', 'estradiol', 'melatonin'][k] })),
+    curves: COMPONENTS.map((c, k) => ({ ...c, name: ['dopamine', 'serotonin', 'melatonin'][k] })),
   },
 };
 
@@ -70,8 +71,8 @@ export const BEATS = [
     left: { tag: 'What we measure', text: 'One curve with a few broad bumps.',
       figure: { kind: 'electrode', src: 'signals/electrode.svg', caption: 'screen-printed electrode' } },
     right: { tag: 'What it holds', text: 'A separate peak for every molecule, each at its own potential.',
-      figure: { kind: 'molecules', items: [['molecules/ascorbic-acid.svg', 'ascorbic acid'], ['molecules/serotonin.svg', 'serotonin'],
-        ['molecules/estradiol.svg', 'estradiol'], ['molecules/melatonin.svg', 'melatonin']] } } },
+      figure: { kind: 'molecules', items: [['molecules/dopamine.svg', 'dopamine'], ['molecules/serotonin.svg', 'serotonin'],
+        ['molecules/melatonin.svg', 'melatonin']] } } },
   { num: '05', name: 'Problem', layout: 'statement',
     statement: 'Merged peaks hide [ac:their true identities.]' },
   { num: '06', name: 'Problem', layout: 'empty' },
@@ -80,8 +81,8 @@ export const BEATS = [
   { num: '08', name: 'Turn', layout: 'empty' },
   { num: '09', name: 'Analysis', layout: 'statement', sub: 'Here, a neural network is being built to do the job,\none that reads the whole measured curve at once.',
     statement: 'This is the job of [hl:deconvolution.]',
-    // outY: the four output nodes' heights in network.svg (fractions), where the names sit
-    figure: { kind: 'network', src: 'system/network.svg', outputs: ['ascorbic acid', 'serotonin', 'estradiol', 'melatonin'], outY: [0.137, 0.379, 0.621, 0.862] } },
+    // outY: the three output nodes' heights in network.svg (fractions), where the names sit
+    figure: { kind: 'network', src: 'system/network.svg', outputs: ['dopamine', 'serotonin', 'melatonin'], outY: [0.2, 0.5, 0.8] } },
   { num: '10', name: 'Deconvolution', layout: 'statement',
     statement: '[flip:D]econvolution reads a mixture\nas [ac:several answers added up.]' },
   { num: '11', name: 'Deconvolution', layout: 'nots',
@@ -92,8 +93,9 @@ export const BEATS = [
   { num: '13', name: 'Explanation', layout: 'statement',
     statement: 'Explainable AI, designed to show\n[ac:the evidence behind each answer.]',
     // The figure illustrates the idea (it is not a model output): the stretch of the mixture curve
-    // an answer rests on, highlighted. band: centre of that stretch in evidence.svg (fraction of its width)
-    figure: { kind: 'evidence', src: 'vision/evidence.svg', answer: 'estradiol', band: 0.63 } },
+    // an answer rests on, highlighted — here the melatonin peak (0.65 V) of the chart's illustrative curve.
+    // band: centre of that stretch in evidence.svg (fraction of its width)
+    figure: { kind: 'evidence', src: 'vision/evidence.svg', answer: 'melatonin', band: 0.7996 } },
   { num: '14', name: 'System', layout: 'disciplines',
     statement: 'Five connected steps take a measurement to an answer with its evidence, end to end.' },
   { num: '15', name: 'Vision', layout: 'cta',
@@ -137,8 +139,6 @@ export const BACKED = { partners: ['MAVIS'] };
 export const DOCS = {
   toggle: 'Sources',
   links: [
-    { text: 'Example data: open dataset', href: 'https://github.com/esemsc-ald24/ML-Biomarker-Sensing' },
-    { text: 'Dataset paper (ACS Electrochem.)', href: 'https://doi.org/10.1021/acselectrochem.6c00079' },
     { text: 'Source code of this site', href: 'https://github.com/batuaribakir/peakdeconv-site' },
     { text: 'About the scroll design', href: 'https://github.com/batuaribakir/lumen-scroll-study#readme' },
   ],
