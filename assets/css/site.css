@@ -342,12 +342,30 @@ html:has(.site-page) { scroll-behavior: smooth; }
 
 /* ---------- people ---------------------------------------------------------- */
 .people { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 20px; margin: 0; padding: 0; list-style: none; }
+/* Portrait beside the text; where the card is too narrow for both (phones, the two-column
+   tablet grid) the text wraps under the portrait. The text column stretches to the card's
+   height, so the LinkedIn links of two cards in a row line up at the bottom. */
 .person {
-  display: flex; gap: 18px; align-items: flex-start;
+  display: flex; flex-wrap: wrap; gap: 18px 24px;
   padding: clamp(22px, 3vw, 30px);
   background: var(--s-panel); border: 1px solid var(--s-line); border-radius: var(--s-r-l);
   box-shadow: 0 1px 2px rgba(31, 43, 56, 0.05);
 }
+.portrait {
+  flex: 0 0 168px; align-self: flex-start; aspect-ratio: 4 / 5; overflow: hidden;
+  background: var(--s-ground); border: 1px solid var(--s-line-soft); border-radius: var(--s-r-m);
+}
+.portrait img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+.person-body { flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; }
+.site-main .person-link {
+  display: inline-flex; align-items: center; gap: 8px; align-self: flex-start;
+  margin-top: auto; padding-block: 2px;
+  font-size: 0.875rem; font-weight: 600; color: var(--s-ink-2); text-decoration: none;
+  transition: color 200ms var(--s-ease);
+}
+.person-link svg { width: 16px; height: 16px; flex: none; }
+.site-main .person-link:hover { color: var(--s-ink); }
+.person-link:hover span { text-decoration: underline; text-underline-offset: 3px; }
 /* .monogram is also the class of the dashboard's team monograms; their own rule
    (.page-dashboard .monogram) overrides everything here except the 1px border. */
 .monogram {
@@ -357,7 +375,7 @@ html:has(.site-page) { scroll-behavior: smooth; }
 }
 .person .dept { font-family: var(--s-f-mono); font-size: 0.72rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--s-ink-3); }
 .site-page .person .name { margin-top: 4px; font-size: 1.3rem; line-height: 1.2; letter-spacing: -0.015em; }
-.person .role { margin-top: 8px; font-size: 0.9375rem; color: var(--s-ink-2); }
+.person .role { margin-top: 8px; margin-bottom: 16px; font-size: 0.9375rem; color: var(--s-ink-2); }
 
 /* a short closing line under a section, linking onward */
 .site-page .aside-line { margin-top: 28px; max-width: 70ch; font-size: 0.9375rem; color: var(--s-ink-2); }

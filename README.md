@@ -9,7 +9,7 @@ No build step, no package manager: plain HTML, CSS and JavaScript.
 ├── dashboard/            development plan and progress tracker (see dashboard/README.md)
 ├── presentations/        the presentation library: index.html, one self-contained HTML
 │                         file per presentation, covers/ (see "Presentations")
-├── team/                 the people behind MAVIS
+├── team/                 the people behind MAVIS: index.html, portraits/
 ├── project/, resources/  retired pages, kept for reference and not published (see "Retired pages")
 ├── assets/
 │   ├── home/             Home only: styles.css, nav.css + nav.js (its menu), src/ (ES modules), media/, audio/
@@ -77,7 +77,7 @@ that directory:
 producing a thinner site. So the published artifact contains no `.git/`, `.github/`,
 `README.md`, `tools/`, `dashboard/tools/`, `dashboard/data/source/` or `.xlsx` — and none
 of the ~5.5 MB of `dashboard/assets/spline/` design files, which the dashboard names in
-source comments but never loads. `_site/` is 68 files, about 4.4 MB: 1.9 MB of that is the
+source comments but never loads. `_site/` is 69 files, about 4.4 MB: 1.9 MB of that is the
 technical overview presentation (fetched only when it is opened) and 2 MB is Home's music,
 which a browser fetches only when the music starts.
 
@@ -208,11 +208,13 @@ scroll behaviour of revertai.com.br from measurements (see its README).
   beat 03's statement, widened so each of its two sentences keeps a line of its own; and the
   presentation assets below. They live in `dom.js`, `ui.js` and the `styles.css` blocks
   marked "MAVIS".
-- `assets/home/media/` holds assets from the MAVIS presentation, each placed inside a slot
-  the page already has, so no scene, timing or layer is added:
-  - `signals/pvdf-singles.js`: the single-molecule curves of the presentation's
-    "overlapping peaks" chart, drawn by `dom.js` as a component overlay inside the chart's
-    label layer (it fades in and out with the chart labels) and named at each peak;
+- `assets/home/media/` holds the page's figures and marks, most of them from the MAVIS
+  presentation, each placed inside a slot the page already has, so no scene, timing or layer
+  is added:
+  - `signals/illustrative.js`: the chart's illustrative model (see below): the composite
+    curve and its three single-molecule peaks (dopamine, serotonin, melatonin), drawn by
+    `dom.js` as a component overlay inside the chart's label layer (it fades in and out with
+    the chart labels), each at its true share of the composite and named above its peak;
   - `branding/mavis-mark.svg`: the MAVIS mark (see "Brand and type"), on the board's
     "Identify & quantify" step; `mark-curve.svg` + `mark-peaks.svg` split it into the
     two-tone brand mark before the name (first peak in the text colour, second in teal);
@@ -220,13 +222,15 @@ scroll behaviour of revertai.com.br from measurements (see its README).
     system diagram, extracted from its source, on the board's other steps;
   - `signals/electrode.svg`: the screen-printed electrode in plan view, generated from the
     geometry constants of the presentation's 3D electrode scene (fork scene, left);
-  - `molecules/*.svg`: the four molecules of the chart, drawn as atom dots and bonds from
-    PubChem 2D depictions (estradiol and melatonin are the presentation's molecules; ascorbic
-    acid and serotonin come from the same database) (fork scene, right);
+  - `molecules/*.svg`: the three molecules of the chart (dopamine, serotonin, melatonin),
+    drawn as heavy-atom dots and bonds from PubChem 2D depictions (CIDs 681, 5202, 896): O as
+    a filled teal dot, N as a teal ring, C as a small dot, double bonds as two lines
+    (fork scene, right);
   - `system/network.svg`: a static network with the layer layout of the presentation's
-    network animation, fed by the chart's mixture and ending in the four molecules (beat 09);
+    network animation, fed by the chart's composite curve and ending in the three molecules (beat 09);
   - `vision/evidence.svg`: the presentation's "why" idea (the stretch of the curve behind
-    an answer) drawn on the chart's mixture curve, under beat 13's "Explainable AI" line. It
+    an answer) drawn on the chart's composite curve, here its melatonin peak, under beat 13's
+    "Explainable AI" line. It
     illustrates the idea; it is not an output of a model, and the page does not caption it.
   The small marks are drawn through CSS masks in the text colour of their slot; the figures
   are images placed inside an existing text block (absolutely positioned, so no text moves).
@@ -242,11 +246,17 @@ scroll behaviour of revertai.com.br from measurements (see its README).
   the left edge at every width (the brand and the music button hold the top corners, so
   there is no Menu button), and that while the closing sheet is open the menu is closed,
   hidden and inert.
-- The chart's curves are a representative example from an open dataset, not one of our
-  measurements: a square-wave voltammogram of a four-molecule mixture, and the four single
-  molecules, from Duesselberg et al., ACS Electrochem. 2026
-  (doi:10.1021/acselectrochem.6c00079, MIT licence). The page itself names the source only
-  in its Sources panel.
+- The chart is **illustrative, not measured**, and its caption says so ("Illustrative curve,
+  not measured"). MAVIS works with dopamine, serotonin and melatonin, and no recorded mixture
+  of those three exists: the open dataset the presentation uses (Duesselberg et al., ACS
+  Electrochem. 2026) has no dopamine, and our own dopamine pilot is single-analyte DPV. So
+  the curve is a model, `signals/illustrative.js`: three Gaussian peaks (dopamine 0.18 V,
+  serotonin 0.35 V, melatonin 0.65 V) whose sum is the composite, with no background or
+  noise. The potentials only follow the usual order on carbon electrodes; widths and heights
+  are chosen for legibility. `network.svg` and `evidence.svg` draw the same 41 values.
+  Until October 2026 the chart showed measured mixtures from that open dataset (with
+  estradiol, then of ascorbic acid, serotonin and melatonin); neither estradiol nor ascorbic
+  acid is part of MAVIS any more, and Home's Sources panel no longer lists the dataset.
 - The music (`assets/home/audio/lumen-ambient.mp3`) is the study's original loop,
   synthesised by its `tools/make-track.py`. Whether Home keeps it is not decided yet.
 
@@ -264,7 +274,10 @@ works from the file system and from Pages.
 | MAVIS Technical Overview | `presentations/technical-overview.html`  | `sunumlar/hafta02_mavis_sunum.html`, delivered 1 October 2026 |
 
 The web copy of the technical overview differs from the delivered file only in its
-branding layer; its slides, figures, data and results are unchanged:
+branding layer and four wording changes; its slides, figures, data and results are unchanged.
+It is a dated record of the project as presented on 1 October 2026, so it still includes
+estradiol (2E / E2) and ascorbic acid (AA) wherever the delivered deck did, results tables
+included:
 
 - the page title is "MAVIS Technical Overview", and it links the site favicon
   (`../assets/icons/favicon.svg`, so no `/favicon.ico` request);
@@ -274,7 +287,11 @@ branding layer; its slides, figures, data and results are unchanged:
   "Team 1 · Deep Learning" on the closing slide, and "Project Dashboard" on the
   "Where We Are" slide, which now says "Development Dashboard";
 - the generated copy of the old dashboard that the deck carried (`window.MAVIS_DASH_DOC`)
-  is removed, and its fallback image is a new shot of the current dashboard.
+  is removed, and its fallback image is a new shot of the current dashboard;
+- "overlap" wording is replaced (October 2026): slide 2's quote now reads "Merged peaks are
+  not noise …", slide 9 is "The Core Challenge: Superimposed Peaks", and slide 17's
+  illustration labels its band "Superimposed Region" and its bars "Share in Superimposed
+  Region".
 
 It inlines everything it needs (fonts, reveal.js, three.js, images). Its "Where We Are"
 slide first looks for a live dashboard at `../dashboard/` and `../../dashboard/`; at
@@ -366,6 +383,7 @@ python3 tools/check-schedule-snapshot.py          # then check project/index.htm
 ## Status
 
 The dashboard is complete and runs on data generated from the project workbook.
-Presentations holds one presentation, and Team lists the two developers. Outside that
+Presentations holds one presentation, and Team lists the two developers with their portraits
+and LinkedIn profiles. Outside that
 presentation, the site publishes no results or metrics. The repository is public, and the site is
 deployed to GitHub Pages at <https://batuaribakir.github.io/peakdeconv-site/>.

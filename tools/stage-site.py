@@ -40,6 +40,9 @@ MANIFEST = [
     # A presentation that loads files of its own lists them here too.
     "presentations/technical-overview.html",
     "presentations/covers/technical-overview.webp",
+    # Team: the portraits its cards show.
+    "team/portraits/sila-elif-kocasarac.webp",
+    "team/portraits/batu-aribakir.webp",
     # Shared chrome: global panel, page bar, page shell.
     "assets/css/site.css",
     "assets/js/site.js",
@@ -78,13 +81,12 @@ MANIFEST = [
     "assets/home/media/system/data.svg",
     "assets/home/media/system/model.svg",
     "assets/home/media/system/app.svg",
-    "assets/home/media/signals/pvdf-singles.js",
+    "assets/home/media/signals/illustrative.js",
     "assets/home/media/branding/mark-curve.svg",
     "assets/home/media/branding/mark-peaks.svg",
     "assets/home/media/signals/electrode.svg",
-    "assets/home/media/molecules/ascorbic-acid.svg",
+    "assets/home/media/molecules/dopamine.svg",
     "assets/home/media/molecules/serotonin.svg",
-    "assets/home/media/molecules/estradiol.svg",
     "assets/home/media/molecules/melatonin.svg",
     "assets/home/media/system/network.svg",
     "assets/home/media/vision/evidence.svg",

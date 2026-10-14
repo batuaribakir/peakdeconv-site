@@ -54,24 +54,25 @@ function figure(f) {
   return `<span class="fig fig-${f.kind}" aria-hidden="true">${body}</span>`;
 }
 
-// MAVIS: the presentation's "overlapping peaks" chart (single-molecule curves under the
-// measured mixture), redrawn inside #chartLabels in the chart's own frame, so it fades in and
-// out with the chart labels. Each curve keeps the presentation's normalisation, is scaled to
-// PART_TOP of the mixture's top, shown only within PART_FADE volts of its own peak and named
-// above that peak. Portrait staggers the names (LIFT rows) to keep them clear of each other
-// and of the mixture curve.
-const PART_TOP = 0.93, PART_FADE = 0.17;
-const LIFT = { landscape: [0, 0, 0, 0], portrait: [2, 1, 0, 1] };
-// stage-px nudge of a name: landscape moves "ascorbic acid" left, off the mixture's rising flank
-const SHIFT = { landscape: [-30, 0, 0, 0], portrait: [0, 0, 0, 0] };
+// MAVIS: the component overlay of the chart (the illustrative model's single-molecule peaks
+// under the composite they add up to), redrawn inside #chartLabels in the chart's own frame, so
+// it fades in and out with the chart labels. Each curve is drawn at its true share of the
+// composite (same scale as CHART.values), shown only within PART_FADE volts of its own peak,
+// and named just above the composite at that peak. LIFT rows (stagger) and SHIFT (stage px) can
+// move a name clear of another or of the curve. The tallest peak's name sits at the top of the
+// chart, so landscape moves "serotonin" right, out from under the end of the chart's caption.
+const PART_FADE = 0.17;
+const LIFT = { landscape: [0, 0, 0], portrait: [0, 0, 0] };
+const SHIFT = { landscape: [0, 60, 0], portrait: [0, 0, 0] };
 function partsOverlay(cfg) {
   const P = CHART.parts;
   if (!P) return '';
   const ch = cfg.chart, W = cfg.stage.w, H = cfg.stage.h, portrait = cfg.name === 'portrait';
   const X = e => ch.x0 + (ch.x1 - ch.x0) * (e - P.E0) / (P.E1 - P.E0);
-  const Y = v => ch.yBase - (ch.yBase - ch.yTop) * v * PART_TOP * 1000 / CHART.vMax;
+  const Y = v => ch.yBase - (ch.yBase - ch.yTop) * v * 1000 / CHART.vMax;
   const fs = portrait ? 28 : 15, gap = portrait ? 22 : 14, lift = LIFT[cfg.name] || LIFT.landscape, shift = SHIFT[cfg.name] || SHIFT.landscape;
   let defs = '', paths = '', names = '';
+  const total = i => P.curves.reduce((t, c) => t + c.y[i], 0);   // the composite, in the curves' units
   P.curves.forEach((c, k) => {
     const xa = X(c.apexE), dx = X(c.apexE + PART_FADE) - xa;
     defs += `<linearGradient id="pf${k}" gradientUnits="userSpaceOnUse" x1="${(xa - dx).toFixed(1)}" x2="${(xa + dx).toFixed(1)}" y1="0" y2="0">` +
@@ -83,7 +84,8 @@ function partsOverlay(cfg) {
       if (Math.abs(e - c.apexE) <= PART_FADE + P.DE) d += `${d ? 'L' : 'M'}${X(e).toFixed(1)},${Y(v).toFixed(1)}`;
     });
     paths += `<path d="${d}" stroke="url(#pf${k})"/>`;
-    names += `<text x="${(xa + shift[k]).toFixed(1)}" y="${(Y(1) - gap - lift[k] * fs * 1.75).toFixed(1)}" text-anchor="middle">${esc(c.name)}</text>`;
+    const top = total(Math.round((c.apexE - P.E0) / P.DE));
+    names += `<text x="${(xa + shift[k]).toFixed(1)}" y="${(Y(top) - gap - lift[k] * fs * 1.75).toFixed(1)}" text-anchor="middle">${esc(c.name)}</text>`;
   });
   return `<svg class="parts" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false"><defs>${defs}</defs><g class="curves">${paths}</g><g class="names">${names}</g></svg>`;
 }
