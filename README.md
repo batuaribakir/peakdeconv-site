@@ -264,7 +264,10 @@ works from the file system and from Pages.
 | MAVIS Technical Overview | `presentations/technical-overview.html`  | `sunumlar/hafta02_mavis_sunum.html`, delivered 1 October 2026 |
 
 The web copy of the technical overview differs from the delivered file only in its
-branding layer; its slides, figures, data and results are unchanged:
+branding layer and four wording changes; its slides, figures, data and results are unchanged.
+It is a dated record of the project as presented on 1 October 2026, so it still includes
+estradiol (2E / E2) and ascorbic acid (AA) wherever the delivered deck did, results tables
+included:
 
 - the page title is "MAVIS Technical Overview", and it links the site favicon
   (`../assets/icons/favicon.svg`, so no `/favicon.ico` request);
@@ -274,7 +277,11 @@ branding layer; its slides, figures, data and results are unchanged:
   "Team 1 · Deep Learning" on the closing slide, and "Project Dashboard" on the
   "Where We Are" slide, which now says "Development Dashboard";
 - the generated copy of the old dashboard that the deck carried (`window.MAVIS_DASH_DOC`)
-  is removed, and its fallback image is a new shot of the current dashboard.
+  is removed, and its fallback image is a new shot of the current dashboard;
+- "overlap" wording is replaced (October 2026): slide 2's quote now reads "Merged peaks are
+  not noise …", slide 9 is "The Core Challenge: Superimposed Peaks", and slide 17's
+  illustration labels its band "Superimposed Region" and its bars "Share in Superimposed
+  Region".
 
 It inlines everything it needs (fonts, reveal.js, three.js, images). Its "Where We Are"
 slide first looks for a live dashboard at `../dashboard/` and `../../dashboard/`; at

@@ -65,7 +65,7 @@ export const BEATS = [
     sub: 'When peaks come together,\nthe signal becomes harder to interpret.' },
   { num: '03', name: 'Problem', layout: 'statement',
     // one sentence per line (styles.css widens this statement so the first fits on one line)
-    statement: 'When peaks [ac:overlap,] their identities blur.\nMAVIS separates them.' },
+    statement: 'When peaks [ac:merge,] their identities blur.\nMAVIS separates them.' },
   { num: '04', name: 'Problem', layout: 'choice',
     left: { tag: 'What we measure', text: 'One curve with a few broad bumps.',
       figure: { kind: 'electrode', src: 'signals/electrode.svg', caption: 'screen-printed electrode' } },
@@ -76,7 +76,7 @@ export const BEATS = [
     statement: 'Merged peaks hide [ac:their true identities.]' },
   { num: '06', name: 'Problem', layout: 'empty' },
   { num: '07', name: 'Turn', layout: 'trava',
-    lead: 'Every overlap ends in', word: 'guesswork.', struck: 'an answer.' },
+    lead: 'A merged peak ends in', word: 'guesswork.', struck: 'an answer.' },
   { num: '08', name: 'Turn', layout: 'empty' },
   { num: '09', name: 'Analysis', layout: 'statement', sub: 'Here, a neural network is being built to do the job,\none that reads the whole measured curve at once.',
     statement: 'This is the job of [hl:deconvolution.]',

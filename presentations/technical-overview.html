@@ -369,7 +369,7 @@ svg.chart .band.hatch { fill: url(#hatch); }
   <h2 class="title" data-anim>Why Peak Deconvolution</h2>
   <p class="subtitle" data-anim>Close Potentials Merge Peaks</p>
   <div id="ch-merge" class="area" data-chart="mergeDemo" data-w="1000" data-h="500" style="left:100px;top:300px;width:1000px;height:500px"></div>
-  <p class="area serif fragment fade-out" data-fragment-index="2" style="left:1190px;top:420px;width:620px;margin:0;font-size:46px;line-height:1.25;color:var(--ink)">“Overlapping peaks are not noise — they are several answers added together.”</p>
+  <p class="area serif fragment fade-out" data-fragment-index="2" style="left:1190px;top:420px;width:620px;margin:0;font-size:46px;line-height:1.25;color:var(--ink)">“Merged peaks are not noise — they are several answers added together.”</p>
   <div class="fragment step" data-fragment-index="1"></div>
   <div class="area fragment fade-up" data-fragment-index="2" style="left:1170px;top:296px;width:640px">
     <ul class="qs">
@@ -488,7 +488,7 @@ svg.chart .band.hatch { fill: url(#hatch); }
 <!-- ======================================================== 9 · CHALLENGE -->
 <section data-script="9">
   <div class="hd"><span class="kicker"><b>04</b> · Data</span><span><span class="badge open"><i></i>Open · SWV · 4 analytes</span><span class="badge ours"><i></i>Ours · DPV · 3 analytes</span></span></div>
-  <h2 class="title" data-anim>The Core Challenge: Overlapping Peaks</h2>
+  <h2 class="title" data-anim>The Core Challenge: Superimposed Peaks</h2>
   <div id="ch-ov" class="area" data-chart="openOverlay" data-poly="PVDF" data-w="1120" data-h="480" style="left:80px;top:232px;width:1120px;height:480px"></div>
   <div class="area fragment step fade-up" data-fragment-index="1" style="left:1270px;top:240px;width:560px">
     <div class="stat"><div class="stagelabel">Background</div><span class="mid-num" style="margin-top:10px">×1.5–2.5</span></div>
@@ -4616,7 +4616,7 @@ window.MAVIS_DASH_FALLBACK = "data:image/jpeg;base64,/9j/2wBDAAYGBgYGBgYHBwYJCgk
     var OV = [0.58, 0.98];
     var band = el("g", { class: "vf" }, s);
     el("rect", { x: sx(OV[0]), y: YT - 8, width: sx(OV[1]) - sx(OV[0]), height: YZ - YT + 8, rx: 8, fill: "url(#" + id + "-h)" }, band);
-    tx(band, (sx(OV[0]) + sx(OV[1])) / 2, YT - 16, "Overlap", { size: 22, a: "middle", fill: T.ink2 });
+    tx(band, (sx(OV[0]) + sx(OV[1])) / 2, YT - 16, "Superimposed Region", { size: 22, a: "middle", fill: T.ink2 });
 
     /* stacked areas, reference lines, mixture, labels */
     var areaG = el("g", {}, s), refG = el("g", { class: "vf", "clip-path": "url(#" + id + "-w)" }, s);
@@ -4673,7 +4673,7 @@ window.MAVIS_DASH_FALLBACK = "data:image/jpeg;base64,/9j/2wBDAAYGBgYGBgYHBwYJCgk
     A.forEach(function (a) { share[a] = Math.round(100 * areaIn[a] / tot); sumR += share[a]; });
     if (sumR !== 100) share.DA += 100 - sumR;
     var SX = 1236, BX = 1316, BW = 250, rowsY = [146, 232, 318], shareG = el("g", { class: "vf" }, s), bars = [], nums = [];
-    tx(shareG, SX, 76, "Share of Overlap", { size: 22, fill: T.ink2 });
+    tx(shareG, SX, 76, "Share in Superimposed Region", { size: 22, fill: T.ink2 });
     A.forEach(function (a, i) {
       var y = rowsY[i];
       tx(shareG, SX, y + 9, a, { size: 26, w: 600 });
