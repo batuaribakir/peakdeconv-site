@@ -40,6 +40,9 @@ MANIFEST = [
     # A presentation that loads files of its own lists them here too.
     "presentations/technical-overview.html",
     "presentations/covers/technical-overview.webp",
+    # Team: the portraits its cards show.
+    "team/portraits/sila-elif-kocasarac.webp",
+    "team/portraits/batu-aribakir.webp",
     # Shared chrome: global panel, page bar, page shell.
     "assets/css/site.css",
     "assets/js/site.js",

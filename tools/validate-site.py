@@ -43,6 +43,8 @@ REQUIRED = [
     "dashboard/index.html",
     "presentations/technical-overview.html",
     "presentations/covers/technical-overview.webp",
+    "team/portraits/sila-elif-kocasarac.webp",
+    "team/portraits/batu-aribakir.webp",
     "assets/css/site.css",
     "assets/js/site.js",
     "assets/css/ambient-scene.css",

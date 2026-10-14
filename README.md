@@ -9,7 +9,7 @@ No build step, no package manager: plain HTML, CSS and JavaScript.
 ├── dashboard/            development plan and progress tracker (see dashboard/README.md)
 ├── presentations/        the presentation library: index.html, one self-contained HTML
 │                         file per presentation, covers/ (see "Presentations")
-├── team/                 the people behind MAVIS
+├── team/                 the people behind MAVIS: index.html, portraits/
 ├── project/, resources/  retired pages, kept for reference and not published (see "Retired pages")
 ├── assets/
 │   ├── home/             Home only: styles.css, nav.css + nav.js (its menu), src/ (ES modules), media/, audio/
@@ -77,7 +77,7 @@ that directory:
 producing a thinner site. So the published artifact contains no `.git/`, `.github/`,
 `README.md`, `tools/`, `dashboard/tools/`, `dashboard/data/source/` or `.xlsx` — and none
 of the ~5.5 MB of `dashboard/assets/spline/` design files, which the dashboard names in
-source comments but never loads. `_site/` is 68 files, about 4.4 MB: 1.9 MB of that is the
+source comments but never loads. `_site/` is 69 files, about 4.4 MB: 1.9 MB of that is the
 technical overview presentation (fetched only when it is opened) and 2 MB is Home's music,
 which a browser fetches only when the music starts.
 
@@ -383,6 +383,7 @@ python3 tools/check-schedule-snapshot.py          # then check project/index.htm
 ## Status
 
 The dashboard is complete and runs on data generated from the project workbook.
-Presentations holds one presentation, and Team lists the two developers. Outside that
+Presentations holds one presentation, and Team lists the two developers with their portraits
+and LinkedIn profiles. Outside that
 presentation, the site publishes no results or metrics. The repository is public, and the site is
 deployed to GitHub Pages at <https://batuaribakir.github.io/peakdeconv-site/>.
