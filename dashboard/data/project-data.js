@@ -187,7 +187,6 @@ window.PD_DATA = {
         5,
         6,
         7,
-        9,
         10,
         11,
         12,
@@ -396,7 +395,7 @@ window.PD_DATA = {
     {
       "id": "WP3.1",
       "wp": "WP3",
-      "name": "Analyte presence detection",
+      "name": "Detection",
       "weeksLabel": "Weeks 2–4",
       "weeks": [
         2,
@@ -419,19 +418,20 @@ window.PD_DATA = {
       "id": "WP3.2",
       "wp": "WP3",
       "name": "Quantification — concentration classification",
-      "weeksLabel": "Weeks 4–5",
+      "weeksLabel": "Weeks 4–6",
       "weeks": [
         4,
-        5
+        5,
+        6
       ],
-      "duration": 2,
+      "duration": 3,
       "ownerLabel": "EEE lead",
       "owner": "eee",
-      "fixedWeek": 5,
+      "fixedWeek": 6,
       "segments": [
         [
           4,
-          5
+          6
         ]
       ],
       "dl": true
@@ -440,19 +440,20 @@ window.PD_DATA = {
       "id": "WP3.3",
       "wp": "WP3",
       "name": "Quantification — concentration regression",
-      "weeksLabel": "Weeks 5–6",
+      "weeksLabel": "Weeks 5–7",
       "weeks": [
         5,
-        6
+        6,
+        7
       ],
-      "duration": 2,
+      "duration": 3,
       "ownerLabel": "EEE lead",
       "owner": "eee",
-      "fixedWeek": 6,
+      "fixedWeek": 7,
       "segments": [
         [
           5,
-          6
+          7
         ]
       ],
       "dl": true
@@ -587,23 +588,20 @@ window.PD_DATA = {
     {
       "id": "WP5.1",
       "wp": "WP5",
-      "name": "XAI method selection and setup",
-      "weeksLabel": "Weeks 3–7",
+      "name": "Detection XAI — setup, explanations and reliability tests",
+      "weeksLabel": "Weeks 3–4",
       "weeks": [
         3,
-        4,
-        5,
-        6,
-        7
+        4
       ],
-      "duration": 5,
+      "duration": 2,
       "ownerLabel": "EEE lead",
       "owner": "eee",
-      "fixedWeek": 7,
+      "fixedWeek": 4,
       "segments": [
         [
           3,
-          7
+          4
         ]
       ],
       "dl": false
@@ -611,29 +609,20 @@ window.PD_DATA = {
     {
       "id": "WP5.2",
       "wp": "WP5",
-      "name": "Explanation runs on project models",
-      "weeksLabel": "Weeks 5–7, Weeks 9–12",
+      "name": "Classification XAI — explanations and reliability tests",
+      "weeksLabel": "Weeks 5–6",
       "weeks": [
         5,
-        6,
-        7,
-        9,
-        10,
-        11,
-        12
+        6
       ],
-      "duration": 7,
+      "duration": 2,
       "ownerLabel": "EEE lead",
       "owner": "eee",
-      "fixedWeek": 12,
+      "fixedWeek": 6,
       "segments": [
         [
           5,
-          7
-        ],
-        [
-          9,
-          12
+          6
         ]
       ],
       "dl": false
@@ -641,7 +630,50 @@ window.PD_DATA = {
     {
       "id": "WP5.3",
       "wp": "WP5",
-      "name": "Explanation faithfulness and stability testing",
+      "name": "Regression XAI — explanations and reliability tests",
+      "weeksLabel": "Weeks 6–7",
+      "weeks": [
+        6,
+        7
+      ],
+      "duration": 2,
+      "ownerLabel": "EEE lead",
+      "owner": "eee",
+      "fixedWeek": 7,
+      "segments": [
+        [
+          6,
+          7
+        ]
+      ],
+      "dl": false
+    },
+    {
+      "id": "WP5.4",
+      "wp": "WP5",
+      "name": "Local-data XAI — explanations and reliability tests",
+      "weeksLabel": "Weeks 10–12",
+      "weeks": [
+        10,
+        11,
+        12
+      ],
+      "duration": 3,
+      "ownerLabel": "EEE lead",
+      "owner": "eee",
+      "fixedWeek": 12,
+      "segments": [
+        [
+          10,
+          12
+        ]
+      ],
+      "dl": false
+    },
+    {
+      "id": "WP5.5",
+      "wp": "WP5",
+      "name": "Cross-task comparison of explanations",
       "weeksLabel": "Weeks 13–15",
       "weeks": [
         13,

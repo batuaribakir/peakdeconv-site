@@ -61,6 +61,14 @@ def is_thick(cell):
     return sum(1 for s in sides if s in THICK) >= 3
 
 
+def find_label(ws, text, col):
+    """Row of the one cell in column `col` whose value is exactly `text`."""
+    rows = [r for r in range(1, ws.max_row + 1)
+            if str(ws.cell(r, col).value or "").strip() == text]
+    assert len(rows) == 1, f"{ws.title}: expected one {text!r} in column {col}, got rows {rows}"
+    return rows[0]
+
+
 def main():
     wb = openpyxl.load_workbook(XLSX)
     ov = wb["Task overview"]
@@ -99,12 +107,20 @@ def main():
                 "owner": OWNER_KEYS[owner_line],
             })
 
+    # ---- Team 1 · DL: blocks below the grid, found by label --------------------
+    teams_row = find_label(t1, "Project teams", 3)
+    notes_row = teams_row - 1          # the long notes line sits directly above
+    assert str(t1.cell(notes_row, 1).value).startswith("BME lead:"), "notes row not found"
+    legend_row = find_label(t1, "Packages", 3)
+    owners_row = find_label(t1, "Owners", 3)
+    assert teams_row < legend_row < owners_row
+
     # ---- Team 1 · DL grid: cross-check + DL rows, fixed delivery, WP finals -------
     by_id = {t["id"]: t for t in tasks}
     wp_meta = {}
     seen_grid = set()
     row = 10
-    while row <= 44:
+    while row < notes_row:
         code = t1.cell(row, 1).value
         name = t1.cell(row, 2).value
         if code and re.fullmatch(r"WP\d", str(code)):
@@ -162,17 +178,19 @@ def main():
                  xlsxAccent=m["xlsxAccent"], xlsxInk=m["xlsxInk"], xlsxTint=m["xlsxTint"])
 
     # legend short names ("■ WP1 · Acquisition")
-    for r in range(51, 54):
+    for r in range(legend_row, owners_row):
         for col in range(1, 18):
             v = t1.cell(r, col).value
             if v and "WP" in str(v):
                 code, short = str(v).replace("■", "").strip().split(" · ")
                 next(p for p in packages if p["id"] == code)["short"] = short
+    assert all("short" in p for p in packages), "a package is missing from the legend"
 
     # ---- team (Team 1 sheet only) -----------------------------------------------
-    assert t1["D47"].value == "Team 1"
-    team = [{"department": t1["C48"].value, "name": t1["D48"].value},
-            {"department": t1["C49"].value, "name": t1["D49"].value}]
+    hdr = teams_row + 1
+    assert t1.cell(hdr, 3).value == "Department" and t1.cell(hdr, 4).value == "Team 1"
+    team = [{"department": t1.cell(r, 3).value, "name": t1.cell(r, 4).value}
+            for r in (hdr + 1, hdr + 2)]
 
     subtitle = t1["O2"].value  # "15 weeks · midterm in week 8"
 
