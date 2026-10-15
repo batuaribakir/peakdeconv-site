@@ -13,10 +13,20 @@
 
   /* ---------- state (single source, persisted) --------------------------- */
   var KEY = "pd-dashboard.team1.v1";
-  var state = { status: {}, unlocked: {}, moved: {}, filters: { q: "", status: "all", wp: "all", owner: "all", week: "all" } };
+  // The workbook's plan 2 redefined WP5.1–WP5.3 (and added WP5.4–WP5.5). Progress
+  // saved before it has no plan field: drop those three tasks from it, once.
+  var PLAN = 2, REDEFINED = ["WP5.1", "WP5.2", "WP5.3"];
+  var state = { plan: PLAN, status: {}, unlocked: {}, moved: {}, filters: { q: "", status: "all", wp: "all", owner: "all", week: "all" } };
+  var migrate = false;
   (function load() {
     try {
       var raw = JSON.parse(localStorage.getItem(KEY) || "null");
+      if (raw && raw.plan !== PLAN) {
+        migrate = true;
+        REDEFINED.forEach(function (id) {
+          ["status", "unlocked", "moved"].forEach(function (k) { if (raw[k]) delete raw[k][id]; });
+        });
+      }
       if (raw && raw.status) Object.keys(raw.status).forEach(function (id) {
         if (TASK[id] && STATUS[raw.status[id]] && raw.status[id] !== "todo") state.status[id] = raw.status[id];
       });
@@ -34,6 +44,7 @@
   function save() {
     try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
   }
+  if (migrate) save();   // persist the cleared entries and the plan marker
   function S(id) { return state.status[id] || "todo"; }
   // A task's delivery week is locked unless the user has opened it.
   function isLocked(id) { return !state.unlocked[id]; }
