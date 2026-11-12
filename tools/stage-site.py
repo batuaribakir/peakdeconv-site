@@ -29,7 +29,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
-# Everything the four pages load at run time, and nothing else.
+# Everything the five pages load at run time, and nothing else.
 MANIFEST = [
     # Entry pages.
     "index.html",
@@ -113,6 +113,34 @@ MANIFEST = [
     "dashboard/js/views/tracker.js",
     "dashboard/js/interactions/config.js",
     "dashboard/js/interactions/parallax.js",
+    # Try MAVIS: the page, its ES modules, the six ONNX models with their manifest, the data
+    # files (blank library, examples, the dataset's MIT notice) and the
+    # page's own copy of ONNX Runtime Web with its licence files. The models and the runtime
+    # are fetched only when a visitor presses Analyze.
+    "try/index.html",
+    "try/css/try.css",
+    "try/js/app.js",
+    "try/js/pipeline.js",
+    "try/js/parse.js",
+    "try/js/checks.js",
+    "try/js/engine.js",
+    "try/js/xai.js",
+    "try/js/chart.js",
+    "try/js/export.js",
+    "try/models/manifest.json",
+    "try/models/detection.onnx",
+    "try/models/classification.onnx",
+    "try/models/regression_AA.onnx",
+    "try/models/regression_5HT.onnx",
+    "try/models/regression_2E.onnx",
+    "try/models/regression_Mela.onnx",
+    "try/data/blanks.json",
+    "try/data/examples.json",
+    "try/data/LICENSE-open-swv-dataset.txt",
+    "try/vendor/onnxruntime-web/1.31.1/ort.wasm.bundle.min.mjs",
+    "try/vendor/onnxruntime-web/1.31.1/ort-wasm-simd-threaded.wasm",
+    "try/vendor/onnxruntime-web/1.31.1/LICENSE",
+    "try/vendor/onnxruntime-web/1.31.1/ThirdPartyNotices.txt",
 ]
 
 

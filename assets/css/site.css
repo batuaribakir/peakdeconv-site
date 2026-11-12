@@ -4,8 +4,8 @@
 
    Two navigations, with one job each:
 
-     · GLOBAL — the four destinations of the site (Home, Dashboard,
-       Presentations, Team). It lives in a left panel (.navpanel), opened
+     · GLOBAL — the five destinations of the site (Home, Try MAVIS,
+       Dashboard, Presentations, Team). It lives in a left panel (.navpanel), opened
        from a handle on the left edge (.navhandle) on pointer devices and
        from a Menu button in the page bar (.navbtn) on narrow screens. It is
        the same panel and the same state either way.
@@ -394,7 +394,7 @@ html:has(.site-page) { scroll-behavior: smooth; }
 /* ==========================================================================
    no-JavaScript fallback
    The panel is a scripted control, so without JavaScript the whole chrome
-   drops out of fixed positioning and into normal flow: the four global links
+   drops out of fixed positioning and into normal flow: the five global links
    render as a plain wrapped list at the top of the page, the page bar
    follows it, and nothing is clipped or covered at any width.
    ========================================================================== */

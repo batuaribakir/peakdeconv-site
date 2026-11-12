@@ -144,13 +144,14 @@ export const DOCS = {
   ],
 };
 
-// Closing sheet (opened by the beat-15 button): the site's other pages. Three rows take the
-// places of the reference's three form fields (the same three pages as the site menu, in its
-// order); the latest presentation takes the submit button's.
+// Closing sheet (opened by the beat-15 button): the site's other pages. Their rows take the
+// places of the reference's three form fields, plus one for Try MAVIS (the same four pages as the
+// site menu, in its order); the latest presentation takes the submit button's.
 export const LEAD = {
   title: 'Explore MAVIS',
   sub: 'Each page goes one step deeper than this introduction.',
   links: [
+    { label: 'Run the models in your browser', text: 'Try MAVIS', href: './try/' },
     { label: 'Development plan and progress', text: 'Dashboard', href: './dashboard/' },
     { label: 'Technical briefings', text: 'Presentations', href: './presentations/' },
     { label: 'The people behind MAVIS', text: 'Team', href: './team/' },

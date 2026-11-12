@@ -3,7 +3,7 @@
 
 Four questions, in order:
 
-1. Is everything there? The four entry pages, the presentations and the CSS,
+1. Is everything there? The five entry pages, the presentations and the CSS,
    JS, data, icon and audio files they need -- including Home's ES modules,
    music and media, which are reached from JavaScript or CSS rather than from
    an href or src, so the link check below cannot see them.
@@ -15,7 +15,7 @@ Four questions, in order:
    refused, as are the Spline design files, loose Python and Markdown, editor
    or OS droppings, and the retired project/ and resources/ pages.
 4. Do the navigations agree? Every site menu (<nav aria-label="Site">) and
-   footer menu (<nav aria-label="Footer">) must link to exactly the four
+   footer menu (<nav aria-label="Footer">) must link to exactly the five
    destinations in SITE_NAV, in that order. Home's closing sheet is built by
    assets/home/src/content.js, so it is not covered here.
 
@@ -94,6 +94,33 @@ REQUIRED = [
     "assets/home/media/molecules/melatonin.svg",
     "assets/home/media/system/network.svg",
     "assets/home/media/vision/evidence.svg",
+    # Try MAVIS: the page, its ES modules (imported from app.js), and the models, data and
+    # ONNX Runtime Web files it fetches from JavaScript; none of these but the page, its
+    # stylesheet and app.js appears in an href or src.
+    "try/index.html",
+    "try/css/try.css",
+    "try/js/app.js",
+    "try/js/pipeline.js",
+    "try/js/parse.js",
+    "try/js/checks.js",
+    "try/js/engine.js",
+    "try/js/xai.js",
+    "try/js/chart.js",
+    "try/js/export.js",
+    "try/models/manifest.json",
+    "try/models/detection.onnx",
+    "try/models/classification.onnx",
+    "try/models/regression_AA.onnx",
+    "try/models/regression_5HT.onnx",
+    "try/models/regression_2E.onnx",
+    "try/models/regression_Mela.onnx",
+    "try/data/blanks.json",
+    "try/data/examples.json",
+    "try/data/LICENSE-open-swv-dataset.txt",
+    "try/vendor/onnxruntime-web/1.31.1/ort.wasm.bundle.min.mjs",
+    "try/vendor/onnxruntime-web/1.31.1/ort-wasm-simd-threaded.wasm",
+    "try/vendor/onnxruntime-web/1.31.1/LICENSE",
+    "try/vendor/onnxruntime-web/1.31.1/ThirdPartyNotices.txt",
 ]
 
 # Must be absent. Each entry is (description, predicate over the staged path).
@@ -118,7 +145,7 @@ FORBIDDEN = [
 
 # The site's destinations, in menu order, as staged files. Every site and footer
 # menu links to exactly these.
-SITE_NAV = ["index.html", "dashboard/index.html", "presentations/index.html", "team/index.html"]
+SITE_NAV = ["index.html", "try/index.html", "dashboard/index.html", "presentations/index.html", "team/index.html"]
 
 LINK_RE = re.compile(r'(?:href|src)\s*=\s*"([^"]*)"', re.I)
 ID_RE = re.compile(r'\bid\s*=\s*"([^"]*)"', re.I)
