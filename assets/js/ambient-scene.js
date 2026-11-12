@@ -1,6 +1,6 @@
 /* ==========================================================================
    MAVIS — ambient scene
-   The light 3D background of the product pages (Dashboard, Presentations,
+   The light 3D background of the product pages (Try MAVIS, Dashboard, Presentations,
    Team): three slowly undulating ribbons and drifting particles behind the
    content, seen through a camera that sways toward the pointer and rises
    with page scroll. Home has its own scroll scene and never loads this.

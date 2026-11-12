@@ -1,7 +1,7 @@
 name: Deploy site to GitHub Pages
 
 # Publishes the static site at https://batuaribakir.github.io/peakdeconv-site/.
-# There is no build step: the job stages the files the four pages and the
+# There is no build step: the job stages the files the five pages and the
 # presentations need into _site/ and uploads only that, so the workbook, the
 # Spline design files, the tooling, the READMEs and the retired project/ and
 # resources/ pages never reach the public artifact.
@@ -44,7 +44,7 @@ jobs:
 
       # Lists the staged tree, then fails on a missing entry page or asset, a
       # link that resolves to nothing, anything that must stay unpublished, or
-      # a site or footer menu that does not list exactly the four pages.
+      # a site or footer menu that does not list exactly the five pages.
       - name: Validate the staged directory
         run: python3 tools/validate-site.py _site
 
