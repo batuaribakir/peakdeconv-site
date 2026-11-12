@@ -6,6 +6,7 @@ No build step, no package manager: plain HTML, CSS and JavaScript.
 ```
 .
 ├── index.html            Home: a scroll narrative (see "Home" below)
+├── try/                  Try MAVIS: the models in the visitor's browser (see "Try MAVIS" below)
 ├── dashboard/            development plan and progress tracker (see dashboard/README.md)
 ├── presentations/        the presentation library: index.html, one self-contained HTML
 │                         file per presentation, covers/ (see "Presentations")
@@ -16,7 +17,7 @@ No build step, no package manager: plain HTML, CSS and JavaScript.
 │   ├── css/site.css      shared chrome (global panel, page bar), page shell and the type tokens
 │   ├── js/site.js        global panel controller + section scroll-spy
 │   ├── css/ambient-scene.css, js/ambient-scene.js
-│   │                     the light 3D background of Dashboard, Presentations and Team
+│   │                     the light 3D background of Try MAVIS, Dashboard, Presentations and Team
 │   └── icons/favicon.svg the MAVIS mark (see "Brand and type")
 ├── tools/
 │   ├── stage-site.py                builds the directory GitHub Pages serves
@@ -40,6 +41,7 @@ a server like this one: opened straight from the file system it stays blank.
 | Page                         | URL                                        |
 |------------------------------|--------------------------------------------|
 | Home                         | `/`                                        |
+| Try MAVIS                    | `/try/`                                    |
 | Dashboard                    | `/dashboard/`                              |
 | Presentations                | `/presentations/`                          |
 | MAVIS Technical Overview     | `/presentations/technical-overview.html`   |
@@ -62,13 +64,13 @@ nothing is committed by the deployment.
 There is no build step. The workflow stages the files the site needs and uploads *only*
 that directory:
 
-1. `python3 tools/stage-site.py _site` — copies the files the four pages and the
+1. `python3 tools/stage-site.py _site` — copies the files the five pages and the
    presentations load at run time into `_site/`, each keeping its path so `index.html`
    stays at the top level and every relative link still resolves.
 2. `python3 tools/validate-site.py _site` — prints the staged tree, then fails on a
    missing entry page or asset, a link that resolves to nothing, anything that must stay
    out of the artifact (the retired `project/` and `resources/` pages included), or a site
-   or footer menu that does not list exactly Home, Dashboard, Presentations and Team.
+   or footer menu that does not list exactly Home, Try MAVIS, Dashboard, Presentations and Team.
 3. `actions/upload-pages-artifact` uploads `_site`, and a second job deploys it with
    `actions/deploy-pages` in the `github-pages` environment.
 
@@ -77,7 +79,9 @@ that directory:
 producing a thinner site. So the published artifact contains no `.git/`, `.github/`,
 `README.md`, `tools/`, `dashboard/tools/`, `dashboard/data/source/` or `.xlsx` — and none
 of the ~5.5 MB of `dashboard/assets/spline/` design files, which the dashboard names in
-source comments but never loads. `_site/` is 69 files, about 4.4 MB: 1.9 MB of that is the
+source comments but never loads. `_site/` is 93 files, about 48.8 MB: 43.4 MB of that is Try
+MAVIS (its six ONNX models, 28.3 MB, and ONNX Runtime Web's WebAssembly file, 14.8 MB, fetched
+only when a visitor presses Analyze, and only what the chosen tasks need), 1.9 MB is the
 technical overview presentation (fetched only when it is opened) and 2 MB is Home's music,
 which a browser fetches only when the music starts.
 
@@ -117,13 +121,13 @@ file listing, and the `github-pages` deployment on the *Deploy* job links to the
 
 There are two navigations, with one job each.
 
-**Global — the four destinations of the site: Home, Dashboard, Presentations, Team.** It
+**Global — the five destinations of the site: Home, Try MAVIS, Dashboard, Presentations, Team.** It
 lives in a panel that slides in from the left, and it is the same panel and the same state
 on every page, dashboard included — except Home, which has its own copy of it (see "Home"
 below).
 
-Every list of destinations names those four pages, in that order: the panel on the
-Dashboard, Presentations and Team pages, Home's copy of it, the footers of Presentations
+Every list of destinations names those five pages, in that order: the panel on the
+Try MAVIS, Dashboard, Presentations and Team pages, Home's copy of it, the footers of Try MAVIS, Presentations
 and Team, and Home's no-JavaScript links. `tools/validate-site.py` fails the deployment if
 a site or footer menu (`<nav aria-label="Site">`, `<nav aria-label="Footer">`) disagrees.
 Home's closing sheet is built from `assets/home/src/content.js` (`LEAD`) and lists the same
@@ -149,7 +153,7 @@ pages; the validator cannot see it, so keep it in step by hand.
   grown past about 40 px. Exactly one of the two controls is on screen at any width.
 - The button sits *after* the panel in the document, so Tab out of it would walk away from
   the panel rather than into it. **Enter or Space on the Menu button therefore moves focus
-  into the panel**, onto its Close button; Tab from there reaches the four links in order.
+  into the panel**, onto its Close button; Tab from there reaches the five links in order.
   **Escape and the Close button** both close the panel and return focus to Menu. The
   button opens on activation only — focus-opening belongs to the handle, where Tab order
   makes it work.
@@ -176,8 +180,8 @@ brand and the page's name; a longer page can add section links to it
 Neither script touches the other: the dashboard's bar carries no `data-section-nav`.
 
 **Without JavaScript** the panel is not a control at all, so the whole chrome drops out of
-fixed positioning and into normal flow: the four global links render as a plain wrapped
-list at the top of the page and the page bar follows underneath. All four stay visible and
+fixed positioning and into normal flow: the five global links render as a plain wrapped
+list at the top of the page and the page bar follows underneath. All five stay visible and
 clickable down to 390 px. Home shows a plain list of the other pages instead.
 
 `prefers-reduced-motion: reduce` removes the panel's slide, its open/close delays and the
@@ -199,7 +203,7 @@ scroll behaviour of revertai.com.br from measurements (see its README).
 - Everything else under `assets/home/src/` and `styles.css` is the study's implementation,
   kept as it is: scroll, timeline, particle field and their timing are untouched. The
   departures are the paths of the modules and the music; the closing sheet, which lists
-  the site's pages (Dashboard, Presentations, Team) instead of a contact form and opens the
+  the site's pages (Try MAVIS, Dashboard, Presentations, Team) instead of a contact form and opens the
   MAVIS Technical Overview from its primary button; beat 10's flipping letter, which starts
   mirrored and flips into the normal letter (so the word ends as "Deconvolution"); the
   closing beat, which has no fine print under its button and whose strip names only MAVIS
@@ -260,6 +264,37 @@ scroll behaviour of revertai.com.br from measurements (see its README).
 - The music (`assets/home/audio/lumen-ambient.mp3`) is the study's original loop,
   synthesised by its `tools/make-track.py`. Whether Home keeps it is not decided yet.
 
+## Try MAVIS
+
+`try/` runs the MAVIS models in the visitor's browser: for ascorbic acid, serotonin, estradiol
+and melatonin in a square-wave voltammogram, whether each is present, its concentration level
+and its concentration, with an explanation map under the curve. The tool fills the page in three
+frosted-glass columns (sample and settings, curve and explanation, results) over the same
+ambient 3D scene as Dashboard, Presentations and Team; below them, a table of every scan of the
+input with CSV and JSON downloads. One Analyze takes up to 2,000 scans (`MAX_SCANS` in `app.js`,
+set from measured times). Plain ES modules, no build step and no server: the visitor's files never
+leave the browser, and the downloads are made in it.
+
+- `index.html`, `css/try.css` and `js/`: `app.js` (the page), `pipeline.js` (blank, Savitzky-Golay,
+  z-score and every step after the networks, in float64 and in NumPy's summation order),
+  `parse.js` (the dataset's CSV, CHI text exports), `checks.js` (input checks), `engine.js`
+  (ONNX Runtime Web), `xai.js` (occlusion and Shapley maps), `chart.js` (the curve and its map)
+  and `export.js` (the CSV and JSON downloads; no file path or CHI header line in either).
+- `models/`: the six ONNX graphs (networks only) and `manifest.json` (thresholds, level grids,
+  regression members, explanation regions, budgets and test results, sha256 of every file).
+- `data/`: the blank library and the seven examples, curves of the open SWV dataset (Duesselberg
+  et al., ACS Electrochem. 2026; MIT licence, notice in `data/LICENSE-open-swv-dataset.txt`).
+- `vendor/onnxruntime-web/1.31.1/`: the page's own copy of ONNX Runtime Web (MIT; licence and
+  third-party notices beside it), run on one thread: GitHub Pages cannot send the
+  cross-origin isolation headers that threads need.
+
+`models/` and `data/` are generated by the project's `tools/web_export/build_site_data.py`; the
+page shows no number that is not in those files. The project's `tools/web_export/js/` holds the
+checks of this page against the Python code (`test_site.mjs`) and in a real browser
+(`browser_check.mjs`). The page needs a server that sends `.mjs` files as JavaScript (some Windows
+setups of Python's `http.server` do not). Example cards and upload hints inspired by
+peakdeconvolution.com (ENG401 2025, Team A).
+
 ## Presentations
 
 `presentations/index.html` is the library: one card per presentation, newest first. A
@@ -313,7 +348,7 @@ To add a presentation:
 
 ## Ambient scene
 
-Dashboard, Presentations and Team share one background: the dashboard's light 3D scene
+Try MAVIS, Dashboard, Presentations and Team share one background: the dashboard's light 3D scene
 (three slowly undulating ribbons and drifting particles, Three.js r134 from cdnjs) seen
 through a camera that sways toward the pointer and rises with page scroll. It is one
 implementation, used as is by all three pages:
@@ -384,6 +419,6 @@ python3 tools/check-schedule-snapshot.py          # then check project/index.htm
 
 The dashboard is complete and runs on data generated from the project workbook.
 Presentations holds one presentation, and Team lists the two developers with their portraits
-and LinkedIn profiles. Outside that
-presentation, the site publishes no results or metrics. The repository is public, and the site is
+and LinkedIn profiles. Try MAVIS runs the models on the visitor's data and quotes the paper's
+test results; outside it and that presentation, the site publishes no results or metrics. The repository is public, and the site is
 deployed to GitHub Pages at <https://batuaribakir.github.io/peakdeconv-site/>.
